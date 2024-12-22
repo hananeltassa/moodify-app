@@ -14,17 +14,22 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
+  const [fontsLoaded, error] = useFonts({
+    AvenirNextLTPro: require('../assets/fonts/AvenirNextLTPro-Regular.otf'),
+    AvenirNextLTProBold: require('../assets/fonts/AvenirNextLTPro-Bold.otf'),
+    AvenirNextLTProDemi: require('../assets/fonts/AvenirNextLTPro-Demi.otf'),
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
-  useEffect(() => {
-    if (loaded) {
+  useEffect(() =>{
+    if(error) throw error;
+    if (fontsLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [fontsLoaded, error]);
 
-  if (!loaded) {
+
+  if (!fontsLoaded && !error) {
     return null;
   }
 

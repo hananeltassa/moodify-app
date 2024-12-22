@@ -4,7 +4,21 @@ module.exports = {
   content: ["./app/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        black: '#000000',
+        white: '#FFFFFF',
+        primary: '#FF6100',
+        secondary: '#B90039',
+      },
+      fontFamily: {
+        "Avenir-Bold": ["AvenirNextLTProBold", "sans-serif"],
+        "avenir-regular": ["AvenirNextLTPro", "sans-serif"],
+        "Avenir-Demi": ["AvenirNextLTProDemi", "sans-serif"],
+        "SpaceMono": ["SpaceMono", "sans-serif"],
+      }
+
+    },
   },
   plugins: [],
 }
