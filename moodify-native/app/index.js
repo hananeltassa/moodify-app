@@ -14,60 +14,56 @@ export default function OnboardingScreen() {
       {/* Overlay to darken the background */}
       <View className="absolute inset-0 bg-black opacity-70" />
 
-      <SafeAreaView className="h-full flex justify-center items-center">
+      <SafeAreaView className="h-full flex justify-between items-center">
         {/* Logo Section */}
-        <View className="w-full flex justify-center items-center px-">
+        <View className="flex-1 w-full flex justify-center items-center px-4 pt-40">
           <Image
             source={images.logoSmall}
-            className="w-[90px] h-[60px] mb-8"
+            className="w-[90px] h-[60px] mb-8 mt-64"
             resizeMode="contain"
           />
-        </View>
-
-        {/* Text Section */}
-        <View className="w-full px-6">
           <Text className="text-3xl text-white font-Avenir-Bold text-center leading-relaxed">
             Feel It. Hear It.{"\n"}
             Moodify It.
           </Text>
         </View>
 
-        <View className="mt-4 w-full px-6">
+
+        {/* Button Section */}
+        <View className="w-full px-6 space-y-4 mb-16">
           <CustomButton
             text="Sign Up"
             backgroundColor="bg-black"
             textColor="text-white"
-            onPress={() => console.log('sign up button pressed')}
+            marginTop="mt-4"
+            onPress={() => console.log('Sign Up button pressed')}
           />
-        </View>
-
-        {/* Spotify Button Section */}
-        <View className="mt-4 w-full px-6">
           <CustomButton
             icon={icons.spotify}
             text="Continue with Spotify"
             backgroundColor="bg-transparent"
             textColor="text-white"
             borderStyle="border border-white"
+            marginTop="mt-4"
             onPress={() => console.log('Spotify button pressed')}
           />
-        </View>
-
-        {/* Google Button Section */}
-        <View className="mt-4 w-full px-6">
           <CustomButton
             icon={icons.google}
             text="Continue with Google"
             backgroundColor="bg-transparent"
             textColor="text-white"
             borderStyle="border border-white"
+            marginTop="mt-4"
             onPress={() => console.log('Google button pressed')}
           />
+          {/* Log In Link */}
+          <TouchableOpacity onPress={() => console.log('Log In pressed')}>
+            <Text className="text-white text-lg font-Avenir-Bold text-center mt-4">
+              Log in
+            </Text>
+          </TouchableOpacity>
         </View>
-
-
       </SafeAreaView>
     </ImageBackground>
-
   );
 }

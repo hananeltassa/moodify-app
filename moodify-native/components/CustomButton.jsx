@@ -2,12 +2,12 @@ import React from 'react';
 import { TouchableOpacity, Text, Image } from 'react-native';
 import { useCustomButton } from '../hooks/useCustomButton';
 
-export default function CustomButton({ icon, text, backgroundColor, textColor, borderStyle, padding = 'py-3 px-4', cornerRadius = 'rounded-full', onPress }) {
+export default function CustomButton({ icon, text, backgroundColor, textColor, borderStyle, padding = 'py-3 px-4', cornerRadius = 'rounded-full', marginTop = 'mt-0',onPress }) {
   const classes = useCustomButton({ backgroundColor, textColor });
 
   return (
     <TouchableOpacity
-      className={`${classes.button} ${borderStyle} ${padding} ${cornerRadius} flex-row items-center justify-center`}
+      className={`${classes.button} ${borderStyle} ${padding} ${cornerRadius} ${marginTop} flex-row items-center justify-center`}
       onPress={onPress}
       activeOpacity={0.8}
     >
