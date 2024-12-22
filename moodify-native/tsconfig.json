@@ -21,5 +21,5 @@
     "app/(tabs)/_layout.jsx",
     "app/_layout.js",
     "nativewind-env.d.ts"
-  ]
+, "components/ui/IconSymbol.ios.jsx", "components/ui/IconSymbol.jsx"  ]
 }
