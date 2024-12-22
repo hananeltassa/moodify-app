@@ -1,6 +1,8 @@
 import React from 'react';
 import { SafeAreaView, View, ImageBackground, Image, Text } from 'react-native';
 import images from '../constants/images';
+import icons from '../constants/icons';
+import CustomButton from '../components/CustomButton';
 
 export default function OnboardingScreen() {
   return (
@@ -29,7 +31,20 @@ export default function OnboardingScreen() {
             Moodify It.
           </Text>
         </View>
+        {/* Google Button Section */}
+        <View className="mt-8 w-full px-6">
+          <CustomButton
+            icon={icons.google} // Ensure this points to the correct Google icon
+            text="Continue with Google"
+            backgroundColor="bg-transparent" // Transparent background
+            textColor="text-white"
+            borderStyle="border border-white"
+            onPress={() => console.log('Google button pressed')}
+          />
+        </View>
+
       </SafeAreaView>
     </ImageBackground>
+
   );
 }
