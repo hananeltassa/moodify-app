@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, View, ImageBackground, Image, Text } from 'react-native';
+import { SafeAreaView, View, ImageBackground, Image, Text, TouchableOpacity } from 'react-native';
 import images from '../constants/images';
 import icons from '../constants/icons';
 import CustomButton from '../components/CustomButton';
@@ -16,10 +16,10 @@ export default function OnboardingScreen() {
 
       <SafeAreaView className="h-full flex justify-center items-center">
         {/* Logo Section */}
-        <View className="w-full flex justify-center items-center px-4">
+        <View className="w-full flex justify-center items-center px-">
           <Image
             source={images.logoSmall}
-            className="w-[130px] h-[84px] mb-8"
+            className="w-[90px] h-[60px] mb-8"
             resizeMode="contain"
           />
         </View>
@@ -31,17 +31,40 @@ export default function OnboardingScreen() {
             Moodify It.
           </Text>
         </View>
-        {/* Google Button Section */}
-        <View className="mt-8 w-full px-6">
+
+        <View className="mt-4 w-full px-6">
           <CustomButton
-            icon={icons.google} // Ensure this points to the correct Google icon
+            text="Sign Up"
+            backgroundColor="bg-black"
+            textColor="text-white"
+            onPress={() => console.log('sign up button pressed')}
+          />
+        </View>
+
+        {/* Spotify Button Section */}
+        <View className="mt-4 w-full px-6">
+          <CustomButton
+            icon={icons.spotify}
+            text="Continue with Spotify"
+            backgroundColor="bg-transparent"
+            textColor="text-white"
+            borderStyle="border border-white"
+            onPress={() => console.log('Spotify button pressed')}
+          />
+        </View>
+
+        {/* Google Button Section */}
+        <View className="mt-4 w-full px-6">
+          <CustomButton
+            icon={icons.google}
             text="Continue with Google"
-            backgroundColor="bg-transparent" // Transparent background
+            backgroundColor="bg-transparent"
             textColor="text-white"
             borderStyle="border border-white"
             onPress={() => console.log('Google button pressed')}
           />
         </View>
+
 
       </SafeAreaView>
     </ImageBackground>
