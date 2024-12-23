@@ -5,7 +5,10 @@ import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 
 export default function SignUp() {
-  const [form, setForm] = useState({ email: "" });
+  const [form, setForm] = useState({ 
+    email: '' 
+  });
+  
   const [isSubmitting, setSubmitting] = useState(false);
 
   const handleSubmit = async () => {

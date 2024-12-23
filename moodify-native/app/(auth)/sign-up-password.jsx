@@ -1,36 +1,41 @@
-import React, { useState } from 'react';
-import { View, Text } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import FormField from '../../components/FormField';
-import CustomButton from '../../components/CustomButton';
+import React, { useState } from "react";
+import { View, Text, Alert } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import FormField from "../../components/FormField";
+import CustomButton from "../../components/CustomButton";
 
 export default function SignUpPassword() {
   const [form, setForm] = useState({
-    password: '',
+    password: "",
   });
 
   const [isSubmitting, setSubmitting] = useState(false);
 
-  const submit = async () => {
-    console.log('Password submitted:', form.password);
-    // Implement your password submission logic here
+  const handleSubmit = async () => {
+    if (!form.password) {
+      Alert.alert("Error", "Please enter your password.");
+      return;
+    }
+    console.log("Password submitted:", form.password);
+
+    // router.push("/(auth)/sign-up-birth");
   };
 
   return (
     <SafeAreaView className="bg-black h-full">
-      <View className="w-full justify-center h-full">
+      <View className="w-full justify-start h-full -mt-5 px-4">
         <FormField
-          title="Enter your password"
+          title="Create your password"
           value={form.password}
           handleChangeText={(e) => setForm({ ...form, password: e })}
-          placeholder="Enter a secure password"
-          titleStyle={{ fontSize: 20, fontFamily: "AvenirNext-Bold", color: "#FFF" }}
-          inputStyle={{ fontSize: 16, fontFamily: "AvenirNext-Regular", color: "#FFF" }}
+          placeholder="Enter your password"
+          titleSize={22}
+          inputSize={16}
           secureTextEntry
         />
 
         <CustomButton
-          text="Sign Up"
+          text="Next"
           backgroundColor="bg-white"
           textColor="text-black"
           textSize="text-sm"
@@ -38,7 +43,7 @@ export default function SignUpPassword() {
           width="w-38"
           borderStyle="border border-white"
           containerStyle="mx-auto py-2 px-3"
-          handlePress={submit}
+          onPress={handleSubmit}
           isLoading={isSubmitting}
         />
       </View>

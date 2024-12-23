@@ -9,8 +9,8 @@ const FormField = ({
   placeholder,
   handleChangeText,
   otherStyles,
-  titleSize = 20, // Default title size
-  inputSize = 16, // Default input size
+  titleSize = 20,
+  inputSize = 16, 
   ...props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -21,7 +21,7 @@ const FormField = ({
       <Text
         className="text-gray-100 font-bold mb-4"
         style={{
-          fontSize: titleSize, // Title size here
+          fontSize: titleSize,
           fontFamily: "AvenirNext-Bold",
           color: "#FFF",
         }}
