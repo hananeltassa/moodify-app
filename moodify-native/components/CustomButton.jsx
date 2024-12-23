@@ -1,6 +1,6 @@
-import React from 'react';
-import { TouchableOpacity, Text, Image } from 'react-native';
-import { useCustomButton } from '../hooks/useCustomButton';
+import React from "react";
+import { TouchableOpacity, Text, Image } from "react-native";
+import { useCustomButton } from "../hooks/useCustomButton";
 
 export default function CustomButton({
   icon,
@@ -9,20 +9,22 @@ export default function CustomButton({
   textColor,
   borderStyle,
   borderWidth = 1,
-  padding = 'py-4 px-2',
-  cornerRadius = 'rounded-full',
-  marginTop = 'mt-0',
+  padding = "py-4 px-2",
+  cornerRadius = "rounded-full",
+  marginTop,
+  width = "w-auto", 
+  containerStyle,
   onPress,
 }) {
   const classes = useCustomButton({ backgroundColor, textColor });
 
   return (
     <TouchableOpacity
-      className={`${classes.button} ${borderStyle} ${padding} ${cornerRadius} ${marginTop} flex-row items-center justify-center`}
+      className={`${classes.button} ${borderStyle} ${padding} ${cornerRadius} ${marginTop} ${width} ${containerStyle} flex-row items-center justify-center`}
       onPress={onPress}
       activeOpacity={0.8}
       style={{
-        borderWidth, 
+        borderWidth,
       }}
     >
       {/* Icon */}
@@ -30,7 +32,7 @@ export default function CustomButton({
         <Image
           source={icon}
           className={classes.icon}
-          style={{ width: 24, height: 24, position: 'absolute', left: 16 }}
+          style={{ width: 24, height: 24, position: "absolute", left: 16 }}
           resizeMode="contain"
         />
       )}

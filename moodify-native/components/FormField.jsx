@@ -14,7 +14,7 @@ const FormField = ({
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <View className={`space-y-2 m-2 ${otherStyles}`}>
+    <View className={`space-y-2 ml-4 mr-4 ${otherStyles}`}>
       <Text className="text-base text-gray-100 font-bold mb-4">{title}</Text>
 
       <View className="border-2 border-white w-full h-16 px-4 rounded-lg flex flex-row items-center">
