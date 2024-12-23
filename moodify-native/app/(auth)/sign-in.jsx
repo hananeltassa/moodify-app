@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { Link, router } from "expo-router";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FormField from '../../components/FormField';
@@ -37,6 +37,8 @@ export default function SignIn() {
 
   return (
     <SafeAreaView className= 'bg-black h-full'>
+
+
         <View class="w-full justify-center h-full">
           <FormField 
             title="Email" 
@@ -61,6 +63,7 @@ export default function SignIn() {
             textColor="text-black"
             marginTop="mt-8"
             width="w-40"
+            borderStyle="border border-white"
             containerStyle="mx-auto"
             handlePress={submit}
             isLoading={isSubmitting}
