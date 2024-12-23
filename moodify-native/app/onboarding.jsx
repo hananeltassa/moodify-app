@@ -19,7 +19,7 @@ export default function Onboarding() {
 
       <SafeAreaView className="h-full flex justify-between items-center">
         {/* Logo Section */}
-        <View className="flex-1 w-full flex justify-center items-center px-4 pt-40 mt-64">
+        <View className="flex-1 w-full flex justify-center items-center px-4 pt-40 mt-70">
           <Image
             source={images.logoSmall}
             className="w-[100px] h-[64px] mb-8 "
@@ -31,7 +31,6 @@ export default function Onboarding() {
           </Text>
         </View>
 
-
         {/* Button Section */}
         <View className="w-full px-6 space-y-4 mb-16">
           <CustomButton
@@ -39,7 +38,8 @@ export default function Onboarding() {
             backgroundColor="bg-black"
             textColor="text-white"
             marginTop="mt-4"
-            onPress={() => console.log('Sign Up button pressed')}
+            textSize="text-lg" 
+            onPress={() => router.push('/(auth)/sign-up')}
           />
           <CustomButton
             icon={icons.spotify}
@@ -47,6 +47,7 @@ export default function Onboarding() {
             backgroundColor="bg-transparent"
             textColor="text-white"
             borderStyle="border border-white"
+            textSize="text-lg" 
             marginTop="mt-4"
             borderWidth={0.5}
             onPress={() => console.log('Spotify button pressed')}
@@ -55,6 +56,7 @@ export default function Onboarding() {
             icon={icons.google}
             text="Continue with Google"
             backgroundColor="bg-transparent"
+            textSize="text-lg" 
             textColor="text-white"
             borderStyle="border border-white"
             marginTop="mt-4"

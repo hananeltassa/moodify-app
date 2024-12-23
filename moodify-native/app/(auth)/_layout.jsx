@@ -26,8 +26,14 @@ export default function AuthLayout() {
           headerStyle: { backgroundColor: 'black' },
           headerTintColor: 'white',
           headerBackTitleVisible: false,
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back('/onboarding')} style={{ marginLeft: 0 }}>
+              <Ionicons name="chevron-back" size={24} color="white" />
+            </TouchableOpacity>
+          ),
         }}
       />
+      <Stack.Screen name="sign-up-password" options={{ title: 'Sign Up' }} />
     </Stack>
   );
 }

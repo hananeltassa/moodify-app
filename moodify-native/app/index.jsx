@@ -11,7 +11,7 @@ export default function SplashScreen() {
     // Navigate to the onboarding screen after 2 seconds
     const timer = setTimeout(() => {
     router.replace('/onboarding');
-     }, 2000);
+      }, 2000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -24,10 +24,10 @@ export default function SplashScreen() {
     >
       <View className="absolute inset-0 bg-black opacity-70" />
 
-      <View className="flex-1 w-full flex justify-center items-center  mt-20">
+      <View className="flex-1 w-full flex justify-center items-center mt-20">
         <Image
           source={images.logo}
-          className="w-80 h-55"
+          className="w-60 h-45"
           resizeMode="contain"
         />
       </View>

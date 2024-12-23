@@ -7,12 +7,13 @@ export default function CustomButton({
   text,
   backgroundColor,
   textColor,
+  textSize = "text-base",
   borderStyle,
   borderWidth = 1,
-  padding = "py-4 px-2",
+  padding = "py-4 px-6",
   cornerRadius = "rounded-full",
-  marginTop,
-  width = "w-auto", 
+  marginTop = "0",
+  width = "w-auto",
   containerStyle,
   onPress,
 }) {
@@ -21,7 +22,10 @@ export default function CustomButton({
   return (
     <TouchableOpacity
       className={`${classes.button} ${borderStyle} ${padding} ${cornerRadius} ${marginTop} ${width} ${containerStyle} flex-row items-center justify-center`}
-      onPress={onPress}
+      onPress={() => {
+        console.log("CustomButton pressed");
+        onPress && onPress();
+      }}
       activeOpacity={0.8}
       style={{
         borderWidth,
@@ -37,7 +41,7 @@ export default function CustomButton({
         />
       )}
       {/* Text */}
-      <Text className={`${classes.text} font-Avenir-Bold`}>{text}</Text>
+      <Text className={`${classes.text} ${textSize} font-Avenir-Bold`}>{text}</Text>
     </TouchableOpacity>
   );
 }

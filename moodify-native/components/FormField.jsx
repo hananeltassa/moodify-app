@@ -9,34 +9,51 @@ const FormField = ({
   placeholder,
   handleChangeText,
   otherStyles,
+  titleSize = 20, // Default title size
+  inputSize = 16, // Default input size
   ...props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <View className={`space-y-2 ml-4 mr-4 ${otherStyles}`}>
-      <Text className="text-base text-gray-100 font-bold mb-4">{title}</Text>
+      {/* Title */}
+      <Text
+        className="text-gray-100 font-bold mb-4"
+        style={{
+          fontSize: titleSize, // Title size here
+          fontFamily: "AvenirNext-Bold",
+          color: "#FFF",
+        }}
+      >
+        {title}
+      </Text>
 
-      <View className="border-2 border-white w-full h-16 px-4 rounded-lg flex flex-row items-center">
+      {/* Input Field */}
+      <View className="border border-white w-full h-16 px-4 rounded-lg flex flex-row items-center">
         <TextInput
-          className="flex-1 text-white text-lg leading-tight"
           value={value}
           placeholder={placeholder}
           placeholderTextColor="#7B7B8B"
           onChangeText={handleChangeText}
           textAlignVertical="center"
           style={{
+            fontSize: inputSize,
+            color: "#FFF",
+            fontFamily: "AvenirNext-Regular",
             paddingVertical: 0,
+            flex: 1,
           }}
           secureTextEntry={title === "Password" && !showPassword}
           {...props}
         />
 
+        {/* Show/Hide Password Icon */}
         {title === "Password" && (
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
             <Image
               source={!showPassword ? icons.eye : icons.eyeHide}
-              className="w-6 h-6"
+              style={{ width: 24, height: 24 }}
               resizeMode="contain"
             />
           </TouchableOpacity>
