@@ -1,10 +1,13 @@
 import React from 'react';
 import { SafeAreaView, View, ImageBackground, Image, Text, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 import images from '../constants/images';
 import icons from '../constants/icons';
 import CustomButton from '../components/CustomButton';
+import { StatusBar } from 'expo-status-bar';
 
 export default function Onboarding() {
+  const router = useRouter();
   return (
     <ImageBackground
       source={images.background}
@@ -60,13 +63,15 @@ export default function Onboarding() {
           />
 
           {/* Log In Link */}
-          <TouchableOpacity onPress={() => console.log('Log In pressed')}>
+          <TouchableOpacity onPress={() => router.push('/(auth)/sign-in')}>
             <Text className="text-white text-lg font-Avenir-Bold text-center mt-6">
               Log in
             </Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
+      {/*  */}
     </ImageBackground>
+    
   );
 }

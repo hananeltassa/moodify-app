@@ -1,14 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { Stack } from 'expo-router';
 
-const AuthLayout = () => {
+export default function AuthLayout() {
   return (
-    <View>
-      <Text>AuthLayout</Text>
-    </View>
-  )
+    <Stack>
+      <Stack.Screen name="sign-in" options={{ title: 'SignIn' , headerShown: false}} />
+      <Stack.Screen name="sign-up" options={{ title: 'SignUp' }} />
+    </Stack>
+  );
 }
-
-export default AuthLayout
-
-const styles = StyleSheet.create({})
