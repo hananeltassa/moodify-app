@@ -16,13 +16,13 @@ export default function OnboardingScreen() {
 
       <SafeAreaView className="h-full flex justify-between items-center">
         {/* Logo Section */}
-        <View className="flex-1 w-full flex justify-center items-center px-4 pt-40">
+        <View className="flex-1 w-full flex justify-center items-center px-4 pt-40 mt-64">
           <Image
             source={images.logoSmall}
-            className="w-[90px] h-[60px] mb-8 mt-64"
+            className="w-[100px] h-[64px] mb-8 "
             resizeMode="contain"
           />
-          <Text className="text-3xl text-white font-Avenir-Bold text-center leading-relaxed">
+          <Text className="text-4xl text-white font-Avenir-Bold text-center leading-relaxed">
             Feel It. Hear It.{"\n"}
             Moodify It.
           </Text>
@@ -45,6 +45,7 @@ export default function OnboardingScreen() {
             textColor="text-white"
             borderStyle="border border-white"
             marginTop="mt-4"
+            borderWidth={0.5}
             onPress={() => console.log('Spotify button pressed')}
           />
           <CustomButton
@@ -54,11 +55,13 @@ export default function OnboardingScreen() {
             textColor="text-white"
             borderStyle="border border-white"
             marginTop="mt-4"
+            borderWidth={0.5}
             onPress={() => console.log('Google button pressed')}
           />
+
           {/* Log In Link */}
           <TouchableOpacity onPress={() => console.log('Log In pressed')}>
-            <Text className="text-white text-lg font-Avenir-Bold text-center mt-4">
+            <Text className="text-white text-lg font-Avenir-Bold text-center mt-6">
               Log in
             </Text>
           </TouchableOpacity>
