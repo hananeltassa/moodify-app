@@ -81,15 +81,22 @@ const FormField = ({
         visible={showDatePicker}
         onRequestClose={() => setShowDatePicker(false)}
       >
-        <View className="flex-1 justify-end items-center bg-opacity-80">
+        <View className="flex-1 justify-end items-center bg-opacity-80 " >
           
-          <View className="bg-black rounded-t-lg w-1/2 items-center mb-4 py-4">
+          <View className="bg-gray-800 w-full items-center py-4">
+            {/* Done Button */}
+            <TouchableOpacity
+              onPress={() => setShowDatePicker(false)}
+              className="mt-2 self-end px-6 "
+            >
+              <Text className="text-white font-bold text-lg">Done</Text>
+            </TouchableOpacity>
+            {/* Date */}
             <DateTimePicker
               value={value ? new Date(value) : new Date()}
               mode="date"
               display="spinner"
               onChange={(event, selectedDate) => {
-                setShowDatePicker(false);
                 if (selectedDate) {
                   handleChangeText(selectedDate.toISOString().split("T")[0]);
                 }
