@@ -5,34 +5,43 @@ import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import { router } from "expo-router";
 
-export default function SignUpPassword() {
+export default function SignInBirthdate() {
   const [form, setForm] = useState({
-    password: "",
+    birthdate: "",
   });
 
-  const [isSubmitting, setSubmitting] = useState(false);
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const handleSubmit = async () => {
-    if (!form.password) {
-      Alert.alert("Error", "Please enter your password.");
+    if (!form.birthdate) {
+      Alert.alert("Error", "Please select your birthdate.");
       return;
     }
-    console.log("Password submitted:", form.password);
 
-    router.push("/(auth)/sign-up-birthdate");
+    setIsSubmitting(true); // Set loading state
+
+    try {
+      console.log("Birthdate submitted:", form.birthdate);
+
+      // Navigate to the next screen (uncomment when ready)
+      // router.push("/(auth)/sign-up-birthdate");
+    } catch (error) {
+      Alert.alert("Error", "An error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <SafeAreaView className="bg-black h-full">
       <View className="w-full justify-start h-full -mt-5 px-4">
         <FormField
-          title="Create your password"
-          value={form.password}
-          handleChangeText={(e) => setForm({ ...form, password: e })}
-          placeholder="Enter your password"
+          title="Enter your birthdate"
+          value={form.birthdate}
+          handleChangeText={(date) => setForm({ ...form, birthdate: date })}
+          placeholder="Select your birthdate"
           titleSize={22}
           inputSize={16}
-          secureTextEntry
+          type="date"
         />
 
         <CustomButton
