@@ -27,6 +27,18 @@ export default function TextDetection() {
             padding: 10,
           }}
         />
+      
+      <CustomButton
+        text="Submit"
+        backgroundColor="bg-white"
+        textColor="text-black"
+        padding="py-3 px-6"
+        marginTop="mt-8"
+        width="w-38"
+        borderStyle="border border-white"
+        containerStyle="mx-auto py-2 px-6"
+        onPress={handleSubmit}
+      />
     </View>
   );
 }
