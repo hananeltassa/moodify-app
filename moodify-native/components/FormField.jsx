@@ -16,16 +16,22 @@ const FormField = ({
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const handleDateChange = (event, selectedDate) => {
-    if (Platform.OS === "android") setShowDatePicker(false);
-    if (selectedDate) handleChangeText(selectedDate.toISOString().split("T")[0]);
+    setShowDatePicker(Platform.OS === "ios"); // Keep the picker open on iOS
+    if (selectedDate) {
+      handleChangeText(selectedDate.toISOString().split("T")[0]);
+    }
   };
 
   return (
-    <View className={`space-y-2 mx-4 ${otherStyles}`}>
+    <View style={{ marginHorizontal: 16, marginVertical: 8, ...otherStyles }}>
       {/* Title */}
       <Text
-        className="text-gray-100 font-bold mb-4"
-        style={{ fontSize: titleSize, fontFamily: "AvenirNext-Bold" }}
+        style={{
+          fontSize: titleSize,
+          fontFamily: "AvenirNext-Bold",
+          color: "#fff",
+          marginBottom: 8,
+        }}
       >
         {title}
       </Text>
@@ -34,11 +40,21 @@ const FormField = ({
       {type === "date" ? (
         <TouchableOpacity
           onPress={() => setShowDatePicker(true)}
-          className="border border-white w-full h-16 px-4 rounded-lg justify-center"
+          style={{
+            borderColor: "#fff",
+            borderWidth: 1,
+            height: 50,
+            paddingHorizontal: 16,
+            borderRadius: 8,
+            justifyContent: "center",
+          }}
         >
           <Text
-            className={`${value ? "text-white" : "text-gray-400"} font-regular`}
-            style={{ fontSize: inputSize, fontFamily: "AvenirNext-Regular" }}
+            style={{
+              fontSize: inputSize,
+              fontFamily: "AvenirNext-Regular",
+              color: value ? "#fff" : "#7B7B8B",
+            }}
           >
             {value || placeholder}
           </Text>
@@ -49,44 +65,58 @@ const FormField = ({
           placeholder={placeholder}
           placeholderTextColor="#7B7B8B"
           onChangeText={handleChangeText}
-          className="border-white border-[0.5px] w-full h-16 px-4 rounded-lg text-white"
-          style={{ fontSize: inputSize, fontFamily: "AvenirNext-Regular" }}
+          style={{
+            borderColor: "#fff",
+            borderWidth: 1,
+            height: 50,
+            paddingHorizontal: 16,
+            borderRadius: 8,
+            fontSize: inputSize,
+            fontFamily: "AvenirNext-Regular",
+            color: "#fff",
+          }}
           secureTextEntry={title === "Password"}
           {...props}
         />
       )}
 
-      {/* Date Picker Modal */}
-      {type === "date" && showDatePicker && (
-        <Modal
-          transparent
-          animationType="slide"
-          visible={showDatePicker}
-          onRequestClose={() => setShowDatePicker(false)}
-        >
-          <View className="flex-1 justify-end bg-opacity-80">
-            <View className="bg-gray-800 w-full items-center py-4">
-              {/* Done Button */}
-              <TouchableOpacity
-                onPress={() => setShowDatePicker(false)}
-                className="self-end px-6 mt-2"
-              >
-                <Text className="text-white font-bold text-lg">Done</Text>
-              </TouchableOpacity>
-
-              {/* Date Picker */}
-              <DateTimePicker
-                value={value ? new Date(value) : new Date()}
-                mode="date"
-                display="spinner"
-                onChange={(event, selectedDate) => {
-                  if (selectedDate) handleChangeText(selectedDate.toISOString().split("T")[0]);
-                }}
-                textColor="#FFF"
-              />
+      {/* Date Picker */}
+      {showDatePicker && (
+        Platform.OS === "ios" ? (
+          <Modal
+            transparent
+            animationType="slide"
+            visible={showDatePicker}
+            onRequestClose={() => setShowDatePicker(false)}
+          >
+            <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.5)" }}>
+              <View style={{ backgroundColor: "#333", padding: 16, borderTopLeftRadius: 10, borderTopRightRadius: 10 }}>
+                {/* Done Button */}
+                <TouchableOpacity
+                  onPress={() => setShowDatePicker(false)}
+                  style={{ alignSelf: "flex-end", marginBottom: 10 }}
+                >
+                  <Text style={{ color: "#fff", fontSize: 16, fontFamily: "AvenirNext-Bold" }}>Done</Text>
+                </TouchableOpacity>
+                {/* Date Picker */}
+                <DateTimePicker
+                  value={value ? new Date(value) : new Date()}
+                  mode="date"
+                  display="spinner"
+                  onChange={handleDateChange}
+                  textColor="#FFF"
+                />
+              </View>
             </View>
-          </View>
-        </Modal>
+          </Modal>
+        ) : (
+          <DateTimePicker
+            value={value ? new Date(value) : new Date()}
+            mode="date"
+            display="default"
+            onChange={handleDateChange}
+          />
+        )
       )}
     </View>
   );
