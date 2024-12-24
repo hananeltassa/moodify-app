@@ -6,6 +6,7 @@ const commonScreenOptions = {
   headerStyle: { backgroundColor: 'black' },
   headerTintColor: 'white',
   headerBackTitleVisible: false,
+  headerTitleAlign: 'center',
   headerTitleStyle: {
     fontFamily: "AvenirNextLTProBold", 
   },
