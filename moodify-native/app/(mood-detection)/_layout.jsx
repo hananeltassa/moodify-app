@@ -33,6 +33,13 @@ export default function MoodDetectionLayout() {
         ...commonScreenOptions,
         }}
        />
+       <Stack.Screen
+        name="image-recognition"
+        options={{
+        title: 'Discover your mood',
+        ...commonScreenOptions,
+        }}
+       />
     </Stack>
   );
 }

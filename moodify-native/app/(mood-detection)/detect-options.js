@@ -43,7 +43,7 @@ export default function MoodDetection() {
             borderStyle="border border-white"
             marginTop="mt-4"
             borderWidth={0.5}
-            onPress={() => console.log("Face button pressed")}
+            onPress={() => router.push("/(mood-detection)/image-recognition")}
           />
           <CustomButton
             icon={icons.pen}
@@ -55,7 +55,7 @@ export default function MoodDetection() {
             borderStyle="border border-white"
             marginTop="mt-4"
             borderWidth={0.5}
-            onPress={() => console.log("Text button pressed")}
+            onPress={() => router.push("/(mood-detection)/text-detection")}
           />
         </View>
       </View>
