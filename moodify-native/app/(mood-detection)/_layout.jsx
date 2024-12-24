@@ -40,6 +40,13 @@ export default function MoodDetectionLayout() {
         ...commonScreenOptions,
         }}
        />
+       <Stack.Screen
+        name="voice-recognition"
+        options={{
+        title: 'Discover your mood',
+        ...commonScreenOptions,
+        }}
+       />
     </Stack>
   );
 }
