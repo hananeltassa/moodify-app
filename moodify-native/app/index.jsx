@@ -10,7 +10,7 @@ export default function SplashScreen() {
     console.log('Navigating to onboarding...');
     // Navigate to the onboarding screen after 2 seconds
     const timer = setTimeout(() => {
-    router.replace('/(mood-detection)/onboarding');
+    router.replace('/onboarding');
       }, 2000);
 
     return () => clearTimeout(timer);
