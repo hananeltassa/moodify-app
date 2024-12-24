@@ -3,6 +3,7 @@ import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from "../../components/CustomButton";
 import icons from "../../constants/icons";
+import { router } from "expo-router";
 
 export default function MoodDetection() {
   return (
@@ -30,7 +31,7 @@ export default function MoodDetection() {
             textSize="text-lg"
             marginTop="mt-4"
             borderWidth={0.5}
-            onPress={() => console.log("Voice button pressed")}
+            onPress={() => router.push("/(mood-detection)/text-detection")}
           />
           <CustomButton
             icon={icons.face}

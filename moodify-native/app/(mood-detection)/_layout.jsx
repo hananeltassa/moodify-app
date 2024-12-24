@@ -1,16 +1,38 @@
 import React from "react";
 import { Stack } from "expo-router";
+import { TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+
+const commonScreenOptions = {
+    headerStyle: { backgroundColor: 'black' },
+    headerTintColor: 'white',
+    headerBackTitleVisible: false,
+    headerTitleStyle: {
+        fontFamily: "AvenirNextLTProBold", 
+    },
+    headerLeft: () => (
+      <TouchableOpacity onPress={() => router.back('/detect-options')} style={{ marginLeft: 0 }}>
+        <Ionicons name="chevron-back" size={24} color="white" />
+      </TouchableOpacity>
+    ),
+};
 
 export default function MoodDetectionLayout() {
   return (
     <Stack>
-      {/* Define the detect-options screen */}
       <Stack.Screen
         name="detect-options"
         options={{
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="text-detection"
+        options={{
+        title: 'Discover your mood',
+        ...commonScreenOptions,
+        }}
+       />
     </Stack>
   );
 }

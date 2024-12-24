@@ -6,6 +6,9 @@ const commonScreenOptions = {
   headerStyle: { backgroundColor: 'black' },
   headerTintColor: 'white',
   headerBackTitleVisible: false,
+  headerTitleStyle: {
+    fontFamily: "AvenirNextLTProBold", 
+  },
   headerLeft: () => (
     <TouchableOpacity onPress={() => router.back('/onboarding')} style={{ marginLeft: 0 }}>
       <Ionicons name="chevron-back" size={24} color="white" />
