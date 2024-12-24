@@ -1,63 +1,132 @@
 import { useState } from "react";
-import { Modal, View, TouchableOpacity, Text, Platform } from "react-native";
+import { View, Modal, TouchableOpacity, Text, Platform } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
 const useBottomPicker = () => {
-  const [isVisible, setIsVisible] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
-  const [temporaryValue, setTemporaryValue] = useState("");
+  const [temporaryValue, setTemporaryValue] = useState(""); // Separate state for iOS display
+  const [isVisible, setIsVisible] = useState(false); // Modal visibility for iOS
 
   const showPicker = () => {
-    setTemporaryValue(selectedValue);
-    setIsVisible(true);
+    if (Platform.OS === "ios") setIsVisible(true); // Show modal for iOS
   };
-  const hidePicker = () => setIsVisible(false);
 
-  const BottomPicker = ({ options, onValueChange }) => (
-    <Modal
-      transparent
-      animationType="slide"
-      visible={isVisible}
-      onRequestClose={hidePicker}
-    >
-      <View className="flex-1 justify-end bg-opacity-80">
-        <View
-          className={`bg-gray-800 w-full py-4 rounded-t-lg ${
-            Platform.OS === "ios" ? "items-center" : "justify-center"
-          }`}
-        >
-          {/* Done Button */}
-          <TouchableOpacity
-            onPress={() => {
-              setSelectedValue(temporaryValue);
-              onValueChange(temporaryValue);
-              hidePicker();
-            }}
-            className="self-end px-6 mb-2"
+  const hidePicker = () => {
+    if (Platform.OS === "ios") {
+      setTemporaryValue(selectedValue); // Update temporary value when picker is closed
+      setIsVisible(false); // Hide modal
+    }
+  };
+
+  const BottomPicker = ({ options, onValueChange }) => {
+    return (
+      <View>
+        {Platform.OS === "ios" ? (
+          // iOS Modal Picker
+          <Modal
+            transparent
+            animationType="slide"
+            visible={isVisible}
+            onRequestClose={hidePicker}
           >
-            <Text className="text-white font-bold text-lg">Done</Text>
-          </TouchableOpacity>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "flex-end",
+                backgroundColor: "rgba(0,0,0,0.5)",
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "#000",
+                  borderTopLeftRadius: 16,
+                  borderTopRightRadius: 16,
+                  padding: 16,
+                }}
+              >
+                {/* Done Button */}
+                <TouchableOpacity
+                  onPress={() => {
+                    hidePicker();
+                    if (onValueChange) onValueChange(selectedValue); // Notify parent of final value
+                  }}
+                  style={{
+                    alignSelf: "flex-end",
+                    marginBottom: 8,
+                  }}
+                >
+                  <Text style={{ color: "#FFF", fontWeight: "bold", fontSize: 16 }}>
+                    Done
+                  </Text>
+                </TouchableOpacity>
 
-          {/* Scrollable Picker */}
-          <Picker
-            selectedValue={temporaryValue}
-            onValueChange={(itemValue) => setTemporaryValue(itemValue)}
+                {/* Picker */}
+                <Picker
+                  selectedValue={selectedValue}
+                  onValueChange={(itemValue) => setSelectedValue(itemValue)} // Update selected value
+                  style={{
+                    width: "100%",
+                    backgroundColor: "#000",
+                    color: "#FFF",
+                  }}
+                >
+                  {options.map((option) => (
+                    <Picker.Item
+                      key={option.value}
+                      label={option.label}
+                      value={option.value}
+                      style={{
+                        color: "#FFF",
+                        backgroundColor: "#000",
+                      }}
+                    />
+                  ))}
+                </Picker>
+              </View>
+            </View>
+          </Modal>
+        ) : (
+          // Android Dropdown Picker (untouched)
+          <View
             style={{
-              color: "white",
-              width: "100%",
-              backgroundColor: Platform.OS === "android" ? "transparent" : undefined,
+              borderWidth: 1,
+              borderColor: "#FFF",
+              borderRadius: 8,
+              overflow: "hidden",
+              marginVertical: 8,
             }}
           >
-            {options.map((option) => (
-              <Picker.Item key={option.value} label={option.label} value={option.value} />
-            ))}
-          </Picker>
-        </View>
+            <Picker
+              selectedValue={selectedValue}
+              onValueChange={(itemValue) => {
+                setSelectedValue(itemValue);
+                if (onValueChange) onValueChange(itemValue); // Notify parent of the change
+              }}
+              mode="dropdown" // Dropdown for Android
+              style={{
+                color: "#FFF",
+                backgroundColor: "#000",
+              }}
+            >
+              {options.map((option) => (
+                <Picker.Item
+                  key={option.value}
+                  label={option.label}
+                  value={option.value}
+                  style={{
+                    color: "#FFF",
+                    backgroundColor: "#000",
+                  }}
+                />
+              ))}
+            </Picker>
+          </View>
+        )}
       </View>
-    </Modal>
-  );
+    );
+  };
 
-  return { showPicker, selectedValue, temporaryValue, BottomPicker };
+  return { selectedValue, temporaryValue, BottomPicker, showPicker, hidePicker };
 };
 
 export default useBottomPicker;
