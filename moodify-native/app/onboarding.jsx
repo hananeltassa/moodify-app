@@ -36,16 +36,18 @@ export default function Onboarding() {
           <CustomButton
             text="Sign Up"
             backgroundColor="bg-black"
+            fontFamily="AvenirNextLTProBold"
             textColor="text-white"
             marginTop="mt-4"
             textSize="text-lg" 
-            onPress={() => router.push('/(auth)/sign-up')}
+            onPress={() => router.push('/(auth)/sign-up-gender')}
           />
           <CustomButton
             icon={icons.spotify}
             text="Continue with Spotify"
             backgroundColor="bg-transparent"
             textColor="text-white"
+            fontFamily="AvenirNextLTProBold"
             borderStyle="border border-white"
             textSize="text-lg" 
             marginTop="mt-4"
@@ -58,6 +60,7 @@ export default function Onboarding() {
             backgroundColor="bg-transparent"
             textSize="text-lg" 
             textColor="text-white"
+            fontFamily="AvenirNextLTProBold"
             borderStyle="border border-white"
             marginTop="mt-4"
             borderWidth={0.5}

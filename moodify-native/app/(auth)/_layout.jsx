@@ -44,6 +44,13 @@ export default function AuthLayout() {
           ...commonScreenOptions,
         }}
       />
+      <Stack.Screen
+        name="sign-up-gender"
+        options={{
+          title: 'Create account',
+          ...commonScreenOptions,
+        }}
+      />
     </Stack>
   );
 }

@@ -15,6 +15,7 @@ export default function CustomButton({
   marginTop = "0",
   width = "w-auto",
   containerStyle,
+  fontFamily = "AvenirNextLTProDemi", 
   onPress,
 }) {
   const classes = useCustomButton({ backgroundColor, textColor });
@@ -41,7 +42,14 @@ export default function CustomButton({
         />
       )}
       {/* Text */}
-      <Text className={`${classes.text} ${textSize} font-Avenir-Demi`}>{text}</Text>
+      <Text
+        className={`${classes.text} ${textSize}`}
+        style={{
+          fontFamily,
+        }}
+      >
+        {text}
+      </Text>
     </TouchableOpacity>
   );
 }
