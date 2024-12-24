@@ -10,7 +10,7 @@ export default function CustomButton({
   textSize = "text-base",
   borderStyle,
   borderWidth = 1,
-  padding = "py-4 px-6",
+  padding = "py-3 px-6",
   cornerRadius = "rounded-full",
   marginTop = "0",
   width = "w-auto",
@@ -41,7 +41,7 @@ export default function CustomButton({
         />
       )}
       {/* Text */}
-      <Text className={`${classes.text} ${textSize} font-Avenir-Bold`}>{text}</Text>
+      <Text className={`${classes.text} ${textSize} font-Avenir-Demi`}>{text}</Text>
     </TouchableOpacity>
   );
 }

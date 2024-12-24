@@ -39,11 +39,11 @@ export default function SignUpPassword() {
           text="Next"
           backgroundColor="bg-white"
           textColor="text-black"
-          textSize="text-sm"
+          textSize="text-base"
           marginTop="mt-8"
           width="w-38"
           borderStyle="border border-white"
-          containerStyle="mx-auto py-2 px-3"
+          containerStyle="mx-auto py-2 px-6"
           onPress={handleSubmit}
           isLoading={isSubmitting}
         />

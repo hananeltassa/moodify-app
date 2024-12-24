@@ -17,7 +17,7 @@ export default function SignInBirthdate() {
       return;
     }
 
-    setIsSubmitting(true); // Set loading state
+    setIsSubmitting(true);
 
     try {
       console.log("Birthdate submitted:", form.birthdate);
@@ -35,24 +35,23 @@ export default function SignInBirthdate() {
     <SafeAreaView className="bg-black h-full">
       <View className="w-full h-full -mt-5 px-4">
         <FormField
-          title="Enter your birthdate"
+          title="What's your date of birth?"
           value={form.birthdate}
           handleChangeText={(date) => setForm({ ...form, birthdate: date })}
-          placeholder="Select your birthdate"
+          placeholder=""
           titleSize={22}
           inputSize={16}
           type="date"
         />
-
         <CustomButton
           text="Next"
           backgroundColor="bg-white"
           textColor="text-black"
-          textSize="text-sm"
+          textSize="text-base"
           marginTop="mt-8"
           width="w-38"
           borderStyle="border border-white"
-          containerStyle="mx-auto py-2 px-3"
+          containerStyle="mx-auto py-2 px-6"
           onPress={handleSubmit}
           isLoading={isSubmitting}
         />

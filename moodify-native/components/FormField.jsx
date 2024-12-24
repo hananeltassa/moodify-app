@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, TextInput, Platform } from "react-native";
+import { View, Text, TouchableOpacity, TextInput, Platform, Modal } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-
-import { Modal } from "react-native";
 
 const FormField = ({
   title,
@@ -19,39 +17,28 @@ const FormField = ({
 
   const handleDateChange = (event, selectedDate) => {
     if (Platform.OS === "android") setShowDatePicker(false);
-    if (selectedDate) {
-      handleChangeText(selectedDate.toISOString().split("T")[0]);
-    }
+    if (selectedDate) handleChangeText(selectedDate.toISOString().split("T")[0]);
   };
 
   return (
-    <View className={`space-y-2 ml-4 mr-4 ${otherStyles}`}>
+    <View className={`space-y-2 mx-4 ${otherStyles}`}>
       {/* Title */}
       <Text
         className="text-gray-100 font-bold mb-4"
-        style={{
-          fontSize: titleSize,
-          fontFamily: "AvenirNext-Bold",
-          color: "#FFF",
-        }}
+        style={{ fontSize: titleSize, fontFamily: "AvenirNext-Bold" }}
       >
         {title}
       </Text>
 
-      {/* Input Field */}
+      {/* Input or Date Picker Trigger */}
       {type === "date" ? (
         <TouchableOpacity
-          className="border border-white w-full h-16 px-4 rounded-lg flex justify-center"
           onPress={() => setShowDatePicker(true)}
+          className="border border-white w-full h-16 px-4 rounded-lg justify-center"
         >
           <Text
-            className={`${
-              value ? "text-white" : "text-black"
-            } font-regular`}
-            style={{
-              fontSize: inputSize,
-              fontFamily: "AvenirNext-Regular",
-            }}
+            className={`${value ? "text-white" : "text-gray-400"} font-regular`}
+            style={{ fontSize: inputSize, fontFamily: "AvenirNext-Regular" }}
           >
             {value || placeholder}
           </Text>
@@ -62,51 +49,45 @@ const FormField = ({
           placeholder={placeholder}
           placeholderTextColor="#7B7B8B"
           onChangeText={handleChangeText}
-          textAlignVertical="center"
-          className="border border-white w-full h-16 px-4 rounded-lg text-white"
-          style={{
-            fontSize: inputSize,
-            fontFamily: "AvenirNext-Regular",
-            paddingVertical: 0,
-          }}
+          className="border-white border-[0.5px] w-full h-16 px-4 rounded-lg text-white"
+          style={{ fontSize: inputSize, fontFamily: "AvenirNext-Regular" }}
           secureTextEntry={title === "Password"}
           {...props}
         />
       )}
 
-    {type === "date" && (
-      <Modal
-        transparent={true}
-        animationType="slide"
-        visible={showDatePicker}
-        onRequestClose={() => setShowDatePicker(false)}
-      >
-        <View className="flex-1 justify-end items-center bg-opacity-80 " >
-          
-          <View className="bg-gray-800 w-full items-center py-4">
-            {/* Done Button */}
-            <TouchableOpacity
-              onPress={() => setShowDatePicker(false)}
-              className="mt-2 self-end px-6 "
-            >
-              <Text className="text-white font-bold text-lg">Done</Text>
-            </TouchableOpacity>
-            {/* Date */}
-            <DateTimePicker
-              value={value ? new Date(value) : new Date()}
-              mode="date"
-              display="spinner"
-              onChange={(event, selectedDate) => {
-                if (selectedDate) {
-                  handleChangeText(selectedDate.toISOString().split("T")[0]);
-                }
-              }}
-              textColor="#FFF" 
-            />
+      {/* Date Picker Modal */}
+      {type === "date" && showDatePicker && (
+        <Modal
+          transparent
+          animationType="slide"
+          visible={showDatePicker}
+          onRequestClose={() => setShowDatePicker(false)}
+        >
+          <View className="flex-1 justify-end bg-opacity-80">
+            <View className="bg-gray-800 w-full items-center py-4">
+              {/* Done Button */}
+              <TouchableOpacity
+                onPress={() => setShowDatePicker(false)}
+                className="self-end px-6 mt-2"
+              >
+                <Text className="text-white font-bold text-lg">Done</Text>
+              </TouchableOpacity>
+
+              {/* Date Picker */}
+              <DateTimePicker
+                value={value ? new Date(value) : new Date()}
+                mode="date"
+                display="spinner"
+                onChange={(event, selectedDate) => {
+                  if (selectedDate) handleChangeText(selectedDate.toISOString().split("T")[0]);
+                }}
+                textColor="#FFF"
+              />
+            </View>
           </View>
-        </View>
-      </Modal>
-    )}
+        </Modal>
+      )}
     </View>
   );
 };
