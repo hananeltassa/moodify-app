@@ -1,24 +1,24 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Alert } from "react-native";
+import { View, Text, TouchableOpacity, Alert, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from "../../components/CustomButton";
 import useBottomPicker from "../../hooks/useBottomPicker";
 import { router } from "expo-router";
 
 export default function SignUpGender() {
-  const { showPicker, selectedValue, temporaryValue, BottomPicker } = useBottomPicker();
+  const { showPicker, temporaryValue, BottomPicker } = useBottomPicker();
   const [form, setForm] = useState({ gender: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
-    if (!selectedValue) {
+    if (!form.gender) {
       Alert.alert("Error", "Please select your gender.");
       return;
     }
     setIsSubmitting(true);
 
     try {
-      console.log("Birthdate submitted:", form.gender);
+      console.log("Gender submitted:", form.gender);
       router.push("/(auth)/sign-up-name");
     } catch (error) {
       Alert.alert("Error", "An error occurred. Please try again.");
@@ -31,21 +31,28 @@ export default function SignUpGender() {
     <SafeAreaView className="h-full">
       <View className="w-full h-full -mt-5 px-4">
         {/* Title */}
-        <Text className="text-gray-100 font-bold mb-4"
-        style={{ fontSize: '20', fontFamily: "AvenirNext-Bold" }}>
+        <Text
+          className="text-gray-100 font-bold mb-4"
+          style={{ fontSize: 20, fontFamily: "AvenirNext-Bold" }}
+        >
           What's your gender?
         </Text>
 
-
-        {/* Text Field */}
-        <TouchableOpacity
-          onPress={() => showPicker()}
-          className="border border-white w-full h-16 px-4 rounded-lg justify-center"
-        >
-          <Text className={`${temporaryValue ? "text-white" : "text-gray-400"} font-Avenir-Regular`}>
-            {temporaryValue || "Select your gender"}
-          </Text>
-        </TouchableOpacity>
+        {/* iOS Text Field */}
+        {Platform.OS === "ios" && (
+          <TouchableOpacity
+            onPress={showPicker}
+            className="border border-white w-full h-16 px-4 rounded-lg justify-center"
+          >
+            <Text
+              className={`${
+                temporaryValue ? "text-white" : "text-gray-400"
+              } font-Avenir-Regular`}
+            >
+              {temporaryValue || "Select your gender"}
+            </Text>
+          </TouchableOpacity>
+        )}
 
         {/* Bottom Picker */}
         <BottomPicker
@@ -54,7 +61,9 @@ export default function SignUpGender() {
             { label: "Female", value: "Female" },
             { label: "Other", value: "Other" },
           ]}
-          onValueChange={(value) => setForm((prevForm) => ({ ...prevForm, gender: value }))}
+          onValueChange={(value) =>
+            setForm((prevForm) => ({ ...prevForm, gender: value }))
+          }
         />
 
         {/* Next Button */}
