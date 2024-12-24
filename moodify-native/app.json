@@ -14,7 +14,11 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "This app requires access to your microphone to record audio."
+      },
+      "bundleIdentifier": "com.hananeltassa.moodifynative"
     },
     "android": {
       "adaptiveIcon": {
@@ -27,6 +31,14 @@
     },
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "50b4828b-c27b-49b0-8b4d-9965ef108e21"
+      }
+    }
   }
 }

@@ -10,6 +10,7 @@ const commonScreenOptions = {
     headerTitleStyle: {
         fontFamily: "AvenirNextLTProBold", 
     },
+    headerTitleAlign: 'center',
     headerLeft: () => (
       <TouchableOpacity onPress={() => router.back('/detect-options')} style={{ marginLeft: 0 }}>
         <Ionicons name="chevron-back" size={24} color="white" />
