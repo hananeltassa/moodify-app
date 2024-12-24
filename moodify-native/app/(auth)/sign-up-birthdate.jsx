@@ -33,7 +33,7 @@ export default function SignInBirthdate() {
 
   return (
     <SafeAreaView className="bg-black h-full">
-      <View className="w-full justify-start h-full -mt-5 px-4">
+      <View className="w-full h-full -mt-5 px-4">
         <FormField
           title="Enter your birthdate"
           value={form.birthdate}
