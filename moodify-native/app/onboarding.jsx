@@ -40,7 +40,7 @@ export default function Onboarding() {
             textColor="text-white"
             marginTop="mt-4"
             textSize="text-lg" 
-            onPress={() => router.push('/(auth)/sign-up-gender')}
+            onPress={() => router.push('/(auth)/sign-up')}
           />
           <CustomButton
             icon={icons.spotify}

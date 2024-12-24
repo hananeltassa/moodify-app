@@ -21,9 +21,8 @@ export default function SignInBirthdate() {
 
     try {
       console.log("Birthdate submitted:", form.birthdate);
+      router.push("/(auth)/sign-up-gender");
 
-      // Navigate to the next screen (uncomment when ready)
-      // router.push("/(auth)/sign-up-birthdate");
     } catch (error) {
       Alert.alert("Error", "An error occurred. Please try again.");
     } finally {

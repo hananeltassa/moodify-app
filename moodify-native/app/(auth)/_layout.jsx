@@ -7,7 +7,7 @@ const commonScreenOptions = {
   headerTintColor: 'white',
   headerBackTitleVisible: false,
   headerLeft: () => (
-    <TouchableOpacity style={{ marginLeft: 0 }}>
+    <TouchableOpacity onPress={() => router.back('/onboarding')} style={{ marginLeft: 0 }}>
       <Ionicons name="chevron-back" size={24} color="white" />
     </TouchableOpacity>
   ),
@@ -46,6 +46,13 @@ export default function AuthLayout() {
       />
       <Stack.Screen
         name="sign-up-gender"
+        options={{
+          title: 'Create account',
+          ...commonScreenOptions,
+        }}
+      />
+      <Stack.Screen
+        name="sign-up-name"
         options={{
           title: 'Create account',
           ...commonScreenOptions,

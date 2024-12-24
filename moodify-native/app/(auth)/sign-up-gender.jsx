@@ -3,9 +3,10 @@ import { View, Text, TouchableOpacity, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from "../../components/CustomButton";
 import useBottomPicker from "../../hooks/useBottomPicker";
+import { router } from "expo-router";
 
 export default function SignUpGender() {
-  const { showPicker, selectedValue, BottomPicker } = useBottomPicker();
+  const { showPicker, selectedValue, temporaryValue, BottomPicker } = useBottomPicker();
   const [form, setForm] = useState({ gender: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -14,12 +15,11 @@ export default function SignUpGender() {
       Alert.alert("Error", "Please select your gender.");
       return;
     }
-
     setIsSubmitting(true);
 
     try {
-      console.log("Gender submitted:", selectedValue);
-      // router.push("/(auth)/sign-up-birthdate");
+      console.log("Birthdate submitted:", form.gender);
+      router.push("/(auth)/sign-up-name");
     } catch (error) {
       Alert.alert("Error", "An error occurred. Please try again.");
     } finally {
@@ -31,17 +31,19 @@ export default function SignUpGender() {
     <SafeAreaView className="h-full">
       <View className="w-full h-full -mt-5 px-4">
         {/* Title */}
-        <Text className="text-white font-bold text-xl mb-4">
+        <Text className="text-gray-100 font-bold mb-4"
+        style={{ fontSize: '20', fontFamily: "AvenirNext-Bold" }}>
           What's your gender?
         </Text>
+
 
         {/* Text Field */}
         <TouchableOpacity
           onPress={() => showPicker()}
           className="border border-white w-full h-16 px-4 rounded-lg justify-center"
         >
-          <Text className={`${selectedValue ? "text-white" : "text-gray-400"} font-regular`}>
-            {selectedValue || "Select your gender"}
+          <Text className={`${temporaryValue ? "text-white" : "text-gray-400"} font-Avenir-Regular`}>
+            {temporaryValue || "Select your gender"}
           </Text>
         </TouchableOpacity>
 
@@ -52,7 +54,7 @@ export default function SignUpGender() {
             { label: "Female", value: "Female" },
             { label: "Other", value: "Other" },
           ]}
-          onValueChange={(value) => setForm({ ...form, gender: value })}
+          onValueChange={(value) => setForm((prevForm) => ({ ...prevForm, gender: value }))}
         />
 
         {/* Next Button */}
