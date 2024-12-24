@@ -31,7 +31,7 @@ export default function MoodDetection() {
             textSize="text-lg"
             marginTop="mt-4"
             borderWidth={0.5}
-            onPress={() => router.push("/(mood-detection)/text-detection")}
+            onPress={() => router.push("/(mood-detection)/voice-recognition")}
           />
           <CustomButton
             icon={icons.face}
