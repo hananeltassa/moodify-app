@@ -1,9 +1,11 @@
 import { SafeAreaView, Text, View, Image } from "react-native";
 import React from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import images from "../../constants/images"; 
 import WeeklyProgress from "../../components/WeeklyProgress";
 
 export default function Home() {
+  const insets = useSafeAreaInsets(); // Get safe area insets for both Android and iOS
   const profilePic = null;
 
   const weeklyData = [
@@ -17,24 +19,34 @@ export default function Home() {
   ];
 
   return (
-    <SafeAreaView className="flex-1 bg-black">
-      <View className="left-4">
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: "black",
+        paddingTop: insets.top,
+        paddingLeft: insets.left,
+        paddingRight: insets.right,
+      }}
+    >
+      {/* Profile Picture */}
+      <View style={{ marginLeft: 16 }}>
         <Image
-          source={
-            profilePic
-              ? { uri: profilePic }
-              : images.user
-          }
-          className="w-12 h-12 rounded-full border-2 border-white"
+          source={profilePic ? { uri: profilePic } : images.user}
+          style={{
+            width: 48,
+            height: 48,
+            borderRadius: 24,
+            borderWidth: 2,
+            borderColor: "white",
+          }}
           alt="Profile Picture"
         />
       </View>
 
-      <View className="">
-        {/* WeeklyProgress Component */}
+      {/* Weekly Progress */}
+      <View style={{ marginTop: 16 }}>
         <WeeklyProgress data={weeklyData} />
       </View>
-
     </SafeAreaView>
   );
 }
