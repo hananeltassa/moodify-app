@@ -49,7 +49,7 @@ export default function RootLayout() {
           <Stack.Screen name="(mood-detection)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" options={{ title: "Not Found" }} />
         </Stack>
-        <StatusBar style="light" backgroundColor="#161622" />
+        <StatusBar style="auto" />
       </ThemeProvider>
     </PaperProvider>
   );
