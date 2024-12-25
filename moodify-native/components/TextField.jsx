@@ -1,25 +1,64 @@
 import React from "react";
-import { TextInput } from "react-native";
+import { TextInput, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
-const TextField = ({ value, placeholder, handleChangeText, inputSize, title, ...props }) => (
-  <TextInput
-    value={value}
-    placeholder={placeholder}
-    placeholderTextColor="#7B7B8B"
-    onChangeText={handleChangeText}
+const TextField = ({
+  value,
+  placeholder,
+  handleChangeText,
+  inputSize,
+  title,
+  iconName,
+  iconColor = "#7B7B8B",
+  iconSize = 24,
+  inputStyles = {},
+  borderWidth = 1,
+  ...props
+}) => (
+  <View
     style={{
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
       borderColor: "#fff",
-      borderWidth: 1,
-      height: 50,
-      paddingHorizontal: 16,
+      borderWidth,
       borderRadius: 8,
-      fontSize: inputSize,
-      fontFamily: "AvenirNextLTPro",
-      color: "#fff",
+      paddingHorizontal: 12,
+      height: 50,
+      backgroundColor: "#000",
+      ...inputStyles,
     }}
-    secureTextEntry={title === "Password"}
-    {...props}
-  />
+  >
+    {/* Conditionally Render Icon */}
+    {iconName && (
+      <Ionicons
+        name={iconName}
+        size={iconSize}
+        color={iconColor}
+        style={{
+          marginRight: 8,
+          alignSelf: "center",
+        }}
+      />
+    )}
+
+    {/* Text Input */}
+    <TextInput
+      value={value}
+      placeholder={placeholder}
+      placeholderTextColor="#7B7B8B"
+      onChangeText={handleChangeText}
+      style={{
+        flex: 1,
+        textAlignVertical: "center",
+        fontSize: inputSize,
+        fontFamily: "AvenirNextLTPro",
+        color: "#fff",
+      }}
+      secureTextEntry={title === "Password"}
+      {...props}
+    />
+  </View>
 );
 
 export default TextField;
