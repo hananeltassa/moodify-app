@@ -25,7 +25,7 @@ export default function SignUpName() {
 
   return (
     <SafeAreaView className="bg-black h-full">
-      <View className="w-full justify-start h-full px-4">
+      <View className="w-full justify-start h-full px-4 mt-4">
         {/* Form Field for Name */}
         <FormField
           title="What's your name?"

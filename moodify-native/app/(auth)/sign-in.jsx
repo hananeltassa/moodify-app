@@ -25,7 +25,6 @@ export default function SignIn() {
       const result = await getCurrentUser();
       setUser(result);
       setIsLogged(true);
-
       Alert.alert("Success", "User signed in successfully");
       router.replace("/home");
     } catch (error) {
