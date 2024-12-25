@@ -4,7 +4,6 @@ import { useRouter } from 'expo-router';
 import images from '../constants/images';
 import icons from '../constants/icons';
 import CustomButton from '../components/CustomButton';
-import { StatusBar } from 'expo-status-bar';
 
 export default function Onboarding() {
   const router = useRouter();
