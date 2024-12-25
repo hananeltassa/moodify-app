@@ -19,8 +19,8 @@ export default function Search() {
       }}
     >
       {/* Page Title */}
-      <View className="px-4 " style={{ marginBottom: 16 }}>
-        <Text className="text-white font-Avenir-Bold text-3xl mb-2 ">Search</Text>
+      <View className="px-4" style={{ marginTop: 20, marginBottom: 16}}>
+        <Text className="text-white font-Avenir-Bold text-3xl mb-2 mt-5">Search</Text>
 
 
       {/* Search Field */}
@@ -33,7 +33,7 @@ export default function Search() {
         iconName="search"
         iconColor="#7B7B8B"
       />
-            </View>
+      </View>
     </SafeAreaView>
   );
 }
