@@ -1,30 +1,38 @@
-import { Tabs, View } from 'expo-router';
+import { Tabs } from 'expo-router';
 import { Image, Platform } from 'react-native';
-
 import React from 'react';
+
 import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from 'react-native';
 
 export default function TabLayout() {
+  const colorScheme = useColorScheme(); // Detect 'light' or 'dark'
+  console.log('Detected Color Scheme:', colorScheme);
+
+  // Dynamically apply colors based on the system theme
+  const themeColors = Colors[colorScheme ?? 'light']; // Default to 'light' if undefined
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: themeColors.tint,
+        tabBarInactiveTintColor: themeColors.tabIconDefault,
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
+        tabBarStyle: {
+          backgroundColor: themeColors.background,
+          borderTopWidth: 0,
+          elevation: 0,
+          ...Platform.select({
+            ios: {
+              position: 'absolute',
+            },
+          }),
+        },
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
@@ -55,8 +63,8 @@ export default function TabLayout() {
             <Image
               source={require('../../assets/icons/library.png')}
               style={{
-                width: size ,
-                height: size ,
+                width: size,
+                height: size,
                 tintColor: color,
               }}
               resizeMode="contain"
@@ -72,8 +80,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
           tabBarShowLabel: false,
         }}
-      /> 
-
+      />
     </Tabs>
   );
 }
