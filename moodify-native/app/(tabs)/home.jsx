@@ -32,6 +32,30 @@ export default function Home() {
       subtitle: "Ruth B.",
       image: images.playlist2,
     },
+    {
+      id: "3",
+      title: "Belong Together",
+      subtitle: "Mark Ambor",
+      image: images.playlist,
+    },
+    {
+      id: "4",
+      title: "Dandelions",
+      subtitle: "Ruth B.",
+      image: images.playlist2,
+    },
+    {
+      id: "5",
+      title: "Belong Together",
+      subtitle: "Mark Ambor",
+      image: images.playlist,
+    },
+    {
+      id: "6",
+      title: "Dandelions",
+      subtitle: "Ruth B.",
+      image: images.playlist2,
+    },
   ];
   
 
