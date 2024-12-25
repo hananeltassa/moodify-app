@@ -120,7 +120,7 @@ export default function VoiceRecognition() {
         <TouchableOpacity
           onPress={() => console.log("Cancelled")}
           style={{
-            backgroundColor: "#B90039",
+            backgroundColor: "#FF6100",
             width: 64,
             height: 64,
             borderRadius: 32,
@@ -137,7 +137,7 @@ export default function VoiceRecognition() {
         <TouchableOpacity
           onPress={toggleRecording}
           style={{
-            backgroundColor: isRecording ? "#B90039" : "#1976D2",
+            backgroundColor: isRecording ? "#B90039" : "#FF6100",
             width: 80,
             height: 80,
             borderRadius: 40,

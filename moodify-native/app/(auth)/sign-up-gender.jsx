@@ -28,11 +28,11 @@ export default function SignUpGender() {
   };
 
   return (
-    <SafeAreaView className="h-full">
-      <View className="w-full h-full -mt-5 px-4">
+    <SafeAreaView className="bg-black h-full">
+      <View className="w-full h-full -mt-5 px-8">
         {/* Title */}
         <Text
-          className="text-gray-100 font-bold mb-4"
+          className="text-gray-100 font-bold"
           style={{ fontSize: 20, fontFamily: "AvenirNext-Bold" }}
         >
           What's your gender?
@@ -42,7 +42,7 @@ export default function SignUpGender() {
         {Platform.OS === "ios" && (
           <TouchableOpacity
             onPress={showPicker}
-            className="border border-white w-full h-16 px-4 rounded-lg justify-center"
+            className="border border-white w-full h-16 px-6 rounded-lg justify-center"
           >
             <Text
               className={`${

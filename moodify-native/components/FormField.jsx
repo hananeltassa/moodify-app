@@ -28,7 +28,7 @@ const FormField = ({
       <Text
         style={{
           fontSize: titleSize,
-          fontFamily: "AvenirNext-Bold",
+          fontFamily: "AvenirNextLTProBold",
           color: "#fff",
           marginBottom: 8,
         }}
@@ -52,7 +52,7 @@ const FormField = ({
           <Text
             style={{
               fontSize: inputSize,
-              fontFamily: "AvenirNext-Regular",
+              fontFamily: "AvenirNextLTPro",
               color: value ? "#fff" : "#7B7B8B",
             }}
           >
@@ -72,7 +72,7 @@ const FormField = ({
             paddingHorizontal: 16,
             borderRadius: 8,
             fontSize: inputSize,
-            fontFamily: "AvenirNext-Regular",
+            fontFamily: "AvenirNextLTPro",
             color: "#fff",
           }}
           secureTextEntry={title === "Password"}
@@ -90,13 +90,13 @@ const FormField = ({
             onRequestClose={() => setShowDatePicker(false)}
           >
             <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.5)" }}>
-              <View style={{ backgroundColor: "#333", padding: 16, borderTopLeftRadius: 10, borderTopRightRadius: 10 }}>
+              <View style={{ backgroundColor: "#333", padding: 16, alignItems: "center", borderTopLeftRadius: 10, borderTopRightRadius: 10 }}>
                 {/* Done Button */}
                 <TouchableOpacity
                   onPress={() => setShowDatePicker(false)}
                   style={{ alignSelf: "flex-end", marginBottom: 10 }}
                 >
-                  <Text style={{ color: "#fff", fontSize: 16, fontFamily: "AvenirNext-Bold" }}>Done</Text>
+                  <Text style={{ color: "#fff", fontSize: 16, fontFamily: "AvenirNextLTProBold", }}>Done</Text>
                 </TouchableOpacity>
                 {/* Date Picker */}
                 <DateTimePicker

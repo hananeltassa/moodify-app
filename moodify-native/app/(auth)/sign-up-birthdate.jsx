@@ -32,7 +32,7 @@ export default function SignInBirthdate() {
 
   return (
     <SafeAreaView className="bg-black h-full">
-      <View className="w-full h-full -mt-5 px-4">
+      <View className="w-full h-full -mt-8 px-4">
         <FormField
           title="What's your date of birth?"
           value={form.birthdate}

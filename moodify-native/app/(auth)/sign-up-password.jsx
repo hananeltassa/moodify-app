@@ -24,7 +24,7 @@ export default function SignUpPassword() {
 
   return (
     <SafeAreaView className="bg-black h-full">
-      <View className="w-full justify-start h-full -mt-5 px-4">
+      <View className="w-full justify-start h-full px-4 -mt-7">
         <FormField
           title="Create your password"
           value={form.password}

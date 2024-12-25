@@ -25,13 +25,14 @@ export default function SignUp() {
 
   return (
     <SafeAreaView className="bg-black h-full">
-      <View className="w-full justify-start h-full mt-10 px-4">
+      <View className="w-full justify-start h-full px-4 mt-6">
         <FormField
           title="What's your email?"
           value={form.email}
           handleChangeText={(email) => setForm({ ...form, email })}
           keyboardType="email-address"
           placeholder="Enter your email"
+          fontFamily="AvenirNextLTPro"
           titleSize={22}
           inputSize={16}
         />
