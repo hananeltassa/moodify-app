@@ -3,6 +3,7 @@ import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import images from "../../constants/images"; 
 import WeeklyProgress from "../../components/WeeklyProgress";
+import RecommendedMusic from "../../components/RecommendedMusic";
 
 export default function Home() {
   const insets = useSafeAreaInsets(); // Get safe area insets for both Android and iOS
@@ -17,6 +18,22 @@ export default function Home() {
     { day: "Sat", emoji: "😁" },
     { day: "Sun", emoji: "😔" },
   ];
+
+  const musicData = [
+    {
+      id: "1",
+      title: "Belong Together",
+      subtitle: "Mark Ambor",
+      image: images.playlist,
+    },
+    {
+      id: "2",
+      title: "Dandelions",
+      subtitle: "Ruth B.",
+      image: images.playlist2,
+    },
+  ];
+  
 
   return (
     <SafeAreaView
@@ -46,6 +63,10 @@ export default function Home() {
       {/* Weekly Progress */}
       <View style={{ marginTop: 16 }}>
         <WeeklyProgress data={weeklyData} />
+      </View>
+
+      <View>
+        <RecommendedMusic title="Recommended Music" data={musicData} />
       </View>
     </SafeAreaView>
   );

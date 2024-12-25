@@ -3,7 +3,7 @@ import { Text, View } from "react-native";
 
 export default function WeeklyProgress({ data }) {
   return (
-    <View className="p-4 bg-black rounded-lg mb-4">
+    <View className="p-4 bg-black">
       <Text className="text-white text-xl font-Avenir-Bold">Weekly Progress</Text>
       <View className="flex-row justify-between items-center h-24">
         {data.map((item, index) => (
