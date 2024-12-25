@@ -1,19 +1,16 @@
 import { Tabs } from 'expo-router';
 import { Image, Platform, StatusBar } from 'react-native';
 import React from 'react';
-
-import { IconSymbol } from '@/components/ui/IconSymbol';
+import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from 'react-native';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-
   const themeColors = Colors[colorScheme ?? 'light'];
 
   return (
     <>
-      {/* Dynamically set StatusBar style */}
       <StatusBar
         barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'}
         backgroundColor={themeColors.background}
@@ -21,7 +18,7 @@ export default function TabLayout() {
 
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: themeColors.tint, 
+          tabBarActiveTintColor: themeColors.tint,
           tabBarInactiveTintColor: themeColors.tabIconDefault,
           headerShown: false,
           tabBarStyle: {
@@ -30,36 +27,49 @@ export default function TabLayout() {
             elevation: 0,
             ...Platform.select({
               ios: {
-                position: 'absolute', // Positioning for iOS
+                position: 'absolute', // iOS-specific tab bar positioning
               },
             }),
           },
         }}
       >
+        {/* Home Tab */}
         <Tabs.Screen
           name="home"
           options={{
             title: 'Home',
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="home-outline" size={28} color={color} />
+            ),
             tabBarShowLabel: false,
           }}
         />
+
+        {/* Search Tab */}
         <Tabs.Screen
           name="search"
           options={{
             title: 'Search',
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="magnifyingglass" color={color} />,
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="search-outline" size={28} color={color} />
+            ),
             tabBarShowLabel: false,
           }}
         />
+
+        {/* Challenge Tab */}
         <Tabs.Screen
           name="challenge"
           options={{
             title: 'Challenge',
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="trophy.fill" color={color} />,
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="trophy-outline" size={28} color={color} />
+            ),
             tabBarShowLabel: false,
           }}
         />
+
+        {/* Library Tab */}
         <Tabs.Screen
           name="library"
           options={{
@@ -78,11 +88,15 @@ export default function TabLayout() {
             tabBarShowLabel: false,
           }}
         />
+
+        {/* Profile Tab */}
         <Tabs.Screen
           name="profile"
           options={{
             title: 'Profile',
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="person-outline" size={28} color={color} />
+            ),
             tabBarShowLabel: false,
           }}
         />
