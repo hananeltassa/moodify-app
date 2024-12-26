@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Image, Alert } from "react-native";
+import { View, Text, SafeAreaView, Alert } from "react-native";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import RadioButton from "../../components/RadioButton";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const ProfileScreen = () => {
   const [form, setForm] = useState({
@@ -10,6 +11,7 @@ const ProfileScreen = () => {
     gender: "",
     dateOfBirth: "",
   });
+  const insets = useSafeAreaInsets(); 
 
   const handleChange = (field, value) => {
     setForm((prevForm) => ({ ...prevForm, [field]: value }));
@@ -29,8 +31,17 @@ const ProfileScreen = () => {
   };
 
   return (
-    <View className="flex-1 bg-black p-4">
-
+    <SafeAreaView
+      style={{
+      flex: 1,
+      backgroundColor: "black",
+      paddingTop: insets.top,
+      paddingLeft: insets.left,
+      paddingRight: insets.right,
+      }}
+    >
+      <View className="flex-1 bg-black p-4">
+    
       {/* Name Field */}
       <FormField
         title="Name"
@@ -83,6 +94,7 @@ const ProfileScreen = () => {
         onPress={handleSave}
       />
     </View>
+    </SafeAreaView>
   );
 };
 
