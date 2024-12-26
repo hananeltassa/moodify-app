@@ -1,7 +1,10 @@
 import React from "react";
-import { View, Text, FlatList, Image } from "react-native";
+import { View, Text, FlatList, Image, TouchableOpacity} from "react-native";
+import { useRouter } from "expo-router";
 
 export default function RecommendedMusic({ data, title }) {
+  const router = useRouter();
+
   return (
     <View className="p-4 bg-black">
       {/* Title */}
@@ -14,10 +17,10 @@ export default function RecommendedMusic({ data, title }) {
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View className="w-45 border mr-4">
+          <TouchableOpacity onPress={() => router.push(`/playlist/${item.id}`)} className="w-45 border mr-4">
             {/* Playlist Image */}
             <Image source={item.image} className="w-40 h-40"/>
-            
+              
             {/* Playlist Title */}
             <Text
               className="text-white text-base font-Avenir-Bold mt-3"
@@ -33,7 +36,7 @@ export default function RecommendedMusic({ data, title }) {
             >
               {item.subtitle}
             </Text>
-          </View>
+          </TouchableOpacity>
         )}
       />
     </View>
