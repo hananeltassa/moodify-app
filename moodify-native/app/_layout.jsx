@@ -47,6 +47,7 @@ export default function RootLayout() {
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="playlist/[playlist]" options={{ headerShown: false }} />
+          <Stack.Screen name="music/[music]" options={{ headerShown: false }} />
           <Stack.Screen name="(mood-detection)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" options={{ title: "Not Found" }} />
         </Stack>
