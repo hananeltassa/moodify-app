@@ -17,7 +17,15 @@ export default function RecommendedMusic({ data, title }) {
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => router.push(`/playlist/${item.id}`)} className="w-45 border mr-4">
+          <TouchableOpacity
+            onPress={() =>
+              router.push({
+                pathname: `/playlist/${item.id}`,
+                params: { playlistName: item.title },
+              })
+            }
+            className="w-45 border mr-4"
+          >
             {/* Playlist Image */}
             <Image source={item.image} className="w-40 h-40"/>
               
