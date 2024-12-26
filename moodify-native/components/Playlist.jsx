@@ -23,7 +23,7 @@ export default function Playlist({ title, subtitle, image, onPress }) {
         <Text className="text-white text-lg font-Avenir-Bold">
           {title}
         </Text>
-        <Text className="text-gray-400 text-base mt-2">
+        <Text className="text-gray-400 text-base">
           {subtitle}
         </Text>
       </View>
