@@ -34,12 +34,19 @@ export default function SongPage() {
         />
       </View>
 
-
       {/* Song Info */}
       <View className="left-12">
         <Text className="text-white text-2xl font-Avenir-Bold">Wildest Dreams</Text>
-        <Text className="text-gray-400 text-lg">Taylor Swift</Text>
+        <Text className="text-gray-400 text-lg mb-2">Taylor Swift</Text>
+        <TouchableOpacity onPress={toggleLike}>
+          <Ionicons
+            name={isLiked ? "heart" : "heart-outline"}
+            size={32}
+            color={isLiked ? "#FF6100" : "white"}
+          />
+        </TouchableOpacity>
       </View>
+
 
     </SafeAreaView>
   );
