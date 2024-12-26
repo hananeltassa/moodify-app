@@ -48,7 +48,7 @@ export default function SongPage() {
       </View>
 
       {/* Progress Slider */}
-      <View className="mb-4 px-6">
+      <View className="mb-4 px-10">
         <Slider
           style={{ width: "100%", height: 40 }}
           minimumValue={0}
@@ -59,12 +59,24 @@ export default function SongPage() {
           value={progress}
           onValueChange={(value) => setProgress(value)}
         />
-        <View className="flex-row justify-between">
+        <View className="flex-row justify-between px-2">
           <Text className="text-white text-sm">0:38</Text>
           <Text className="text-white text-sm">1:18</Text>
         </View>
       </View>
 
+      {/* Playback Controls */}
+      <View className="flex-row items-center justify-evenly">
+        <TouchableOpacity>
+          <Ionicons name="play-skip-back" size={36} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Ionicons name="pause-circle" size={80} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Ionicons name="play-skip-forward" size={36} color="white" />
+        </TouchableOpacity>
+      </View>
 
     </SafeAreaView>
   );
