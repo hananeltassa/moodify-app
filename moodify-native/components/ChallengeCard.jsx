@@ -9,6 +9,15 @@ const ChallengeCard = ({ title, description, tags, image, onAction }) => {
         className="w-20 h-20 rounded-lg mr-4"
         resizeMode="cover"
       />
+      {/* Content */}
+      <View className="flex-1">
+        <Text className="text-white font-Avenir-Bold text-lg mb-1">{title}</Text>
+        <Text className="text-white text-sm mb-2 p-3 font-avenir-regular">{description}</Text>
+        <Text className="text-[#FFB5B5] text-xs font-avenir-regular">
+          {tags.map((tag) => `#${tag} `).join(" ")}
+        </Text>
+      </View>
+      
     </View>
   );
 };
