@@ -1,12 +1,14 @@
 import React from "react";
-import { SafeAreaView, FlatList, View, Text } from "react-native";
+import { FlatList, View, Text } from "react-native";
+import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import Playlist from "../../components/Playlist";
 import images from "../../constants/images";
 import { useRouter } from "expo-router";
 
 export default function Library() {
   const router = useRouter();
-  
+  const insets = useSafeAreaInsets();
+
   const playlists = [
     {
       id: "1",
@@ -29,29 +31,41 @@ export default function Library() {
   ];
 
   return (
-    <SafeAreaView className="flex-1 bg-black px-2">
-      <View className="px-4" style={{ marginTop: 20, marginBottom: 16}}>
-        <Text className="text-white font-Avenir-Bold text-3xl mb-2 mt-5">
-          Your Library
-        </Text>
-      <FlatList
-        data={playlists}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <Playlist
-            title={item.title}
-            subtitle={item.subtitle}
-            image={item.image}
-            onPress={() =>
-              router.push({
-                pathname: "/playlist/[playlist]",
-                params: { playlist: "some-playlist", playlistName: "Playlist Name" },
-              })
-            }
+    <SafeAreaProvider>
+      <SafeAreaView
+        style={{
+          flex: 1,
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom,
+          backgroundColor: "black",
+        }}
+      >
+        <View style={{ flex: 1, paddingHorizontal: 16 }}>
+          {/* Title */}
+          <Text className="font-Avenir-Bold text-white text-3xl mb-2">
+            Your Library
+          </Text>
+
+          {/* Playlist List */}
+          <FlatList
+            data={playlists}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <Playlist
+                title={item.title}
+                subtitle={item.subtitle}
+                image={item.image}
+                onPress={() =>
+                  router.push({
+                    pathname: "/playlist/[playlist]",
+                    params: { playlist: "some-playlist", playlistName: item.title },
+                  })
+                }
+              />
+            )}
           />
-        )}
-      />
-      </View>
-    </SafeAreaView>
+        </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
