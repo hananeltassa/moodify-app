@@ -20,18 +20,25 @@ export default function SongPage() {
           <Ionicons name="chevron-back" size={28} color="white" />
         </TouchableOpacity>
 
-        <Text className="text-white text-lg font-bold">Playlist Name</Text>
+        <Text className="text-white text-lg font-Avenir-Demi">Playlist Name</Text>
 
         <TouchableOpacity>
           <Ionicons name="ellipsis-vertical" size={24} color="white" />
         </TouchableOpacity>
       </View>
 
-      <View className="items-center my-6">
+      <View className="items-center justify-center my-16">
         <Image
           source={{ uri: "https://via.placeholder.com/300" }}
-          className="w-96 h-96 "
+          className="w-96 h-96"
         />
+      </View>
+
+
+      {/* Song Info */}
+      <View className="left-12">
+        <Text className="text-white text-2xl font-Avenir-Bold">Wildest Dreams</Text>
+        <Text className="text-gray-400 text-lg">Taylor Swift</Text>
       </View>
 
     </SafeAreaView>
