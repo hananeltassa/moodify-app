@@ -40,7 +40,17 @@ export default function ChallengeScreen() {
         Today's AI Coach Challenges <Text className="text-yellow-500">🏆</Text>
       </Text>
 
-      
+      {/* Challenge Cards */}
+      {mockChallenges.map((challenge) => (
+        <ChallengeCard
+          key={challenge.id}
+          title={challenge.title}
+          description={challenge.description}
+          tags={challenge.tags}
+          image={challenge.image}
+          onAction={() => handleChallengeAction(challenge.id)}
+        />
+      ))}
     </ScrollView>
   );
 }
