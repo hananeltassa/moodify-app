@@ -20,8 +20,8 @@ export default function RecommendedMusic({ data, title }) {
           <TouchableOpacity
             onPress={() =>
               router.push({
-                pathname: `/playlist/${item.id}`,
-                params: { playlistName: item.title },
+                pathname: "/playlist/[playlist]",
+                params: { playlist: "some-playlist", playlistName: "Playlist Name" },
               })
             }
             className="w-45 border mr-4"

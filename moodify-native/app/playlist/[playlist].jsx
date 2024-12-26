@@ -58,7 +58,13 @@ export default function Playlist() {
         title="Belong Together"
         subtitle="Mark Ambor"
         image={images.playlist}
-        onPress={() => console.log("Music item pressed")}
+        onPress={() =>
+          router.push({
+            pathname: "/music/[music]",
+            params: { music: "some-music", title: "Music Title" },
+          })
+          
+        }
         onMorePress={() => console.log("More options pressed")}
       />
     </SafeAreaView>
