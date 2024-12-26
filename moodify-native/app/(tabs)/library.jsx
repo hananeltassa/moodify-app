@@ -2,8 +2,11 @@ import React from "react";
 import { SafeAreaView, FlatList, View, Text } from "react-native";
 import Playlist from "../../components/Playlist";
 import images from "../../constants/images";
+import { useRouter } from "expo-router";
 
 export default function Library() {
+  const router = useRouter();
+  
   const playlists = [
     {
       id: "1",
@@ -29,7 +32,7 @@ export default function Library() {
     <SafeAreaView className="flex-1 bg-black px-2">
       <View className="px-4" style={{ marginTop: 20, marginBottom: 16}}>
         <Text className="text-white font-Avenir-Bold text-3xl mb-2 mt-5">
-          Search
+          Your Library
         </Text>
       <FlatList
         data={playlists}
@@ -39,7 +42,12 @@ export default function Library() {
             title={item.title}
             subtitle={item.subtitle}
             image={item.image}
-            onPress={() => console.log(`Clicked on ${item.title}`)}
+            onPress={() =>
+              router.push({
+                pathname: "/playlist/[playlist]",
+                params: { playlist: "some-playlist", playlistName: "Playlist Name" },
+              })
+            }
           />
         )}
       />
