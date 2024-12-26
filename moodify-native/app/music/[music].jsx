@@ -14,29 +14,27 @@ export default function SongPage() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-black p-4">
-      <View className="flex-row items-center justify-between mb-4">
+    <SafeAreaView style={{ flex: 1, backgroundColor: "black", margin: 0 }}>
+      {/* Header with Close Icon */}
+      <View className="flex-row items-center justify-between px-4 py-2">
         <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={28} color="white" />
+          <Ionicons name="chevron-down" size={28} color="white" />
         </TouchableOpacity>
-
-        <Text className="text-white text-lg font-Avenir-Demi">Playlist Name</Text>
-
-        <TouchableOpacity>
-          <Ionicons name="ellipsis-vertical" size={24} color="white" />
-        </TouchableOpacity>
+        <Text className="text-white text-lg font-Avenir-Demi">Now Playing</Text>
+        <View style={{ width: 28 }} />
       </View>
 
-      <View className="items-center justify-center my-16">
+      {/* Album Art */}
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Image
-          source={{ uri: "https://via.placeholder.com/300" }}
-          className="w-96 h-96"
+          source={{ uri: "https://via.placeholder.com/400" }}
+          style={{ width: 400, height: 400 }}
         />
       </View>
 
-      {/* Song Info & Like Btn*/}
-      <View className="left-12">
-        <Text className="text-white text-2xl font-Avenir-Bold">Wildest Dreams</Text>
+      {/* Song Info & Like Button */}
+      <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
+        <Text className="text-white text-2xl font-bold">Wildest Dreams</Text>
         <Text className="text-gray-400 text-lg mb-2">Taylor Swift</Text>
         <TouchableOpacity onPress={toggleLike}>
           <Ionicons
@@ -48,7 +46,7 @@ export default function SongPage() {
       </View>
 
       {/* Progress Slider */}
-      <View className="mb-4 px-10">
+      <View style={{ marginBottom: 20, paddingHorizontal: 20 }}>
         <Slider
           style={{ width: "100%", height: 40 }}
           minimumValue={0}
@@ -66,7 +64,7 @@ export default function SongPage() {
       </View>
 
       {/* Playback Controls */}
-      <View className="flex-row items-center justify-evenly">
+      <View className="flex-row items-center justify-evenly mb-10">
         <TouchableOpacity>
           <Ionicons name="play-skip-back" size={36} color="white" />
         </TouchableOpacity>
@@ -77,7 +75,6 @@ export default function SongPage() {
           <Ionicons name="play-skip-forward" size={36} color="white" />
         </TouchableOpacity>
       </View>
-
     </SafeAreaView>
   );
 }
