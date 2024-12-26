@@ -3,6 +3,7 @@ import { View, Image, Text, SafeAreaView, TouchableOpacity } from "react-native"
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { useRouter } from "expo-router";
+import images from "@/constants/images";
 
 export default function SongPage() {
   const [isLiked, setIsLiked] = useState(false);
@@ -14,7 +15,7 @@ export default function SongPage() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "black", margin: 0 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "black", margin: 10 }}>
       {/* Header with Close Icon */}
       <View className="flex-row items-center justify-between px-4 py-2">
         <TouchableOpacity onPress={() => router.back()}>
@@ -27,23 +28,32 @@ export default function SongPage() {
       {/* Album Art */}
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Image
-          source={{ uri: "https://via.placeholder.com/400" }}
+          source={{ uri: "https://via.placeholder.com/300" }}
           style={{ width: 400, height: 400 }}
         />
       </View>
 
+
       {/* Song Info & Like Button */}
       <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
-        <Text className="text-white text-2xl font-bold">Wildest Dreams</Text>
-        <Text className="text-gray-400 text-lg mb-2">Taylor Swift</Text>
-        <TouchableOpacity onPress={toggleLike}>
-          <Ionicons
-            name={isLiked ? "heart" : "heart-outline"}
-            size={32}
-            color={isLiked ? "#FF6100" : "white"}
-          />
-        </TouchableOpacity>
+        <View className="flex-row items-center justify-between">
+          {/* Song Title and Artist */}
+          <View>
+            <Text className="text-white text-2xl font-bold">Wildest Dreams</Text>
+            <Text className="text-gray-400 text-lg">Taylor Swift</Text>
+          </View>
+
+          {/* Like Button */}
+          <TouchableOpacity onPress={toggleLike}>
+            <Ionicons
+              name={isLiked ? "heart" : "heart-outline"}
+              size={32}
+              color={isLiked ? "#FF6100" : "white"}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
+
 
       {/* Progress Slider */}
       <View style={{ marginBottom: 20, paddingHorizontal: 20 }}>
