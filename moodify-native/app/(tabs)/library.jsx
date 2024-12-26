@@ -1,6 +1,6 @@
 import React from "react";
 import { SafeAreaView, FlatList, View, Text } from "react-native";
-import LibraryItem from "../../components/LibraryItem";
+import Playlist from "../../components/Playlist";
 import images from "../../constants/images";
 
 export default function Library() {
@@ -35,7 +35,7 @@ export default function Library() {
         data={playlists}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <LibraryItem
+          <Playlist
             title={item.title}
             subtitle={item.subtitle}
             image={item.image}
