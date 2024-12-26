@@ -9,7 +9,7 @@ export default function Library() {
       id: "1",
       title: "Liked Songs",
       subtitle: "Playlist • 58 songs",
-      image: images.playlist2,
+      image: images.playlist,
     },
     {
       id: "2",
@@ -26,13 +26,12 @@ export default function Library() {
   ];
 
   return (
-    <SafeAreaView className="flex-1 bg-black px-4">
+    <SafeAreaView className="flex-1 bg-black px-2">
       <View className="px-4" style={{ marginTop: 20, marginBottom: 16}}>
         <Text className="text-white font-Avenir-Bold text-3xl mb-2 mt-5">
           Search
         </Text>
       <FlatList
-        className="py-2"
         data={playlists}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (

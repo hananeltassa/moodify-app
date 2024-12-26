@@ -5,7 +5,7 @@ export default function LibraryItem({ title, subtitle, image, onPress }) {
   return (
     <TouchableOpacity
       onPress={onPress}
-      className="flex-row items-center bg-[#1E1E2E] p-5 mb-4"
+      className="flex-row items-center p-2"
     >
       {/* Thumbnail */}
       <Image
