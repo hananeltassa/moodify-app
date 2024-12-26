@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Image, Text, SafeAreaView, TouchableOpacity } from "react-native";
+import { View, Image, Text, SafeAreaView, TouchableOpacity,Platform  } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { useRouter } from "expo-router";
@@ -16,10 +16,15 @@ export default function SongPage() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black", margin: 10 }}>
+      
       {/* Header with Close Icon */}
       <View className="flex-row items-center justify-between px-4 py-2">
         <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="chevron-down" size={28} color="white" />
+          <Ionicons
+            name={Platform.OS === "ios" ? "chevron-down" : "chevron-back"}
+            size={28}
+            color="white"
+          />
         </TouchableOpacity>
         <Text className="text-white text-lg font-Avenir-Demi">Now Playing</Text>
         <View style={{ width: 28 }} />
