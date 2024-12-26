@@ -4,6 +4,7 @@ import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import RadioButton from "../../components/RadioButton";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 
 const ProfileScreen = () => {
   const [form, setForm] = useState({
@@ -33,16 +34,25 @@ const ProfileScreen = () => {
   return (
     <SafeAreaView
       style={{
-      flex: 1,
-      backgroundColor: "black",
-      paddingTop: insets.top,
-      paddingLeft: insets.left,
-      paddingRight: insets.right,
+        flex: 1,
+        backgroundColor: "black",
+        paddingTop: insets.top,
+        paddingLeft: insets.left,
+        paddingRight: insets.right,
       }}
     >
-      <View className="flex-1 bg-black p-4">
-        {/* Profile Picture */}
-        <View style={{ alignItems: "center", marginBottom: 20 }}>
+      <View className="flex-1 bg-black ">
+        {/* Profile Picture Section */}
+        <LinearGradient
+          colors={['#FF6100', '#B90039']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={{
+            alignItems: "center",
+            marginBottom: 20,
+            padding: 50,
+          }}
+        >
           <Image
             source={{ uri: "https://via.placeholder.com/150" }}
             style={{
@@ -54,9 +64,9 @@ const ProfileScreen = () => {
             }}
           />
           <TouchableOpacity style={{ marginTop: 10 }}>
-            <Text style={{ color: "#FF4081", fontWeight: "bold" }}>Change Picture</Text>
+            <Text className="font-avenir-regular text-white">Change</Text>
           </TouchableOpacity>
-        </View>
+        </LinearGradient>
     
       {/* Name Field */}
       <FormField
