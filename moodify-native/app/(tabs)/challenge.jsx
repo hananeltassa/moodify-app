@@ -33,12 +33,13 @@ export default function ChallengeScreen() {
       <SafeAreaView
         style={{
           flex: 1,
-          paddingTop: insets.top,
+          paddingTop: 10,
           paddingBottom: insets.bottom,
           backgroundColor: "black",
+          paddingHorizontal: 16
         }}
       >
-        <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
+        <ScrollView>
           {/* Title */}
           <Text className="font-Avenir-Bold text-white text-3xl mb-2">
             Challenges <Text style={{ color: "#FFD700" }}>🏆</Text>
