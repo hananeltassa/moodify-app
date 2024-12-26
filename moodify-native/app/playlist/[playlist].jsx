@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { View, Image, Text, SafeAreaView, TouchableOpacity } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import images from "@/constants/images";
 import Music from "../../components/Music";
 
 export default function Playlist() {
   const { playlist, playlistName } = useLocalSearchParams();
+  const router = useRouter();
   const [isLiked, setIsLiked] = useState(false);
 
   const toggleLike = () => {
@@ -15,6 +16,10 @@ export default function Playlist() {
 
   return (
     <SafeAreaView className="flex-1 bg-black p-4">
+      {/* Back Button */}
+      <TouchableOpacity onPress={() => router.back()} style={{ marginBottom: 16 }}>
+        <Ionicons name="chevron-back" size={28} color="white" className="ml-4" />
+      </TouchableOpacity>
 
       {/* Playlist Image */}
       <View className="items-center mb-6">
