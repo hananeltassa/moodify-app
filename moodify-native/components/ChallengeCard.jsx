@@ -17,6 +17,13 @@ const ChallengeCard = ({ title, description, tags, image, onAction }) => {
           {tags.map((tag) => `#${tag} `).join(" ")}
         </Text>
       </View>
+      {/* Action Button */}
+      <TouchableOpacity
+        onPress={onAction}
+        className="bg-primary rounded-full w-10 h-10 items-center justify-center"
+        >
+        <Text className="text-white text-xl">+</Text>
+      </TouchableOpacity>
       
     </View>
   );
