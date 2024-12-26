@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, SafeAreaView, Alert } from "react-native";
+import { View, Text, SafeAreaView, Alert, Image, TouchableOpacity} from "react-native";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import RadioButton from "../../components/RadioButton";
@@ -41,6 +41,22 @@ const ProfileScreen = () => {
       }}
     >
       <View className="flex-1 bg-black p-4">
+        {/* Profile Picture */}
+        <View style={{ alignItems: "center", marginBottom: 20 }}>
+          <Image
+            source={{ uri: "https://via.placeholder.com/150" }}
+            style={{
+              width: 100,
+              height: 100,
+              borderRadius: 50,
+              borderWidth: 2,
+              borderColor: "white",
+            }}
+          />
+          <TouchableOpacity style={{ marginTop: 10 }}>
+            <Text style={{ color: "#FF4081", fontWeight: "bold" }}>Change Picture</Text>
+          </TouchableOpacity>
+        </View>
     
       {/* Name Field */}
       <FormField
