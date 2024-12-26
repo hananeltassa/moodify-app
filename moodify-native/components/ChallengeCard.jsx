@@ -10,7 +10,7 @@ const ChallengeCard = ({ title, description, tags, image, onAction }) => {
         resizeMode="cover"
       />
       {/* Content */}
-      <View className="flex-1">
+      <View className="flex-1 pr-4">
         <Text className="text-white font-Avenir-Bold text-lg mb-1">{title}</Text>
         <Text className="text-white text-sm mb-2 font-avenir-regular">{description}</Text>
         <Text className="text-[#FFB5B5] text-xs font-avenir-regular">

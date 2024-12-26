@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, ScrollView, SafeAreaView } from "react-native";
+import { View, Text, ScrollView } from "react-native";
+import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import ChallengeCard from "../../components/ChallengeCard";
 
 const mockChallenges = [
@@ -21,38 +22,49 @@ const mockChallenges = [
 ];
 
 export default function ChallengeScreen() {
+  const insets = useSafeAreaInsets();
+
   const handleChallengeAction = (id) => {
     console.log(`Challenge ${id} action triggered`);
   };
 
   return (
-    <SafeAreaView className=" h-full">
-      <ScrollView className="flex-1 bg-black px-4 py-6">
-        {/* Title */}
-        <Text className="text-white font-bold text-3xl mb-2">
-          Challenges <Text className="text-yellow-500">🏆</Text>
-        </Text>
-        <Text className="text-gray-300 text-base mb-6">
-          Ready to conquer today's challenges, Hanan?
-        </Text>
+    <SafeAreaProvider>
+      <SafeAreaView
+        style={{
+          flex: 1,
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom,
+          backgroundColor: "black",
+        }}
+      >
+        <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
+          {/* Title */}
+          <Text className="font-Avenir-Bold text-white text-3xl mb-2">
+            Challenges <Text style={{ color: "#FFD700" }}>🏆</Text>
+          </Text>
+          <Text className="font-avenir-regular text-gray-400 text-sm mb-4">
+            Ready to conquer today's challenges, Hanan?
+          </Text>
 
-        {/* Subtitle */}
-        <Text className="text-white font-semibold text-lg mb-4">
-          Today's AI Coach Challenges <Text className="text-yellow-500">🏆</Text>
-        </Text>
+          {/* Subtitle */}
+          <Text className="font-Avenir-Bold text-white text-xl mb-4" >
+            Today's AI Coach Challenges <Text style={{ color: "#FFD700" }}>🏆</Text>
+          </Text>
 
-        {/* Challenge Cards */}
-        {mockChallenges.map((challenge) => (
-          <ChallengeCard
-            key={challenge.id}
-            title={challenge.title}
-            description={challenge.description}
-            tags={challenge.tags}
-            image={challenge.image}
-            onAction={() => handleChallengeAction(challenge.id)}
-          />
-        ))}
-      </ScrollView>
-    </SafeAreaView>
+          {/* Challenge Cards */}
+          {mockChallenges.map((challenge) => (
+            <ChallengeCard
+              key={challenge.id}
+              title={challenge.title}
+              description={challenge.description}
+              tags={challenge.tags}
+              image={challenge.image}
+              onAction={() => handleChallengeAction(challenge.id)}
+            />
+          ))}
+        </ScrollView>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
