@@ -34,7 +34,7 @@ export default function SongPage() {
         />
       </View>
 
-      {/* Song Info */}
+      {/* Song Info & Like Btn*/}
       <View className="left-12">
         <Text className="text-white text-2xl font-Avenir-Bold">Wildest Dreams</Text>
         <Text className="text-gray-400 text-lg mb-2">Taylor Swift</Text>
@@ -45,6 +45,24 @@ export default function SongPage() {
             color={isLiked ? "#FF6100" : "white"}
           />
         </TouchableOpacity>
+      </View>
+
+      {/* Progress Slider */}
+      <View className="mb-4 px-6">
+        <Slider
+          style={{ width: "100%", height: 40 }}
+          minimumValue={0}
+          maximumValue={1}
+          minimumTrackTintColor="#FF6100"
+          maximumTrackTintColor="#FFFFFF"
+          thumbTintColor="#FF6100"
+          value={progress}
+          onValueChange={(value) => setProgress(value)}
+        />
+        <View className="flex-row justify-between">
+          <Text className="text-white text-sm">0:38</Text>
+          <Text className="text-white text-sm">1:18</Text>
+        </View>
       </View>
 
 
