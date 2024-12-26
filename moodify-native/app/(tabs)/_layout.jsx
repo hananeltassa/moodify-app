@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from 'react-native';
-import MiniPlayer from '@/components/MiniPlayer'; // Adjust the path as needed
+import MiniPlayer from '@/components/MiniPlayer';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -40,12 +40,15 @@ export default function TabLayout() {
               backgroundColor: themeColors.background,
               borderTopWidth: 0,
               elevation: 0,
-              height: 70, // Adjust for the height of the MiniPlayer
+              height: 70,
               ...Platform.select({
                 ios: {
-                  position: 'absolute', // iOS-specific tab bar positioning
+                  position: 'absolute',
                 },
               }),
+            },
+            tabBarIconStyle: {
+              marginTop: 4,
             },
           }}
         >
