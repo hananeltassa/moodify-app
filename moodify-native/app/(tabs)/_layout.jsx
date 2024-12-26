@@ -40,15 +40,14 @@ export default function TabLayout() {
               backgroundColor: themeColors.background,
               borderTopWidth: 0,
               elevation: 0,
-              height: 70,
+              height: 80,
+              paddingBottom: 30, 
+              paddingTop: 10,
               ...Platform.select({
                 ios: {
                   position: 'absolute',
                 },
               }),
-            },
-            tabBarIconStyle: {
-              marginTop: 4,
             },
           }}
         >
@@ -122,7 +121,7 @@ export default function TabLayout() {
       </View>
 
       {/* MiniPlayer */}
-      <View className="absolute bottom-[70px] left-0 right-0 z-10">
+      <View className="absolute bottom-[80px] left-0 right-0 z-10">
         <MiniPlayer
           onExpand={expandPlayer}
           isPlaying={isPlaying}
