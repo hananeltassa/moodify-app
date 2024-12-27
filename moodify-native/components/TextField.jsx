@@ -29,7 +29,7 @@ const TextField = ({
         borderColor: "#fff",
         borderWidth,
         borderRadius: 8,
-        paddingHorizontal: 12,
+        paddingHorizontal: 15,
         height: 50,
         backgroundColor: "#000",
         ...inputStyles,
@@ -60,6 +60,7 @@ const TextField = ({
           fontSize: inputSize,
           fontFamily: "AvenirNextLTPro",
           color: "#fff",
+          height: "100%", 
         }}
         secureTextEntry={title === "Password"}
         {...props}
