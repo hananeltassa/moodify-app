@@ -6,6 +6,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
 import { Provider as PaperProvider } from "react-native-paper";
+import { RegistrationProvider } from "../context/RegistrationContext";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import "../global.css";
@@ -40,6 +41,7 @@ export default function RootLayout() {
 
   return (
     <PaperProvider>
+      <RegistrationProvider>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -57,6 +59,7 @@ export default function RootLayout() {
         </Stack>
         <StatusBar style="auto" />
       </ThemeProvider>
+      </RegistrationProvider>
     </PaperProvider>
   );
 }
