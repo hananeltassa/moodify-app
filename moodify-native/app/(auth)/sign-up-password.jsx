@@ -47,7 +47,7 @@ export default function SignUpPassword() {
           value={registrationData.password}
           handleChangeText={(password) => {
             updateRegistrationData("password", password);
-            setErrorMessage(""); // Clear error message when typing
+            setErrorMessage("");
           }}
           placeholder="Enter your password"
           titleSize={22}
