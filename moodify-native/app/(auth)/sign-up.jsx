@@ -32,7 +32,6 @@ export default function SignUp() {
           handleChangeText={(email) => setForm({ ...form, email })}
           keyboardType="email-address"
           placeholder="Enter your email"
-          fontFamily="AvenirNextLTPro"
           titleSize={22}
           inputSize={16}
         />
