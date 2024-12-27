@@ -19,11 +19,10 @@ export default function SignUpPassword() {
       return;
     }
 
-    // Immediately validate the password
     const isPasswordStrong = validatePassword(registrationData.password);
 
     if (!isPasswordStrong) {
-      setErrorMessage(strengthMessage); // Show the validation message
+      setErrorMessage(strengthMessage);
       return;
     }
 

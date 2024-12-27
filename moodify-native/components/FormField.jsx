@@ -17,9 +17,11 @@ const FormField = ({
   titleSize = 20,
   inputSize = 16,
   type = "text",
+  secureTextEntry = false,
   ...props
 }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [isSecure, setIsSecure] = useState(secureTextEntry);
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
@@ -58,6 +60,8 @@ const FormField = ({
             handleChangeText={handleChangeText}
             inputSize={inputSize}
             title={title}
+            secureTextEntry={isSecure}
+            toggleSecure={() => setIsSecure(!isSecure)}
             {...props}
           />
         )}

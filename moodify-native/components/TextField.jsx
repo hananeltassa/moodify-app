@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   TextInput,
   View,
   Keyboard,
   TouchableWithoutFeedback,
+  TouchableOpacity,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -18,55 +19,70 @@ const TextField = ({
   iconSize = 24,
   inputStyles = {},
   borderWidth = 1,
+  secureTextEntry = false,
   ...props
-}) => (
-  <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        borderColor: "#fff",
-        borderWidth,
-        borderRadius: 8,
-        paddingHorizontal: 15,
-        height: 50,
-        backgroundColor: "#000",
-        ...inputStyles,
-      }}
-    >
-      {/* Conditionally Render Icon */}
-      {iconName && (
-        <Ionicons
-          name={iconName}
-          size={iconSize}
-          color={iconColor}
-          style={{
-            marginRight: 8,
-            alignSelf: "center",
-          }}
-        />
-      )}
+}) => {
+  const [isSecure, setIsSecure] = useState(secureTextEntry);
 
-      {/* Text Input */}
-      <TextInput
-        value={value}
-        placeholder={placeholder}
-        placeholderTextColor="#7B7B8B"
-        onChangeText={handleChangeText}
+  const toggleSecureTextEntry = () => {
+    setIsSecure((prev) => !prev);
+  };
+
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View
         style={{
-          flex: 1,
-          textAlignVertical: "center",
-          fontSize: inputSize,
-          fontFamily: "AvenirNextLTPro",
-          color: "#fff",
-          height: "100%", 
+          flexDirection: "row",
+          alignItems: "center",
+          borderColor: "#fff",
+          borderWidth,
+          borderRadius: 8,
+          paddingHorizontal: 15,
+          height: 50,
+          backgroundColor: "#000",
+          ...inputStyles,
         }}
-        secureTextEntry={title === "Password"}
-        {...props}
-      />
-    </View>
-  </TouchableWithoutFeedback>
-);
+      >
+        {/* Optional Icon */}
+        {iconName && (
+          <Ionicons
+            name={iconName}
+            size={iconSize}
+            color={iconColor}
+            style={{ marginRight: 8 }}
+          />
+        )}
+
+        {/* Text Input Field */}
+        <TextInput
+          value={value}
+          placeholder={placeholder}
+          placeholderTextColor="#7B7B8B"
+          onChangeText={handleChangeText}
+          style={{
+            flex: 1,
+            fontSize: inputSize,
+            fontFamily: "AvenirNextLTPro",
+            color: "#fff",
+          }}
+          secureTextEntry={isSecure}
+          {...props}
+        />
+
+        {/* Password Visibility Toggle */}
+        {(title === "Password" || title === "Create your password") && (
+          <TouchableOpacity onPress={toggleSecureTextEntry}>
+            <Ionicons
+              name={isSecure ? "eye-off" : "eye"}
+              size={24}
+              color="#7B7B8B"
+              style={{ marginLeft: 8 }}
+            />
+          </TouchableOpacity>
+        )}
+      </View>
+    </TouchableWithoutFeedback>
+  );
+};
 
 export default TextField;
