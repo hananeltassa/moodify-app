@@ -10,9 +10,29 @@ export default function SignInBirthdate() {
   const { registrationData, updateRegistrationData } = useRegistration();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const isUserOver12 = (birthdate) => {
+    const today = new Date();
+    const birthDate = new Date(birthdate);
+    const age = today.getFullYear() - birthDate.getFullYear();
+
+    const hasBirthdayPassed =
+      today.getMonth() > birthDate.getMonth() ||
+      (today.getMonth() === birthDate.getMonth() &&
+        today.getDate() >= birthDate.getDate());
+
+    return hasBirthdayPassed ? age : age - 1;
+  };
+
   const handleSubmit = async () => {
     if (!registrationData.birthdate) {
       Alert.alert("Error", "Please select your birthdate.");
+      return;
+    }
+
+    const age = isUserOver12(registrationData.birthdate);
+
+    if (age < 12) {
+      Alert.alert("Error", "You must be at least 12 years old to sign up.");
       return;
     }
 
@@ -21,7 +41,6 @@ export default function SignInBirthdate() {
     try {
       console.log("Birthdate submitted:", registrationData.birthdate);
       router.push("/(auth)/sign-up-gender");
-
     } catch (error) {
       Alert.alert("Error", "An error occurred. Please try again.");
     } finally {
@@ -36,7 +55,7 @@ export default function SignInBirthdate() {
           title="What's your date of birth?"
           value={registrationData.birthdate}
           handleChangeText={(date) => updateRegistrationData("birthdate", date)}
-          placeholder=""
+          placeholder="Enter your birthdate"
           titleSize={22}
           inputSize={16}
           type="date"
