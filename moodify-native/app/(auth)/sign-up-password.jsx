@@ -4,22 +4,28 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import { router } from "expo-router";
+import { useRegistration } from "../../context/RegistrationContext";
 
 export default function SignUpPassword() {
-  const [form, setForm] = useState({
-    password: "",
-  });
+  const { registrationData, updateRegistrationData } = useRegistration();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [isSubmitting, setSubmitting] = useState(false);
-
-  const handleSubmit = async () => {
-    if (!form.password) {
+  const handleSubmit = () => {
+    if (!registrationData.password) {
       Alert.alert("Error", "Please enter your password.");
       return;
     }
-    console.log("Password submitted:", form.password);
 
-    router.push("/(auth)/sign-up-birthdate");
+    setIsSubmitting(true); // Set loading state to true
+
+    try {
+      console.log("Password submitted:", registrationData.password);
+      router.push("/(auth)/sign-up-birthdate");
+    } catch (error) {
+      Alert.alert("Error", "An error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false); // Reset loading state
+    }
   };
 
   return (
@@ -27,8 +33,8 @@ export default function SignUpPassword() {
       <View className="w-full justify-start h-full px-4 -mt-7">
         <FormField
           title="Create your password"
-          value={form.password}
-          handleChangeText={(e) => setForm({ ...form, password: e })}
+          value={registrationData.password}
+          handleChangeText={(password) => updateRegistrationData("password", password)}
           placeholder="Enter your password"
           titleSize={22}
           inputSize={16}
@@ -45,7 +51,7 @@ export default function SignUpPassword() {
           borderStyle="border border-white"
           containerStyle="mx-auto py-2 px-6"
           onPress={handleSubmit}
-          isLoading={isSubmitting}
+          isLoading={isSubmitting} // Pass the loading state
         />
       </View>
     </SafeAreaView>

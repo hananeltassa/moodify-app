@@ -3,16 +3,15 @@ import { View, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
+import { useRegistration } from "../../context/RegistrationContext";
 import { router } from "expo-router";
 
 export default function SignInBirthdate() {
-  const [form, setForm] = useState({
-    birthdate: "",
-  });
-
+  const { registrationData, updateRegistrationData } = useRegistration();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = async () => {
-    if (!form.birthdate) {
+    if (!registrationData.birthdate) {
       Alert.alert("Error", "Please select your birthdate.");
       return;
     }
@@ -20,7 +19,7 @@ export default function SignInBirthdate() {
     setIsSubmitting(true);
 
     try {
-      console.log("Birthdate submitted:", form.birthdate);
+      console.log("Birthdate submitted:", registrationData.birthdate);
       router.push("/(auth)/sign-up-gender");
 
     } catch (error) {
@@ -35,8 +34,8 @@ export default function SignInBirthdate() {
       <View className="w-full h-full -mt-8 px-4">
         <FormField
           title="What's your date of birth?"
-          value={form.birthdate}
-          handleChangeText={(date) => setForm({ ...form, birthdate: date })}
+          value={registrationData.birthdate}
+          handleChangeText={(date) => updateRegistrationData("birthdate", date)}
           placeholder=""
           titleSize={22}
           inputSize={16}

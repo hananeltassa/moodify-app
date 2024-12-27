@@ -3,23 +3,20 @@ import { SafeAreaView, View, Alert } from "react-native";
 import { router } from "expo-router";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
+import { useRegistration } from "../../context/RegistrationContext";
 
 export default function SignUp() {
-  const [form, setForm] = useState({ 
-    email: '' 
-  });
+  const { registrationData, updateRegistrationData } = useRegistration();
   
   const [isSubmitting, setSubmitting] = useState(false);
 
-  const handleSubmit = async () => {
-    if (!form.email) {
+  const handleSubmit = () => {
+    if (!registrationData.email) {
       Alert.alert("Error", "Please enter your email.");
       return;
     }
 
-    console.log("Navigating to password screen with email:", form.email);
-
-    // Navigate to the password screen
+    console.log("Email submitted:", registrationData.email);
     router.push("/(auth)/sign-up-password");
   };
 
@@ -28,10 +25,11 @@ export default function SignUp() {
       <View className="w-full justify-start h-full px-4 mt-6">
         <FormField
           title="What's your email?"
-          value={form.email}
-          handleChangeText={(email) => setForm({ ...form, email })}
+          value={registrationData.email}
+          handleChangeText={(email) => updateRegistrationData("email", email)}
           keyboardType="email-address"
           placeholder="Enter your email"
+          fontFamily="AvenirNextLTPro"
           titleSize={22}
           inputSize={16}
         />

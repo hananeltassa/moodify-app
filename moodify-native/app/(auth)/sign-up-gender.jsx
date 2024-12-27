@@ -3,22 +3,23 @@ import { View, Text, TouchableOpacity, Alert, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from "../../components/CustomButton";
 import useBottomPicker from "../../hooks/useBottomPicker";
+import { useRegistration } from "../../context/RegistrationContext";
 import { router } from "expo-router";
 
 export default function SignUpGender() {
+  const { registrationData, updateRegistrationData } = useRegistration();
   const { showPicker, temporaryValue, BottomPicker } = useBottomPicker();
-  const [form, setForm] = useState({ gender: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
-    if (!form.gender) {
+    if (!registrationData.gender) {
       Alert.alert("Error", "Please select your gender.");
       return;
     }
     setIsSubmitting(true);
 
     try {
-      console.log("Gender submitted:", form.gender);
+      console.log("Gender submitted:", registrationData.gender);
       router.push("/(auth)/sign-up-name");
     } catch (error) {
       Alert.alert("Error", "An error occurred. Please try again.");
@@ -57,13 +58,11 @@ export default function SignUpGender() {
         {/* Bottom Picker */}
         <BottomPicker
           options={[
-            { label: "Male", value: "Male" },
-            { label: "Female", value: "Female" },
-            { label: "Other", value: "Other" },
+            { label: "prefer not to say", value: "prefer not to say" },
+            { label: "male", value: "male" },
+            { label: "female", value: "female" },
           ]}
-          onValueChange={(value) =>
-            setForm((prevForm) => ({ ...prevForm, gender: value }))
-          }
+          onValueChange={(value) => updateRegistrationData("gender", value)}
         />
 
         {/* Next Button */}

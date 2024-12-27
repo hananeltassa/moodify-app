@@ -3,24 +3,30 @@ import { SafeAreaView, View, Alert } from "react-native";
 import { router } from "expo-router";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
+import { useRegistration } from "../../context/RegistrationContext";
+import { registerUser } from "../../api/authService";
 
 export default function SignUpName() {
-  const [form, setForm] = useState({ 
-    name: "" 
-  });
-
+  const { registrationData, updateRegistrationData } = useRegistration();
   const [isSubmitting, setSubmitting] = useState(false);
 
   const handleSubmit = async () => {
-    if (!form.name.trim()) {
+    if (!registrationData.name.trim()) {
       Alert.alert("Error", "Please enter your name.");
       return;
     }
 
-    console.log("Navigating to password screen with name:", form.name);
+    setSubmitting(true);
 
-    // Uncomment the following line when ready to navigate
-    // router.push("/(auth)/sign-up-password");
+    try {
+      const response = await registerUser(registrationData);
+      Alert.alert("Success", response.message);
+      router.push("/(tabs)/home");
+    } catch (error) {
+      Alert.alert("Error", "An error occurred. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -29,8 +35,8 @@ export default function SignUpName() {
         {/* Form Field for Name */}
         <FormField
           title="What's your name?"
-          value={form.name}
-          handleChangeText={(name) => setForm({ ...form, name })}
+          value={registrationData.name}
+          handleChangeText={(name) => updateRegistrationData("name", name)}
           placeholder="Enter your name"
           titleSize={22}
           inputSize={16}
