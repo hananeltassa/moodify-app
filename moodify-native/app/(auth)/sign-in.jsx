@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Link, router } from "expo-router";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
+import { loginUser } from '../../api/authService';
 
 export default function SignIn() {
   const[form,setForm]= useState({
@@ -21,12 +22,11 @@ export default function SignIn() {
     setSubmitting(true);
 
     try {
-      await signIn(form.email, form.password);
-      const result = await getCurrentUser();
-      setUser(result);
-      setIsLogged(true);
-      Alert.alert("Success", "User signed in successfully");
-      router.replace("/home");
+      const data = await loginUser( form.email, form.password);
+
+      Alert.alert("Success", data.message);
+      router.replace("/(tabs)/home");
+
     } catch (error) {
       Alert.alert("Error", error.message);
     } finally {
@@ -50,7 +50,7 @@ export default function SignIn() {
           title="Password" 
           value={form.password}
           handleChangeText={(e) =>setForm({ ...form, password: e })}
-          otherStyles="mt-6"
+          otherStyles="mt-2"
           placeholder="Enter your password"
         />
 
@@ -63,7 +63,7 @@ export default function SignIn() {
           width="w-40"
           borderStyle="border border-white"
           containerStyle="mx-auto"
-          handlePress={submit}
+          onPress={submit}
           isLoading={isSubmitting}
         />
 
