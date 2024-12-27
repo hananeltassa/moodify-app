@@ -2,7 +2,6 @@ import { useState } from "react";
 
 const usePasswordStrength = () => {
   const [strengthMessage, setStrengthMessage] = useState("");
-  const [isStrong, setIsStrong] = useState(false);
 
   const validatePassword = (password) => {
     const minLength = 8;
@@ -13,26 +12,26 @@ const usePasswordStrength = () => {
 
     if (password.length < minLength) {
       setStrengthMessage("Password must be at least 8 characters long.");
-      setIsStrong(false);
+      return false;
     } else if (!hasUppercase) {
       setStrengthMessage("Password must include at least one uppercase letter.");
-      setIsStrong(false);
+      return false;
     } else if (!hasLowercase) {
       setStrengthMessage("Password must include at least one lowercase letter.");
-      setIsStrong(false);
+      return false;
     } else if (!hasNumber) {
       setStrengthMessage("Password must include at least one number.");
-      setIsStrong(false);
+      return false;
     } else if (!hasSpecialChar) {
       setStrengthMessage("Password must include at least one special character.");
-      setIsStrong(false);
+      return false;
     } else {
       setStrengthMessage("Password is strong.");
-      setIsStrong(true);
+      return true;
     }
   };
 
-  return { validatePassword, strengthMessage, isStrong };
+  return { validatePassword, strengthMessage };
 };
 
 export default usePasswordStrength;

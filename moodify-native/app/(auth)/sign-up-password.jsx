@@ -10,19 +10,20 @@ import usePasswordStrength from "../../hooks/usePasswordStrength";
 export default function SignUpPassword() {
   const { registrationData, updateRegistrationData } = useRegistration();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { validatePassword, strengthMessage, isStrong } = usePasswordStrength();
-  const [showStrengthMessage, setShowStrengthMessage] = useState(false);
+  const { validatePassword, strengthMessage } = usePasswordStrength();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = () => {
     if (!registrationData.password) {
-      setShowStrengthMessage(true);
+      setErrorMessage("Password cannot be empty.");
       return;
     }
 
-    validatePassword(registrationData.password);
-    setShowStrengthMessage(true);
+    // Immediately validate the password
+    const isPasswordStrong = validatePassword(registrationData.password);
 
-    if (!isStrong) {
+    if (!isPasswordStrong) {
+      setErrorMessage(strengthMessage); // Show the validation message
       return;
     }
 
@@ -46,7 +47,7 @@ export default function SignUpPassword() {
           value={registrationData.password}
           handleChangeText={(password) => {
             updateRegistrationData("password", password);
-            setShowStrengthMessage(false);
+            setErrorMessage(""); // Clear error message when typing
           }}
           placeholder="Enter your password"
           titleSize={22}
@@ -54,9 +55,10 @@ export default function SignUpPassword() {
           secureTextEntry
         />
 
-        {showStrengthMessage && (
-          <Text style={{ color: isStrong ? "green" : "red", marginLeft: 15 }}>
-            {strengthMessage}
+        {/* Display the error message */}
+        {errorMessage && (
+          <Text style={{ color: "red", marginLeft: 15, marginTop: 8 }}>
+            {errorMessage}
           </Text>
         )}
 
