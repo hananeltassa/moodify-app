@@ -21,10 +21,14 @@ export const loginUser = async (email, password) =>{
 
 export const registerUser = async (userData) => {
     try {
-      console.log("Payload:", userData);
-      const response = await axios.post(`${API_URL}/register`, userData);
-      console.log("API Response:", response.data);
-      return response.data;
+        const processedData = {
+            ...userData,
+            email: userData.email.toLowerCase(),
+          };
+        console.log("Payload:", userData);
+        const response = await axios.post(`${API_URL}/register`, userData);
+        console.log("API Response:", response.data);
+        return response.data;
     } catch (error) {
       console.error("Error Details:", {
         message: error.message,
