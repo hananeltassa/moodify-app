@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { SafeAreaView, View, Alert } from "react-native";
+import { SafeAreaView, View, Text } from "react-native";
 import { router } from "expo-router";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
@@ -9,21 +9,23 @@ import { registerUser } from "../../api/authService";
 export default function SignUpName() {
   const { registrationData, updateRegistrationData } = useRegistration();
   const [isSubmitting, setSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async () => {
+    // Validate the name field
     if (!registrationData.name.trim()) {
-      Alert.alert("Error", "Please enter your name.");
+      setErrorMessage("Please enter your name.");
       return;
     }
 
+    setErrorMessage("");
     setSubmitting(true);
 
     try {
       const response = await registerUser(registrationData);
-      Alert.alert("Success", response.message);
       router.push("/(tabs)/home");
     } catch (error) {
-      Alert.alert("Error", "An error occurred. Please try again.");
+      setErrorMessage("An error occurred. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -36,11 +38,18 @@ export default function SignUpName() {
         <FormField
           title="What's your name?"
           value={registrationData.name}
-          handleChangeText={(name) => updateRegistrationData("name", name)}
+          handleChangeText={(name) => {
+            updateRegistrationData("name", name);
+            setErrorMessage("");
+          }}
           placeholder="Enter your name"
           titleSize={22}
           inputSize={16}
         />
+        {/* Error Message */}
+        {errorMessage ? (
+          <Text className="text-red-500 text-sm mt-2 ml-5">{errorMessage}</Text>
+        ) : null}
 
         {/* Next Button */}
         <CustomButton

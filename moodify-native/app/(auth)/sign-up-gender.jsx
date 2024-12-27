@@ -30,10 +30,10 @@ export default function SignUpGender() {
 
   return (
     <SafeAreaView className="bg-black h-full">
-      <View className="w-full h-full -mt-5 px-8">
+      <View className="w-full h-full -mt-8 px-8">
         {/* Title */}
         <Text
-          className="text-gray-100 font-bold"
+          className="text-gray-100 font-bold mb-2"
           style={{ fontSize: 20, fontFamily: "AvenirNext-Bold" }}
         >
           What's your gender?
