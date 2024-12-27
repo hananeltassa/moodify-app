@@ -1,23 +1,38 @@
 import React, { useState } from "react";
-import { SafeAreaView, View, Alert } from "react-native";
+import { SafeAreaView, View, Text } from "react-native";
 import { router } from "expo-router";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import { useRegistration } from "../../context/RegistrationContext";
+import useEmailValidation from "../../hooks/useEmailValidation";
 
 export default function SignUp() {
   const { registrationData, updateRegistrationData } = useRegistration();
-  
+  const { validateEmail, validationMessage } = useEmailValidation();
   const [isSubmitting, setSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = () => {
-    if (!registrationData.email) {
-      Alert.alert("Error", "Please enter your email.");
+    const processedEmail = registrationData.email.toLowerCase(); // Convert email to lowercase
+
+    if (!validateEmail(processedEmail)) {
+      setErrorMessage(validationMessage); // Set validation message if invalid
       return;
     }
 
-    console.log("Email submitted:", registrationData.email);
-    router.push("/(auth)/sign-up-password");
+    // Update the registration data with the processed email
+    updateRegistrationData("email", processedEmail);
+
+    setSubmitting(true);
+
+    try {
+      console.log("Email submitted:", processedEmail);
+      router.push("/(auth)/sign-up-password");
+    } catch (error) {
+      console.error("Error during submission:", error);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -26,13 +41,23 @@ export default function SignUp() {
         <FormField
           title="What's your email?"
           value={registrationData.email}
-          handleChangeText={(email) => updateRegistrationData("email", email)}
+          handleChangeText={(email) => {
+            updateRegistrationData("email", email);
+            setErrorMessage("");
+          }}
           keyboardType="email-address"
           placeholder="Enter your email"
           fontFamily="AvenirNextLTPro"
           titleSize={22}
           inputSize={16}
         />
+
+        {/* Display validation message on press Next */}
+        {errorMessage && (
+          <Text style={{ color: "red", marginLeft: 15, marginTop: 8 }}>
+            {errorMessage}
+          </Text>
+        )}
 
         <CustomButton
           text="Next"
