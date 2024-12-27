@@ -17,6 +17,7 @@ export default function CustomButton({
   containerStyle,
   fontFamily = "AvenirNextLTProDemi", 
   onPress,
+  isDisabled = false,
 }) {
   const classes = useCustomButton({ backgroundColor, textColor });
 
@@ -25,7 +26,7 @@ export default function CustomButton({
       className={`${classes.button} ${borderStyle} ${padding} ${cornerRadius} ${marginTop} ${width} ${containerStyle} flex-row items-center justify-center`}
       onPress={() => {
         console.log("CustomButton pressed");
-        onPress && onPress();
+        if (onPress && !isDisabled) onPress();
       }}
       activeOpacity={0.8}
       style={{
