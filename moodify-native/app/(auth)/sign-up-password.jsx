@@ -1,30 +1,40 @@
 import React, { useState } from "react";
-import { View, Alert } from "react-native";
+import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import { router } from "expo-router";
 import { useRegistration } from "../../context/RegistrationContext";
+import usePasswordStrength from "../../hooks/usePasswordStrength";
 
 export default function SignUpPassword() {
   const { registrationData, updateRegistrationData } = useRegistration();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { validatePassword, strengthMessage, isStrong } = usePasswordStrength();
+  const [showStrengthMessage, setShowStrengthMessage] = useState(false);
 
   const handleSubmit = () => {
     if (!registrationData.password) {
-      Alert.alert("Error", "Please enter your password.");
+      setShowStrengthMessage(true);
       return;
     }
 
-    setIsSubmitting(true); // Set loading state to true
+    validatePassword(registrationData.password);
+    setShowStrengthMessage(true);
+
+    if (!isStrong) {
+      return;
+    }
+
+    setIsSubmitting(true);
 
     try {
       console.log("Password submitted:", registrationData.password);
       router.push("/(auth)/sign-up-birthdate");
     } catch (error) {
-      Alert.alert("Error", "An error occurred. Please try again.");
+      console.error("Error during submission:", error);
     } finally {
-      setIsSubmitting(false); // Reset loading state
+      setIsSubmitting(false);
     }
   };
 
@@ -34,12 +44,21 @@ export default function SignUpPassword() {
         <FormField
           title="Create your password"
           value={registrationData.password}
-          handleChangeText={(password) => updateRegistrationData("password", password)}
+          handleChangeText={(password) => {
+            updateRegistrationData("password", password);
+            setShowStrengthMessage(false);
+          }}
           placeholder="Enter your password"
           titleSize={22}
           inputSize={16}
           secureTextEntry
         />
+
+        {showStrengthMessage && (
+          <Text style={{ color: isStrong ? "green" : "red", marginLeft: 15 }}>
+            {strengthMessage}
+          </Text>
+        )}
 
         <CustomButton
           text="Next"
@@ -51,7 +70,7 @@ export default function SignUpPassword() {
           borderStyle="border border-white"
           containerStyle="mx-auto py-2 px-6"
           onPress={handleSubmit}
-          isLoading={isSubmitting} // Pass the loading state
+          isLoading={isSubmitting}
         />
       </View>
     </SafeAreaView>
