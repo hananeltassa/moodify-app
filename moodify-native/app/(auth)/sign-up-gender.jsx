@@ -58,9 +58,9 @@ export default function SignUpGender() {
         {/* Bottom Picker */}
         <BottomPicker
           options={[
-            { label: "prefer not to say", value: "prefer not to say" },
-            { label: "male", value: "male" },
-            { label: "female", value: "female" },
+            { label: "Prefer not to say", value: "prefer not to say" },
+            { label: "Male", value: "male" },
+            { label: "Female", value: "female" },
           ]}
           onValueChange={(value) => updateRegistrationData("gender", value)}
         />
