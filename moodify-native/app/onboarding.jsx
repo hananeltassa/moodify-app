@@ -4,9 +4,22 @@ import { useRouter } from 'expo-router';
 import images from '../constants/images';
 import icons from '../constants/icons';
 import CustomButton from '../components/CustomButton';
+import { spotifyAuth } from '../api/spotifyAuth';
 
 export default function Onboarding() {
   const router = useRouter();
+
+  const handleSpotifyLogin = async() =>{
+    try {
+      const result = await spotifyAuth();
+      if(result){
+        router.push("/home");
+      }
+    } catch (error) {
+      console.error("Error during Spotify login:", error);
+    }
+  }
+
   return (
     <ImageBackground
       source={images.background}
@@ -21,7 +34,7 @@ export default function Onboarding() {
         <View className="flex-1 w-full flex justify-center items-center px-4 pt-40 mt-70">
           <Image
             source={images.logoSmall}
-            className="w-[100px] h-[64px] mb-8 "
+            className="w-[100px] h-[64px] mb-8"
             resizeMode="contain"
           />
           <Text className="text-4xl text-white font-Avenir-Bold text-center leading-relaxed">
@@ -38,7 +51,7 @@ export default function Onboarding() {
             fontFamily="AvenirNextLTProBold"
             textColor="text-white"
             marginTop="mt-4"
-            textSize="text-lg" 
+            textSize="text-lg"
             onPress={() => router.push('/(auth)/sign-up')}
           />
           <CustomButton
@@ -48,22 +61,22 @@ export default function Onboarding() {
             textColor="text-white"
             fontFamily="AvenirNextLTProBold"
             borderStyle="border border-white"
-            textSize="text-lg" 
+            textSize="text-lg"
             marginTop="mt-4"
             borderWidth={0.5}
-            onPress={() => console.log('Spotify button pressed')}
+            onPress={handleSpotifyLogin} // Spotify login handler
           />
           <CustomButton
             icon={icons.google}
             text="Continue with Google"
             backgroundColor="bg-transparent"
-            textSize="text-lg" 
+            textSize="text-lg"
             textColor="text-white"
             fontFamily="AvenirNextLTProBold"
             borderStyle="border border-white"
             marginTop="mt-4"
             borderWidth={0.5}
-            onPress={() => console.log('Google button pressed')}
+            onPress={() => console.log("Google button pressed")}
           />
 
           {/* Log In Link */}
@@ -75,6 +88,5 @@ export default function Onboarding() {
         </View>
       </SafeAreaView>
     </ImageBackground>
-    
   );
 }
