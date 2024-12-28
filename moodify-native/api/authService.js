@@ -5,7 +5,9 @@ const API_URL="http://11.11.11.12:8080/api/users/";
 export const loginUser = async (email, password) =>{
     try{
         console.log("Payload:", { email, password });
-        const response = await axios.post(`${API_URL}/login`, { email, password });
+        const response = await axios.post(`${API_URL}/login`, 
+          { email, password }
+        );
         console.log("API Response:", response.data);
         return response.data;
     } catch (error){
@@ -26,7 +28,9 @@ export const registerUser = async (userData) => {
             email: userData.email.toLowerCase(),
           };
         console.log("Payload:", userData);
-        const response = await axios.post(`${API_URL}/register`, userData);
+        const response = await axios.post(`${API_URL}/register`, 
+          userData
+        );
         console.log("API Response:", response.data);
         return response.data;
     } catch (error) {
