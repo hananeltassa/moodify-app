@@ -23,7 +23,7 @@
     "**/*.js",
     "**/*.jsx",
     "nativewind-env.d.ts"
-  ],
+, "app.co"  ],
   "exclude": [
     "node_modules"
   ],
