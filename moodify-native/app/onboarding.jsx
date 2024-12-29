@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, View, ImageBackground, Image, Text, TouchableOpacity } from 'react-native';
+import { SafeAreaView, View, ImageBackground, Image, Text, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import images from '../constants/images';
 import icons from '../constants/icons';
@@ -9,16 +9,21 @@ import { spotifyAuth } from '../api/spotifyAuth';
 export default function Onboarding() {
   const router = useRouter();
 
-  const handleSpotifyLogin = async() =>{
+  const handleSpotifyLogin = async () => {
     try {
       const result = await spotifyAuth();
-      if(result){
-        router.push("/home");
+      if (result) {
+        console.log('User successfully logged in. Navigating to Home...');
+        router.replace('/home');
+      } else {
+        console.log('Spotify login was canceled.');
+        Alert.alert('Login Canceled', 'Spotify login was canceled by the user.');
       }
     } catch (error) {
-      console.error("Error during Spotify login:", error);
+      console.error('Error during Spotify login:', error);
+      Alert.alert('Login Failed', 'Something went wrong during Spotify login. Please try again.');
     }
-  }
+  };
 
   return (
     <ImageBackground
@@ -64,19 +69,7 @@ export default function Onboarding() {
             textSize="text-lg"
             marginTop="mt-4"
             borderWidth={0.5}
-            onPress={handleSpotifyLogin} // Spotify login handler
-          />
-          <CustomButton
-            icon={icons.google}
-            text="Continue with Google"
-            backgroundColor="bg-transparent"
-            textSize="text-lg"
-            textColor="text-white"
-            fontFamily="AvenirNextLTProBold"
-            borderStyle="border border-white"
-            marginTop="mt-4"
-            borderWidth={0.5}
-            onPress={() => console.log("Google button pressed")}
+            onPress={handleSpotifyLogin}
           />
 
           {/* Log In Link */}
