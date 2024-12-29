@@ -13,7 +13,7 @@ export const spotifyAuth = async () => {
 
     const request = new AuthSession.AuthRequest({
       clientId: SPOTIFY_CLIENT_ID,
-      scopes: ['user-read-email', 'user-read-private'],
+      scopes: ['user-read-email', 'user-read-private', 'user-modify-playback-state', 'user-library-read', 'user-read-playback-state', ],
       redirectUri,
       responseType: 'code',
       usePKCE: true,
