@@ -1,5 +1,6 @@
+import axios from 'axios';
 import * as AuthSession from 'expo-auth-session';
-import { SPOTIFY_CLIENT_ID, SPOTIFY_AUTH_ENDPOINT } from '@env';
+import { SPOTIFY_CLIENT_ID, SPOTIFY_AUTH_ENDPOINT, SPOTIFY_TOKEN_ENDPOINT, BACKEND_BASE_URL } from '@env';
 
 export const spotifyAuth = async () => {
   try {
@@ -7,7 +8,7 @@ export const spotifyAuth = async () => {
 
     const discovery = {
       authorizationEndpoint: SPOTIFY_AUTH_ENDPOINT,
-      tokenEndpoint: 'https://accounts.spotify.com/api/token',
+      tokenEndpoint: SPOTIFY_TOKEN_ENDPOINT
     };
 
     const request = new AuthSession.AuthRequest({
@@ -27,19 +28,14 @@ export const spotifyAuth = async () => {
 
       const codeVerifier = request.codeVerifier;
 
-      const backendResponse = await fetch('http://11.11.11.12:8080/api/users/spotify/callback', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, redirectUri, codeVerifier }),
+      const backendResponse = await axios.post(`${BACKEND_BASE_URL}/api/users/spotify/callback`, {
+        code,
+        redirectUri,
+        codeVerifier,
       });
 
-      if (!backendResponse.ok) {
-        throw new Error(`Failed to exchange authorization code with backend: ${await backendResponse.text()}`);
-      }
-
-      const tokens = await backendResponse.json();
-      console.log('Tokens received from backend:', tokens);
-      return tokens;
+      console.log('Tokens received from backend:', backendResponse.data);
+      return backendResponse.data;
     } else {
       console.log('Spotify login canceled or failed:', result);
       return null;
