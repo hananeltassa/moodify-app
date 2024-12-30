@@ -1,18 +1,24 @@
 import React, { useState } from "react";
-import { View, Text, SafeAreaView, Alert, Image, TouchableOpacity} from "react-native";
+import { View, Text, SafeAreaView, Alert, Image, TouchableOpacity } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import RadioButton from "../../components/RadioButton";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
+import { setUser } from "../../redux/slices/userSlice";
 
 const ProfileScreen = () => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
+
   const [form, setForm] = useState({
-    name: "",
-    gender: "",
-    dateOfBirth: "",
+    name: user?.name || "",
+    gender: user?.gender || "",
+    dateOfBirth: user?.dateOfBirth || "",
   });
-  const insets = useSafeAreaInsets(); 
+
+  const insets = useSafeAreaInsets();
 
   const handleChange = (field, value) => {
     setForm((prevForm) => ({ ...prevForm, [field]: value }));
@@ -26,9 +32,18 @@ const ProfileScreen = () => {
       return;
     }
 
+    // Save updated profile data to Redux
+    dispatch(
+      setUser({
+        ...user,
+        name,
+        gender,
+        dateOfBirth,
+      })
+    );
+
     Alert.alert("Success", "Profile saved successfully!");
     console.log("Saved Profile:", form);
-
   };
 
   return (
@@ -54,7 +69,7 @@ const ProfileScreen = () => {
           }}
         >
           <Image
-            source={{ uri: "https://via.placeholder.com/150" }}
+            source={{ uri: user?.profilePic || "https://via.placeholder.com/150" }}
             style={{
               width: 100,
               height: 100,
@@ -67,59 +82,58 @@ const ProfileScreen = () => {
             <Text className="font-avenir-regular text-white">Change</Text>
           </TouchableOpacity>
         </LinearGradient>
-    
-      {/* Name Field */}
-      <FormField
-        title="Name"
-        value={form.name}
-        placeholder="Enter your name"
-        handleChangeText={(value) => handleChange("name", value)}
-        otherStyles="mb-4"
-      />
 
-      {/* Gender Selection */}
-      <Text className="text-white text-2xl font-Avenir-Bold mb-2 p-4">Gender</Text>
-      <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-        <RadioButton
-          label="Female"
-          value="Female"
-          selectedValue={form.gender}
-          onPress={(value) => handleChange("gender", value)}
-          color="#FF4081"
+        {/* Name Field */}
+        <FormField
+          title="Name"
+          value={form.name}
+          placeholder="Enter your name"
+          handleChangeText={(value) => handleChange("name", value)}
+          otherStyles="mb-4"
         />
-        <RadioButton
-          label="Male"
-          value="Male"
-          selectedValue={form.gender}
-          onPress={(value) => handleChange("gender", value)}
-          color="#4081FF"
+
+        {/* Gender Selection */}
+        <Text className="text-white text-2xl font-Avenir-Bold mb-2 p-4">Gender</Text>
+        <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+          <RadioButton
+            label="Female"
+            value="Female"
+            selectedValue={form.gender}
+            onPress={(value) => handleChange("gender", value)}
+            color="#FF4081"
+          />
+          <RadioButton
+            label="Male"
+            value="Male"
+            selectedValue={form.gender}
+            onPress={(value) => handleChange("gender", value)}
+            color="#4081FF"
+          />
+        </View>
+
+        {/* Date of Birth Field */}
+        <FormField
+          title="Date of birth"
+          type="date"
+          value={form.dateOfBirth}
+          placeholder="Select your date of birth"
+          handleChangeText={(value) => handleChange("dateOfBirth", value)}
+          otherStyles="mb-4"
+        />
+
+        {/* Save Button */}
+        <CustomButton
+          text="Save"
+          backgroundColor="bg-white"
+          textColor="text-black"
+          textSize="text-base"
+          marginTop="mt-8"
+          width="w-38"
+          borderStyle="border border-white"
+          containerStyle="mx-auto py-2 px-6"
+          onPress={handleSave}
         />
       </View>
-
-
-      {/* Date of Birth Field */}
-      <FormField
-        title="Date of birth"
-        type="date"
-        value={form.dateOfBirth}
-        placeholder="Select your date of birth"
-        handleChangeText={(value) => handleChange("dateOfBirth", value)}
-        otherStyles="mb-4"
-      />
-
-      {/* Save Button */}
-      <CustomButton
-        text="Save"
-        backgroundColor="bg-white"
-        textColor="text-black"
-        textSize="text-base"
-        marginTop="mt-8"
-        width="w-38"
-        borderStyle="border border-white"
-        containerStyle="mx-auto py-2 px-6"
-        onPress={handleSave}
-      />
-    </View>
     </SafeAreaView>
   );
 };
