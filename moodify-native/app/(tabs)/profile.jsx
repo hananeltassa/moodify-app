@@ -12,12 +12,12 @@ const ProfileScreen = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
 
-  console.log("User State in ProfileScreen:", user);
+  //console.log("User State in ProfileScreen:", user);
 
   const [form, setForm] = useState({
     name: user?.name || "",
     gender: user?.gender || "",
-    dateOfBirth: user?.birthday || "",
+    dateOfBirth: user?.dateOfBirth || "",
   });
 
   const insets = useSafeAreaInsets();
