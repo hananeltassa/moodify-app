@@ -10,8 +10,10 @@ import { LinearGradient } from "expo-linear-gradient";
 import { setUser } from "../../redux/slices/userSlice";
 import Icon from "react-native-vector-icons/Feather";
 import images from "../../constants/images";
+import { updateUserProfile } from "../../api/user"; 
 
 export default function ProfileScreen (){
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
 
@@ -28,26 +30,32 @@ export default function ProfileScreen (){
     setForm((prevForm) => ({ ...prevForm, [field]: value }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const { name, gender, dateOfBirth, profilePic } = form;
 
-    if (!name || !gender || !dateOfBirth) {
-      Alert.alert("Error", "All fields are required.");
+    if (!name && !gender && !dateOfBirth) {
+      Alert.alert("Error", "At least one field is required.");
       return;
     }
 
-    dispatch(
-      setUser({
-        ...user,
-        name,
-        gender,
-        dateOfBirth,
-        profilePic,
-      })
-    );
-
-    Alert.alert("Success", "Profile saved successfully!");
-    console.log("Saved Profile:", form);
+    const updatedProfile = {
+      name,
+      gender,
+      profile_picture: profilePic,
+      birthday: dateOfBirth,
+    };
+    
+    try {
+      setLoading(true);
+      const updatedUser = await updateUserProfile(updatedProfile);
+      dispatch(setUser(updatedUser));
+      Alert.alert("Success", "Profile updated successfully!");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      Alert.alert("Error", error.message || "Failed to update profile.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlePickImage = async () => {
