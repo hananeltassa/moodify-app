@@ -35,13 +35,16 @@ export default function Library() {
       <SafeAreaView
         style={{
           flex: 1,
-          paddingTop: 10,
           paddingBottom: insets.bottom,
           backgroundColor: "black",
-          paddingHorizontal: 16
         }}
-      > 
-        <View>
+      >
+        <View
+          style={{
+            flex: 1,
+            paddingHorizontal: 16,
+          }}
+        >
           {/* Title */}
           <Text className="font-Avenir-Bold text-white text-3xl mb-2">
             Your Library
@@ -50,6 +53,7 @@ export default function Library() {
           {/* Playlist List */}
           <FlatList
             data={playlists}
+            className="pt-4"
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <Playlist
@@ -64,6 +68,10 @@ export default function Library() {
                 }
               />
             )}
+            contentContainerStyle={{
+              flexGrow: 1,
+            }}
+            showsVerticalScrollIndicator={false}
           />
         </View>
       </SafeAreaView>
