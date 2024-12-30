@@ -8,8 +8,8 @@ import RadioButton from "../../components/RadioButton";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { setUser } from "../../redux/slices/userSlice";
-import Icon from "react-native-vector-icons/Feather"; 
-
+import Icon from "react-native-vector-icons/Feather";
+import images from "../../constants/images";
 
 const ProfileScreen = () => {
   const dispatch = useDispatch();
@@ -19,7 +19,7 @@ const ProfileScreen = () => {
     name: user?.name || "",
     gender: user?.gender || "",
     dateOfBirth: user?.dateOfBirth || "",
-    profilePic: user?.profilePic || "https://via.placeholder.com/150",
+    profilePic: user?.profilePic || images.user,
   });
 
   const insets = useSafeAreaInsets();
@@ -104,13 +104,17 @@ const ProfileScreen = () => {
             alignItems: "center",
             marginBottom: 20,
             padding: 50,
-            position: "relative"
+            position: "relative",
           }}
         >
           <Image
-            source={{uri: form.profilePic}}
+            source={
+              typeof form.profilePic === "string" 
+                ? { uri: form.profilePic }
+                : form.profilePic
+            }
             style={{
-              width:100,
+              width: 100,
               height: 100,
               borderRadius: 50,
               borderWidth: 2,
@@ -131,7 +135,7 @@ const ProfileScreen = () => {
           >
             <Icon name="edit-2" size={16} color="#FF6100" />
           </TouchableOpacity>
-    </LinearGradient>
+        </LinearGradient>
 
         {/* Name Field */}
         <FormField
