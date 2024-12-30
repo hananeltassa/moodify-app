@@ -1,9 +1,10 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
+import { Asset } from "expo-asset";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "react-native-reanimated";
 import { Provider as PaperProvider } from "react-native-paper";
 import { RegistrationProvider } from "../context/RegistrationContext";
@@ -13,11 +14,13 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import store from "../redux/store";
 import "../global.css";
 
-// Prevent splash screen from auto-hiding
+import images from "../constants/images";
+
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const [isAssetsLoaded, setAssetsLoaded] = useState(false);
 
   const [fontsLoaded, fontLoadingError] = useFonts({
     AvenirNextLTPro: require("../assets/fonts/AvenirNextLTPro-Regular.otf"),
@@ -26,18 +29,38 @@ export default function RootLayout() {
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
+  // Function to preload images
+  const preloadImages = async () => {
+    const imageAssets = Object.values(images).map((image) =>
+      Asset.fromModule(image).downloadAsync()
+    );
+    await Promise.all(imageAssets);
+  };
+
+  // Load all assets (fonts and images)
   useEffect(() => {
-    if (fontLoadingError) {
-      console.error("Font loading error:", fontLoadingError);
-      return;
-    }
-    if (fontsLoaded) {
-      SplashScreen.hideAsync();
-    }
+    const loadAssets = async () => {
+      try {
+        if (fontLoadingError) {
+          console.error("Font loading error:", fontLoadingError);
+          return;
+        }
+
+        await preloadImages();
+
+        if (fontsLoaded) {
+          setAssetsLoaded(true);
+          SplashScreen.hideAsync();
+        }
+      } catch (error) {
+        console.error("Error loading assets:", error);
+      }
+    };
+
+    loadAssets();
   }, [fontsLoaded, fontLoadingError]);
 
-  // Wait for fonts to load before rendering
-  if (!fontsLoaded && !fontLoadingError) {
+  if (!isAssetsLoaded) {
     return null;
   }
 
