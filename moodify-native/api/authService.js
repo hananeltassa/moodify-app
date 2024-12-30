@@ -1,4 +1,5 @@
 import axios from "axios";
+import { saveToken } from '../utils/secureStore';
 
 const API_URL="http://11.11.11.12:8080/api/users/";
 
@@ -9,6 +10,8 @@ export const loginUser = async (email, password) =>{
           { email, password }
         );
         console.log("API Response:", response.data);
+
+        await saveToken('jwtToken', response.data.token);
         return response.data;
     } catch (error){
         // console.error("Error Details:", {
