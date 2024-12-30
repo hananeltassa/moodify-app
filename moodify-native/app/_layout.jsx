@@ -16,12 +16,14 @@ import "../global.css";
 
 import images from "../constants/images";
 
+// Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [isAssetsLoaded, setAssetsLoaded] = useState(false);
 
+  // Load custom fonts
   const [fontsLoaded, fontLoadingError] = useFonts({
     AvenirNextLTPro: require("../assets/fonts/AvenirNextLTPro-Regular.otf"),
     AvenirNextLTProBold: require("../assets/fonts/AvenirNextLTPro-Bold.otf"),
@@ -29,15 +31,21 @@ export default function RootLayout() {
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
-  // Function to preload images
   const preloadImages = async () => {
-    const imageAssets = Object.values(images).map((image) =>
+    const specificImages = [
+      images.logo,
+      images.background,
+      images.logoWhite,
+    ];
+
+    const imageAssets = specificImages.map((image) =>
       Asset.fromModule(image).downloadAsync()
     );
+
     await Promise.all(imageAssets);
   };
 
-  // Load all assets (fonts and images)
+  // Load all assets (fonts and selected images)
   useEffect(() => {
     const loadAssets = async () => {
       try {
