@@ -2,6 +2,7 @@ import axios from 'axios';
 import * as AuthSession from 'expo-auth-session';
 import { saveToken } from '../utils/secureStore';
 import { SPOTIFY_CLIENT_ID, SPOTIFY_AUTH_ENDPOINT, SPOTIFY_TOKEN_ENDPOINT, BACKEND_BASE_URL } from '@env';
+import { getToken } from '../utils/secureStore';
 
 export const spotifyAuth = async () => {
   try {
@@ -41,7 +42,20 @@ export const spotifyAuth = async () => {
       });
 
       console.log('Tokens received from backend:', backendResponse.data);
+
       await saveToken('jwtToken', backendResponse.data.token);
+
+      //test
+      const testGetToken = async () => {
+        const token = await getToken('jwtToken');
+        if (token) {
+          console.log('Retrieved token:', token);
+        } else {
+          console.error('No token found.');
+        }
+      };
+      testGetToken();
+      
       return backendResponse.data; 
     } else {
       console.log('Spotify login canceled or failed:', result);
