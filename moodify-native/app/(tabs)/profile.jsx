@@ -11,7 +11,7 @@ import { setUser } from "../../redux/slices/userSlice";
 import Icon from "react-native-vector-icons/Feather";
 import images from "../../constants/images";
 
-const ProfileScreen = () => {
+export default function ProfileScreen (){
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
 
@@ -102,8 +102,8 @@ const ProfileScreen = () => {
           end={{ x: 0, y: 1 }}
           style={{
             alignItems: "center",
-            marginBottom: 20,
-            padding: 50,
+            marginBottom: 30,
+            padding: 70,
             position: "relative",
           }}
         >
@@ -125,7 +125,7 @@ const ProfileScreen = () => {
             onPress={handlePickImage}
             style={{
               position: "absolute",
-              bottom: 50,
+              bottom: 65,
               right: 165,
               backgroundColor: "white",
               borderRadius: 12,
@@ -191,5 +191,3 @@ const ProfileScreen = () => {
     </SafeAreaView>
   );
 };
-
-export default ProfileScreen;
