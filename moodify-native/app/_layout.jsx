@@ -74,7 +74,6 @@ export default function RootLayout() {
 
   return (
     <ReduxProvider store={store}>
-      <PaperProvider>
         <RegistrationProvider>
           <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
             <Stack>
@@ -96,7 +95,6 @@ export default function RootLayout() {
             <StatusBar style="auto" />
           </ThemeProvider>
         </RegistrationProvider>
-      </PaperProvider>
     </ReduxProvider>
   );
 }
