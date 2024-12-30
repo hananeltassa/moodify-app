@@ -51,7 +51,8 @@
     "react-native-web": "~0.19.13",
     "react-redux": "^9.2.0",
     "tailwindcss": "^3.4.17",
-    "use-latest-callback": "^0.2.3"
+    "use-latest-callback": "^0.2.3",
+    "expo-asset": "~11.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
