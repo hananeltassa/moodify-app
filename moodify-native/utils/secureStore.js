@@ -12,6 +12,7 @@ export const saveToken = async (key, value) => {
 export const getToken = async (key) => {
   try {
     return await SecureStore.getItemAsync(key);
+    
   } catch (error) {
     console.error('Error retrieving token:', error);
   }
