@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as AuthSession from 'expo-auth-session';
-import { saveToken, deleteToken, getToken } from '../utils/secureStore';
+import { saveToken } from '../utils/secureStore';
 import { SPOTIFY_CLIENT_ID, SPOTIFY_AUTH_ENDPOINT, SPOTIFY_TOKEN_ENDPOINT, BACKEND_BASE_URL } from '@env';
 
 export const spotifyAuth = async () => {
@@ -44,15 +44,6 @@ export const spotifyAuth = async () => {
 
       // Save token
       await saveToken('jwtToken', backendResponse.data.token);
-
-      // Retrieve the saved token to verify
-      const savedToken = await getToken('jwtToken');
-      console.log('Retrieved saved token:', savedToken);
-
-      // Call deleteToken if you need to clear the token
-      await deleteToken('jwtToken');
-      const afterDeletion = await getToken('jwtToken');
-      console.log('Token after deletion:', afterDeletion);
 
       return backendResponse.data; 
     } else {
