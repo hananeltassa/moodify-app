@@ -12,10 +12,12 @@ const ProfileScreen = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
 
+  console.log("User State in ProfileScreen:", user);
+
   const [form, setForm] = useState({
     name: user?.name || "",
     gender: user?.gender || "",
-    dateOfBirth: user?.dateOfBirth || "",
+    dateOfBirth: user?.birthday || "",
   });
 
   const insets = useSafeAreaInsets();
@@ -32,19 +34,26 @@ const ProfileScreen = () => {
       return;
     }
 
-    // Save updated profile data to Redux
     dispatch(
       setUser({
         ...user,
         name,
         gender,
-        dateOfBirth,
+        birthday: dateOfBirth,
       })
     );
 
     Alert.alert("Success", "Profile saved successfully!");
     console.log("Saved Profile:", form);
   };
+
+  if (!user) {
+    return (
+      <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "black" }}>
+        <Text style={{ color: "white" }}>User data is unavailable.</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView
@@ -56,7 +65,7 @@ const ProfileScreen = () => {
         paddingRight: insets.right,
       }}
     >
-      <View className="flex-1 bg-black ">
+      <View className="flex-1 bg-black">
         {/* Profile Picture Section */}
         <LinearGradient
           colors={['#FF6100', '#B90039']}
@@ -97,16 +106,16 @@ const ProfileScreen = () => {
         <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
           <RadioButton
             label="Female"
-            value="Female"
+            value="female"
             selectedValue={form.gender}
-            onPress={(value) => handleChange("gender", value)}
+            onPress={() => handleChange("gender", "female")}
             color="#FF4081"
           />
           <RadioButton
             label="Male"
-            value="Male"
+            value="male"
             selectedValue={form.gender}
-            onPress={(value) => handleChange("gender", value)}
+            onPress={() => handleChange("gender", "male")}
             color="#4081FF"
           />
         </View>
