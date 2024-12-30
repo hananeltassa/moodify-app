@@ -1,13 +1,9 @@
 import axios from 'axios';
 import * as AuthSession from 'expo-auth-session';
-import { useDispatch } from 'react-redux';
-import { setUser } from '../redux/slices/userSlice'; 
 import { saveToken } from '../utils/secureStore';
 import { SPOTIFY_CLIENT_ID, SPOTIFY_AUTH_ENDPOINT, SPOTIFY_TOKEN_ENDPOINT, BACKEND_BASE_URL } from '@env';
 
 export const spotifyAuth = async () => {
-  const dispatch = useDispatch();
-
   try {
     const redirectUri = AuthSession.makeRedirectUri({ useProxy: true });
 
@@ -48,15 +44,6 @@ export const spotifyAuth = async () => {
 
       // Save token
       await saveToken('jwtToken', backendResponse.data.token);
-
-      // Dispatch user data to Redux
-      dispatch(
-        setUser({
-          name: backendResponse.data.user.name,
-          email: backendResponse.data.user.email,
-          profilePic: backendResponse.data.user.profilePic,
-        })
-      );
 
       return backendResponse.data; 
     } else {
