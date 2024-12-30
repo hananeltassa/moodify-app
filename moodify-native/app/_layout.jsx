@@ -7,18 +7,18 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 import { Provider as PaperProvider } from "react-native-paper";
 import { RegistrationProvider } from "../context/RegistrationContext";
+import { Provider as ReduxProvider } from "react-redux";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
+import store from "../redux/store";
 import "../global.css";
-import { Provider as ReduxProvider } from "react-redux"; 
-import store from '../redux/store';
 
+// Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
-  // Load custom fonts
   const [fontsLoaded, fontLoadingError] = useFonts({
     AvenirNextLTPro: require("../assets/fonts/AvenirNextLTPro-Regular.otf"),
     AvenirNextLTProBold: require("../assets/fonts/AvenirNextLTPro-Bold.otf"),
@@ -43,27 +43,29 @@ export default function RootLayout() {
 
   return (
     <ReduxProvider store={store}>
-    <PaperProvider>
-      <RegistrationProvider>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="playlist/[playlist]" options={{ headerShown: false }} />
-          <Stack.Screen name="music/[music]" options={{
-            presentation: "modal", 
-            headerShown: false, 
-          }}
-          />
-          <Stack.Screen name="(mood-detection)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" options={{ title: "Not Found" }} />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
-      </RegistrationProvider>
-    </PaperProvider>
+      <PaperProvider>
+        <RegistrationProvider>
+          <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+            <Stack>
+              <Stack.Screen name="index" options={{ headerShown: false }} />
+              <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="playlist/[playlist]" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="music/[music]"
+                options={{
+                  presentation: "modal",
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen name="(mood-detection)" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" options={{ title: "Not Found" }} />
+            </Stack>
+            <StatusBar style="auto" />
+          </ThemeProvider>
+        </RegistrationProvider>
+      </PaperProvider>
     </ReduxProvider>
   );
 }
