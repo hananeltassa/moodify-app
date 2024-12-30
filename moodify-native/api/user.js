@@ -1,12 +1,26 @@
 import axios from "axios";
 import { BACKEND_BASE_URL } from "@env";
+import { getToken } from '../utils/secureStore';
 
 export const updateUserProfile = async(userData) => {
     try {
-        const response = await axios.put(`${BACKEND_BASE_URL}/api/user/profile`,
-            userData,
-        );
+        const token = await getToken("jwtToken");
 
+        if (!token) {
+        throw new Error("No token found. Please log in again.");
+        }
+
+        console.log("Sending request to update profile:", userData);
+
+        const response = await axios.put(`${BACKEND_BASE_URL}/api/users/profile`,
+            userData,
+            {
+                headers:{
+                    Authorization: `Bearer ${token}`,
+                }
+            }
+        );
+        console.log("Response from server:", response.data);
         return response.data;
     } catch (error) {
         console.error("Error updating user profile:", error.response?.data || error.message);
