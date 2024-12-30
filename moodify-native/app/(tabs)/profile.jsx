@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, SafeAreaView, Alert, Image, TouchableOpacity } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
+import * as ImagePicker from "expo-image-picker";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import RadioButton from "../../components/RadioButton";
@@ -12,12 +13,11 @@ const ProfileScreen = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
 
-  //console.log("User State in ProfileScreen:", user);
-
   const [form, setForm] = useState({
     name: user?.name || "",
     gender: user?.gender || "",
     dateOfBirth: user?.dateOfBirth || "",
+    profilePic: user?.profilePic || "https://via.placeholder.com/150",
   });
 
   const insets = useSafeAreaInsets();
@@ -27,7 +27,7 @@ const ProfileScreen = () => {
   };
 
   const handleSave = () => {
-    const { name, gender, dateOfBirth } = form;
+    const { name, gender, dateOfBirth, profilePic } = form;
 
     if (!name || !gender || !dateOfBirth) {
       Alert.alert("Error", "All fields are required.");
@@ -39,12 +39,39 @@ const ProfileScreen = () => {
         ...user,
         name,
         gender,
-        birthday: dateOfBirth,
+        dateOfBirth,
+        profilePic,
       })
     );
 
     Alert.alert("Success", "Profile saved successfully!");
     console.log("Saved Profile:", form);
+  };
+
+  const handlePickImage = async () => {
+    try {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (!permissionResult.granted) {
+        Alert.alert("Permission Denied", "Permission to access media library is required.");
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaType: "photo",
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        const selectedImageUri = result.assets[0].uri;
+        setForm((prevForm) => ({ ...prevForm, profilePic: selectedImageUri }));
+      }
+    } catch (error) {
+      console.error("Error picking image:", error);
+      Alert.alert("Error", "Something went wrong while picking the image.");
+    }
   };
 
   if (!user) {
@@ -68,7 +95,7 @@ const ProfileScreen = () => {
       <View className="flex-1 bg-black">
         {/* Profile Picture Section */}
         <LinearGradient
-          colors={['#FF6100', '#B90039']}
+          colors={["#FF6100", "#B90039"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={{
@@ -78,7 +105,7 @@ const ProfileScreen = () => {
           }}
         >
           <Image
-            source={{ uri: user?.profilePic || "https://via.placeholder.com/150" }}
+            source={{ uri: form.profilePic }}
             style={{
               width: 100,
               height: 100,
@@ -87,7 +114,7 @@ const ProfileScreen = () => {
               borderColor: "white",
             }}
           />
-          <TouchableOpacity style={{ marginTop: 10 }}>
+          <TouchableOpacity onPress={handlePickImage} style={{ marginTop: 10 }}>
             <Text className="font-avenir-regular text-white">Change</Text>
           </TouchableOpacity>
         </LinearGradient>
