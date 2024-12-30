@@ -31,20 +31,27 @@ export default function ProfileScreen (){
   };
 
   const handleSave = async () => {
-    const { name, gender, dateOfBirth, profilePic } = form;
-
-    if (!name && !gender && !dateOfBirth) {
-      Alert.alert("Error", "At least one field is required.");
+    const updatedProfile = {};
+  
+    // Compare each field with the original user data and add to updatedProfile only if it has changed
+    if (form.name !== user.name) updatedProfile.name = form.name;
+    if (form.gender !== user.gender) updatedProfile.gender = form.gender;
+    if (form.dateOfBirth !== user.dateOfBirth) updatedProfile.birthday = form.dateOfBirth;
+  
+    // Only add profilePic if it's not the default image and has been changed to a valid URL
+    if (
+      form.profilePic !== user.profilePic &&
+      form.profilePic !== images.user &&
+      typeof form.profilePic === "string"
+    ) {
+      updatedProfile.profile_picture = form.profilePic;
+    }
+  
+    if (Object.keys(updatedProfile).length === 0) {
+      Alert.alert("No changes detected", "Please make changes before saving.");
       return;
     }
-
-    const updatedProfile = {
-      name,
-      gender,
-      profile_picture: profilePic,
-      birthday: dateOfBirth,
-    };
-    
+  
     try {
       setLoading(true);
       const updatedUser = await updateUserProfile(updatedProfile);
