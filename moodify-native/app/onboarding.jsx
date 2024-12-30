@@ -6,13 +6,24 @@ import icons from '../constants/icons';
 import CustomButton from '../components/CustomButton';
 import { spotifyAuth } from '../api/spotifyAuth';
 
+import { useDispatch } from 'react-redux';
+import { setUser } from '../redux/slices/userSlice';
+
 export default function Onboarding() {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleSpotifyLogin = async () => {
     try {
       const result = await spotifyAuth();
       if (result) {
+        dispatch(
+          setUser({
+            name: result.user.name,
+            email: result.user.email,
+            profilePic: result.user.profilePic,
+          })
+        );
         console.log('User successfully logged in. Navigating to Home...');
         router.replace('/home');
       } else {
