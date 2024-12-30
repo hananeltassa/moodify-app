@@ -10,6 +10,8 @@ import { RegistrationProvider } from "../context/RegistrationContext";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import "../global.css";
+import { Provider as ReduxProvider } from "react-redux"; 
+import store from '../redux/store';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -40,6 +42,7 @@ export default function RootLayout() {
   }
 
   return (
+    <ReduxProvider store={store}>
     <PaperProvider>
       <RegistrationProvider>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
@@ -61,5 +64,6 @@ export default function RootLayout() {
       </ThemeProvider>
       </RegistrationProvider>
     </PaperProvider>
+    </ReduxProvider>
   );
 }
