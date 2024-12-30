@@ -8,6 +8,8 @@ import RadioButton from "../../components/RadioButton";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { setUser } from "../../redux/slices/userSlice";
+import Icon from "react-native-vector-icons/Feather"; 
+
 
 const ProfileScreen = () => {
   const dispatch = useDispatch();
@@ -102,22 +104,34 @@ const ProfileScreen = () => {
             alignItems: "center",
             marginBottom: 20,
             padding: 50,
+            position: "relative"
           }}
         >
           <Image
-            source={{ uri: form.profilePic }}
+            source={{uri: form.profilePic}}
             style={{
-              width: 100,
+              width:100,
               height: 100,
               borderRadius: 50,
               borderWidth: 2,
               borderColor: "white",
             }}
           />
-          <TouchableOpacity onPress={handlePickImage} style={{ marginTop: 10 }}>
-            <Text className="font-avenir-regular text-white">Change</Text>
+          <TouchableOpacity
+            onPress={handlePickImage}
+            style={{
+              position: "absolute",
+              bottom: 50,
+              right: 165,
+              backgroundColor: "white",
+              borderRadius: 12,
+              padding: 5,
+              elevation: 5,
+            }}
+          >
+            <Icon name="edit-2" size={16} color="#FF6100" />
           </TouchableOpacity>
-        </LinearGradient>
+    </LinearGradient>
 
         {/* Name Field */}
         <FormField
