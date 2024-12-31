@@ -1,24 +1,29 @@
 import React from "react";
-import { Stack } from "expo-router";
-import { TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Stack, useRouter } from "expo-router"; // Import useRouter
+import { TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
-const commonScreenOptions = {
-    headerStyle: { backgroundColor: 'black' },
-    headerTintColor: 'white',
+export default function MoodDetectionLayout() {
+  const router = useRouter(); // Get the router object
+
+  const commonScreenOptions = {
+    headerStyle: { backgroundColor: "black" },
+    headerTintColor: "white",
     headerBackTitleVisible: false,
     headerTitleStyle: {
-        fontFamily: "AvenirNextLTProBold", 
+      fontFamily: "AvenirNextLTProBold",
     },
-    headerTitleAlign: 'center',
+    headerTitleAlign: "center",
     headerLeft: () => (
-      <TouchableOpacity onPress={() => router.back('/detect-options')} style={{ marginLeft: 0 }}>
+      <TouchableOpacity
+        onPress={() => router.back()} // Use router.back() correctly
+        style={{ marginLeft: 0 }}
+      >
         <Ionicons name="chevron-back" size={24} color="white" />
       </TouchableOpacity>
     ),
-};
+  };
 
-export default function MoodDetectionLayout() {
   return (
     <Stack>
       <Stack.Screen
@@ -30,24 +35,24 @@ export default function MoodDetectionLayout() {
       <Stack.Screen
         name="text-detection"
         options={{
-        title: 'Discover your mood',
-        ...commonScreenOptions,
+          title: "Tell Us How You Feel",
+          ...commonScreenOptions,
         }}
-       />
-       <Stack.Screen
+      />
+      <Stack.Screen
         name="image-recognition"
         options={{
-        title: 'Discover your mood',
-        ...commonScreenOptions,
+          title: "Mirror Your Feelings",
+          ...commonScreenOptions,
         }}
-       />
-       <Stack.Screen
+      />
+      <Stack.Screen
         name="voice-recognition"
         options={{
-        title: 'Discover your mood',
-        ...commonScreenOptions,
+          title: "Let Your Voice Be Heard",
+          ...commonScreenOptions,
         }}
-       />
+      />
     </Stack>
   );
 }
