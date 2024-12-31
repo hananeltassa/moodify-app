@@ -1,11 +1,10 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import { router } from "expo-router";
+import React from 'react';
+import { Text, View } from 'react-native';
 
-export default function voiceRecognition() {
+export default function CameraScreen() {
   return (
-    <View>
-      <Text>voice-recognition</Text>
+    <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
+      <Text style={{ color: 'white', fontSize: 18 }}>Camera Screen</Text>
     </View>
-  )
+  );
 }
