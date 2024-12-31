@@ -1,43 +1,49 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
-import { useCameraPermissions } from 'expo-camera';
+import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
+import { Ionicons } from '@expo/vector-icons';
 
-export default function CameraScreen() {
+export default function CameraScreen() {;
   const [permission, requestPermission] = useCameraPermissions();
+  const [cameraType, setCameraType] = useState(CameraType?.back || 'front');
 
   if (!permission) {
     return (
-      <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ color: 'white', fontSize: 18 }}>Loading camera permissions...</Text>
+      <View className="flex-1 bg-black justify-center items-center">
+        <Text className="text-white text-center text-lg mb-4">
+          Loading camera permissions...
+        </Text>
       </View>
     );
   }
 
   if (!permission.granted) {
     return (
-      <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ color: 'white', fontSize: 20, marginBottom: 20 }}>We need your permission</Text>
-        <Text style={{ color: 'gray', fontSize: 14, textAlign: 'center', marginBottom: 20 }}>
+      <View className="flex-1 bg-black justify-center items-center">
+        <Text className="text-white text-center text-xl font-semibold mb-6">
+          We need your permission
+        </Text>
+        <Text className="text-gray-400 text-center text-sm mb-6 px-8">
           Please allow camera access to use this feature and capture moments effortlessly.
         </Text>
         <TouchableOpacity
           onPress={requestPermission}
-          style={{
-            backgroundColor: '#007BFF',
-            paddingVertical: 12,
-            paddingHorizontal: 30,
-            borderRadius: 25,
-          }}
+          className="bg-primary px-6 py-3 rounded-full shadow-lg"
         >
-          <Text style={{ color: 'white', fontSize: 16 }}>Grant Camera Access</Text>
+          <Text className="text-white text-center text-base font-medium">
+            Grant Camera Access
+          </Text>
         </TouchableOpacity>
       </View>
     );
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ color: 'white', fontSize: 18 }}>Camera permissions granted!</Text>
+    <View className="flex-1 bg-black relative">
+      <View className="flex-1 mt-5">
+        <CameraView className="flex-1" style={{ aspectRatio: 9 / 16 }} facing={cameraType}>
+        </CameraView>
+      </View>
     </View>
   );
 }
