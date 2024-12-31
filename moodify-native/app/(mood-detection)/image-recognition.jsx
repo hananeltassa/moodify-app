@@ -44,6 +44,10 @@ export default function CameraScreen() {;
     );
   };
 
+  const handleCapture = () => {
+    console.log("Capture button pressed");
+  };
+
   return (
     <View className="flex-1 bg-black relative">
       <View className="flex-1 mt-5">
@@ -55,6 +59,12 @@ export default function CameraScreen() {;
           >
             <Ionicons name="camera-reverse" size={20} color="white" />
           </TouchableOpacity>
+
+          {/* Capture Button */}
+          <TouchableOpacity
+            className="absolute bottom-10 self-center w-20 h-20 bg-white rounded-full border-4 border-gray-800 shadow-lg"
+            onPress={handleCapture}
+          />
 
         </CameraView>
       </View>
