@@ -94,6 +94,17 @@ export default function Home() {
           colors={["#FF6100", "#FF4500"]}
           style={{ borderRadius: 16, height: 80 }}
         >
+          <View className="flex-row items-center justify-between p-4">
+            <View>
+              <Text className="text-white text-2xl font-bold">
+                Discover Your Mood Today
+              </Text>
+              <Text className="text-white text-base opacity-80 mt-2">
+                Choose how you'd like to share your mood
+              </Text>
+            </View>
+            
+          </View>
         </LinearGradient>
       </TouchableOpacity>
 
