@@ -16,11 +16,16 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
+        "NSCameraUsageDescription": "This app requires access to your camera to take photos and record videos.",
         "NSMicrophoneUsageDescription": "This app requires access to your microphone to record audio."
       },
       "bundleIdentifier": "com.hananeltassa.moodifynative"
     },
     "android": {
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -34,7 +39,15 @@
       "expo-router",
       "expo-font",
       "expo-secure-store",
-      "expo-asset"
+      "expo-asset",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Moodify to access your camera to take photos and videos.",
+          "microphonePermission": "Allow Moodify to access your microphone to record audio.",
+          "recordAudioAndroid": true
+        }
+      ]
     ],
     "extra": {
       "router": {
