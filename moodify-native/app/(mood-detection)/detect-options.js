@@ -7,7 +7,7 @@ import { router } from "expo-router";
 
 export default function MoodDetection() {
   return (
-    <SafeAreaView className="h-full  flex justify-between items-center">
+    <SafeAreaView className="h-full  flex justify-between items-center bg-black">
       <View className="flex-1 w-full px-6 pt-16 items-center">
         {/* Title */}
         <Text className="text-3xl font-bold text-white mb-2 text-center">
