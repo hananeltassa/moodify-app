@@ -38,10 +38,24 @@ export default function CameraScreen() {;
     );
   }
 
+  const toggleCameraType = () => {
+    setCameraType((current) =>
+      current === CameraType?.back ? CameraType?.front : CameraType?.back
+    );
+  };
+
   return (
     <View className="flex-1 bg-black relative">
       <View className="flex-1 mt-5">
         <CameraView className="flex-1" style={{ aspectRatio: 9 / 16 }} facing={cameraType}>
+          {/* Flip Camera Button */}
+          <TouchableOpacity
+            className="absolute top-10 right-5 bg-gray-800 bg-opacity-70 rounded-full p-3"
+            onPress={toggleCameraType}
+          >
+            <Ionicons name="camera-reverse" size={20} color="white" />
+          </TouchableOpacity>
+
         </CameraView>
       </View>
     </View>
