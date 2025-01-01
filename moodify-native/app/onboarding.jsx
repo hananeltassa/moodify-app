@@ -1,20 +1,21 @@
-import React from 'react';
-import { SafeAreaView, View, ImageBackground, Image, Text, TouchableOpacity, Alert,} from 'react-native';
+import React, { useState } from 'react';
+import { SafeAreaView, View, ImageBackground, Image, Text, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import images from '../constants/images';
 import icons from '../constants/icons';
 import CustomButton from '../components/CustomButton';
 import { spotifyAuth } from '../api/spotifyAuth';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../redux/slices/userSlice';
+import LoadingScreen from '../components/LoadingScreen';
 
 export default function Onboarding() {
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
 
   const handleSpotifyLogin = async () => {
     try {
-      const user = await spotifyAuth(dispatch);
+      const user = await spotifyAuth(dispatch, () => console.log("Spotify authentication started"));
       if (user) {
         console.log('User successfully logged in:', user);
         router.replace('/home');
@@ -25,8 +26,15 @@ export default function Onboarding() {
     } catch (error) {
       console.error('Error during Spotify login:', error);
       Alert.alert('Login Failed', 'Something went wrong during Spotify login. Please try again.');
+    } finally {
+      setIsLoading(false);
+      console.log("Loading screen is now hidden");
     }
   };
+  
+  if (isLoading) {
+    return <LoadingScreen message="Connecting to Spotify..." />;
+  }
 
   return (
     <ImageBackground
@@ -72,7 +80,7 @@ export default function Onboarding() {
             textSize="text-lg"
             marginTop="mt-4"
             borderWidth={0.5}
-            onPress={handleSpotifyLogin}
+            onPress={handleSpotifyLogin} 
           />
 
           {/* Log In Link */}
