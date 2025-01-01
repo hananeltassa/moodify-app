@@ -71,3 +71,24 @@ export const fetchSpotifyPlaylists = async (jwtToken) => {
     throw new Error("Failed to fetch Spotify playlists.");
   }
 };
+
+export const fetchSpotifyPlaylistTracks = async (playlistId) => {
+  try {
+    const jwtToken = await getToken("jwtToken");
+
+    if (!jwtToken) {
+      throw new Error("User is not logged in.");
+    }
+
+    const response = await axios.get(`${BACKEND_BASE_URL}/api/users/spotify/playlists/${playlistId}/tracks`,
+      {
+        headers: { Authorization: `Bearer ${jwtToken}` },
+      }
+    );
+
+    return response.data.tracks;
+  } catch (error) {
+    console.error("Error fetching Spotify playlist tracks:", error);
+    throw error;
+  }
+};
