@@ -21,27 +21,54 @@ export default function Library() {
     const fetchPlaylists = async () => {
       try {
         setLoading(true);
-
+  
         const jwtToken = await getToken("jwtToken");
         if (!jwtToken) {
           throw new Error("User is not logged in.");
         }
-
-        console.log("Fetching Spotify playlists...");
-        const playlistsData = await fetchSpotifyPlaylists(jwtToken);
-
-        setPlaylists(playlistsData);
+  
+        if (user?.spotifyId) {
+          console.log("Fetching Spotify playlists...");
+          const playlistsData = await fetchSpotifyPlaylists(jwtToken);
+  
+          setPlaylists(playlistsData);
+        } else {
+          // Mock data for non-Spotify users
+          setPlaylists([
+            {
+              id: "1",
+              name: "Liked Songs",
+              description: "Your favorite songs",
+              images: [{ url: "https://via.placeholder.com/150" }],
+              totalTracks: 50,
+            },
+            {
+              id: "2",
+              name: "Relaxation Mix",
+              description: "Relaxing tunes for the soul",
+              images: [{ url: "https://via.placeholder.com/150" }],
+              totalTracks: 30,
+            },
+            {
+              id: "3",
+              name: "Workout Hits",
+              description: "Pump up your workout",
+              images: [{ url: "https://via.placeholder.com/150" }],
+              totalTracks: 40,
+            },
+          ]);
+        }
       } catch (err) {
         console.error("Error fetching playlists:", err);
-        setError("Failed to load playlists. Please try again later.");
-        Alert.alert("Error", "Failed to load playlists.");
+        setError(err.message || "Failed to load playlists. Please try again later.");
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchPlaylists();
   }, [user]);
+  
 
   if (loading) {
     return (
