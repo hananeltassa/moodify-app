@@ -10,9 +10,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import { setUser } from "../../redux/slices/userSlice";
 import Icon from "react-native-vector-icons/Feather";
 import images from "../../constants/images";
-import { updateUserProfile } from "../../api/user";
+import { updateUserProfile } from "../../api/user"; 
 
-export default function ProfileScreen() {
+export default function ProfileScreen (){
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
@@ -32,11 +32,13 @@ export default function ProfileScreen() {
 
   const handleSave = async () => {
     const updatedProfile = {};
-
+  
+    // Compare each field with the original user data and add to updatedProfile only if it has changed
     if (form.name !== user.name) updatedProfile.name = form.name;
     if (form.gender !== user.gender) updatedProfile.gender = form.gender;
     if (form.dateOfBirth !== user.dateOfBirth) updatedProfile.birthday = form.dateOfBirth;
-
+  
+    // Only add profilePic if it's not the default image and has been changed to a valid URL
     if (
       form.profilePic !== user.profilePic &&
       form.profilePic !== images.user &&
@@ -44,18 +46,19 @@ export default function ProfileScreen() {
     ) {
       updatedProfile.profile_picture = form.profilePic;
     }
-
+  
     if (Object.keys(updatedProfile).length === 0) {
       Alert.alert("No changes detected", "Please make changes before saving.");
       return;
     }
-
+  
     try {
       setLoading(true);
       const updatedUser = await updateUserProfile(updatedProfile);
       dispatch(setUser(updatedUser));
       Alert.alert("Success", "Profile updated successfully!");
     } catch (error) {
+      console.error("Error updating profile:", error);
       Alert.alert("Error", error.message || "Failed to update profile.");
     } finally {
       setLoading(false);
@@ -83,14 +86,15 @@ export default function ProfileScreen() {
         setForm((prevForm) => ({ ...prevForm, profilePic: selectedImageUri }));
       }
     } catch (error) {
+      console.error("Error picking image:", error);
       Alert.alert("Error", "Something went wrong while picking the image.");
     }
   };
 
   if (!user) {
     return (
-      <SafeAreaView className="flex-1 justify-center items-center bg-black">
-        <Text className="text-white">User data is unavailable.</Text>
+      <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "black" }}>
+        <Text style={{ color: "white" }}>User data is unavailable.</Text>
       </SafeAreaView>
     );
   }
@@ -104,17 +108,22 @@ export default function ProfileScreen() {
         paddingRight: insets.right,
       }}
     >
-      <View className="flex-1">
+      <View className="flex-1 ">
         {/* Profile Picture Section */}
         <LinearGradient
           colors={["#FF6100", "#B90039"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
-          className="items-center mb-8 py-16 relative"
+          style={{
+            alignItems: "center",
+            marginBottom: 30,
+            padding: 70,
+            position: "relative",
+          }}
         >
           <Image
             source={
-              typeof form.profilePic === "string"
+              typeof form.profilePic === "string" 
                 ? { uri: form.profilePic }
                 : form.profilePic
             }
@@ -123,7 +132,10 @@ export default function ProfileScreen() {
           <TouchableOpacity
             onPress={handlePickImage}
             className="absolute bg-white rounded-lg p-1.5 shadow-md"
-            style={{ bottom: 65, right: 165 }}
+            style={{
+              bottom: 65,
+              right: 165,
+            }}
           >
             <Icon name="edit-2" size={16} color="#FF6100" />
           </TouchableOpacity>
@@ -139,8 +151,8 @@ export default function ProfileScreen() {
         />
 
         {/* Gender Selection */}
-        <Text className="text-white text-xl font-bold mb-2 px-4">Gender</Text>
-        <View className="flex-row justify-around">
+        <Text className="text-white text-2xl font-Avenir-Bold mb-2 p-4">Gender</Text>
+        <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
           <RadioButton
             label="Female"
             value="female"
@@ -182,4 +194,4 @@ export default function ProfileScreen() {
       </View>
     </SafeAreaView>
   );
-}
+};
