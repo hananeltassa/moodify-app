@@ -72,19 +72,11 @@ export const fetchSpotifyPlaylists = async (jwtToken) => {
   }
 };
 
-export const fetchSpotifyPlaylistTracks = async (playlistId) => {
+export const fetchSpotifyPlaylistTracks = async (playlistId, jwtToken) => {
   try {
-    const jwtToken = await getToken("jwtToken");
-
-    if (!jwtToken) {
-      throw new Error("User is not logged in.");
-    }
-
-    const response = await axios.get(`${BACKEND_BASE_URL}/api/users/spotify/playlists/${playlistId}/tracks`,
-      {
-        headers: { Authorization: `Bearer ${jwtToken}` },
-      }
-    );
+    const response = await axios.get(`${BACKEND_BASE_URL}/api/users/spotify/playlists/${playlistId}/tracks`, {
+      headers: { Authorization: `Bearer ${jwtToken}` },
+    });
 
     return response.data.tracks;
   } catch (error) {
