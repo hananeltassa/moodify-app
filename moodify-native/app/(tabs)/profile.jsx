@@ -11,12 +11,14 @@ import { LinearGradient } from "expo-linear-gradient";
 import { setUser } from "../../redux/slices/userSlice";
 import Icon from "react-native-vector-icons/Feather";
 import images from "../../constants/images";
+import { useRouter } from "expo-router";
 import { updateUserProfile } from "../../api/user";
 
 export default function ProfileScreen() {
   const [loading, setLoading] = useState(false);
   const [isModified, setIsModified] = useState(false);
   const dispatch = useDispatch();
+  const router = useRouter();
   const user = useSelector((state) => state.user.user);
 
   const [form, setForm] = useState({
@@ -96,13 +98,11 @@ export default function ProfileScreen() {
 
   const handleLogout = async () => {
     try {
-      // Delete the token from SecureStore
       await deleteToken("jwtToken");
 
-      // Clear user data from Redux
       dispatch(setUser(null));
+      router.replace("/onboarding");
 
-      // Show a confirmation message
       Alert.alert("Logged Out", "You have been successfully logged out.");
     } catch (error) {
       console.error("Error during logout:", error);
