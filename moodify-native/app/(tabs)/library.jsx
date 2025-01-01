@@ -32,19 +32,16 @@ export default function Library() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView
-        style={{
-          flex: 1,
-          paddingBottom: insets.bottom,
-          backgroundColor: "black",
-        }}
-      >
-        <View
-          style={{
-            flex: 1,
-            paddingHorizontal: 16,
-          }}
-        >
+       <SafeAreaView
+            style={{
+              flex: 1,
+              paddingTop: 10,
+              paddingBottom: insets.bottom,
+              backgroundColor: "black",
+              paddingHorizontal: 16
+            }}
+          >
+        <View className="flex-1" >
           {/* Title */}
           <Text className="font-Avenir-Bold text-white text-3xl mb-2">
             Your Library
