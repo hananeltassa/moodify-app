@@ -10,7 +10,7 @@ import { getToken } from "../../utils/secureStore";
 import LoadingScreen from "../../components/LoadingScreen"
 
 export default function Playlist() {
-  const { playlist, playlistName } = useLocalSearchParams();
+  const { playlist, playlistName, playlistImage } = useLocalSearchParams();
   //console.log("Playlist ID:", playlist); 
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -93,7 +93,7 @@ export default function Playlist() {
         {/* Playlist Image */}
         <View className="items-center mb-6">
           <Image
-            source={images.playlist}
+            source={{ uri: playlistImage }}
             className="w-96 h-96"
             resizeMode="contain"
           />

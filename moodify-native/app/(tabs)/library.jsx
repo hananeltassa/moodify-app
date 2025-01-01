@@ -123,7 +123,7 @@ export default function Library() {
                 onPress={() =>
                   router.push({
                     pathname: "/playlist/[playlist]",
-                    params: { playlist: item.id, playlistName: item.name },
+                    params: { playlist: item.id, playlistName: item.name, playlistImage: item.images?.length > 0 ? item.images[0].url : null,},
                   })
                 }
               />
