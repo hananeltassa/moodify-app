@@ -1,11 +1,10 @@
 import React from 'react';
-import { SafeAreaView, View, ImageBackground, Image, Text, TouchableOpacity, Alert } from 'react-native';
+import { SafeAreaView, View, ImageBackground, Image, Text, TouchableOpacity, Alert,} from 'react-native';
 import { useRouter } from 'expo-router';
 import images from '../constants/images';
 import icons from '../constants/icons';
 import CustomButton from '../components/CustomButton';
 import { spotifyAuth } from '../api/spotifyAuth';
-
 import { useDispatch } from 'react-redux';
 import { setUser } from '../redux/slices/userSlice';
 
@@ -15,16 +14,9 @@ export default function Onboarding() {
 
   const handleSpotifyLogin = async () => {
     try {
-      const result = await spotifyAuth();
-      if (result) {
-        dispatch(
-          setUser({
-            name: result.user.name,
-            email: result.user.email,
-            profilePic: result.user.profilePic,
-          })
-        );
-        console.log('User successfully logged in. Navigating to Home...');
+      const user = await spotifyAuth(dispatch);
+      if (user) {
+        console.log('User successfully logged in:', user);
         router.replace('/home');
       } else {
         console.log('Spotify login was canceled.');
