@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Image, Text, SafeAreaView, ActivityIndicator, FlatList, Alert, TouchableOpacity } from "react-native";
+import { View, Image, Text, SafeAreaView, FlatList, Alert, TouchableOpacity } from "react-native";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -7,13 +7,18 @@ import images from "@/constants/images";
 import Music from "../../components/Music";
 import { fetchSpotifyPlaylistTracks } from "../../api/spotifyAuth";
 import { getToken } from "../../utils/secureStore";
-import LoadingScreen from "../../components/LoadingScreen"
+import LoadingScreen from "../../components/LoadingScreen";
+import { useSelector, useDispatch } from "react-redux";
+import { setPlaylistTracks } from "../../redux/slices/playlistTracksSlice";
 
 export default function Playlist() {
   const { playlist, playlistName, playlistImage } = useLocalSearchParams();
-  //console.log("Playlist ID:", playlist); 
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const dispatch = useDispatch();
+
+  const cachedTracks = useSelector((state) => state.playlistTracks.tracks[playlist]);
+  const isFetched = useSelector((state) => state.playlistTracks.isFetched[playlist]);
 
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,6 +26,12 @@ export default function Playlist() {
 
   useEffect(() => {
     const loadPlaylistTracks = async () => {
+      if (isFetched) {
+        setTracks(cachedTracks);
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
 
@@ -31,6 +42,8 @@ export default function Playlist() {
 
         const playlistTracks = await fetchSpotifyPlaylistTracks(playlist, jwtToken);
         setTracks(playlistTracks);
+
+        dispatch(setPlaylistTracks({ playlistId: playlist, tracks: playlistTracks }));
       } catch (error) {
         console.error("Error loading playlist tracks:", error);
         Alert.alert("Error", error.message || "Failed to load playlist tracks.");
@@ -42,7 +55,7 @@ export default function Playlist() {
     if (playlist) {
       loadPlaylistTracks();
     }
-  }, [playlist]);
+  }, [playlist, isFetched, cachedTracks]);
 
   const toggleLike = () => {
     setIsLiked(!isLiked);
@@ -93,7 +106,11 @@ export default function Playlist() {
         {/* Playlist Image */}
         <View className="items-center mb-6">
           <Image
-            source={{ uri: playlistImage }}
+            source={
+              playlistImage
+                ? { uri: playlistImage }
+                : images.playlist
+            }
             className="w-96 h-96"
             resizeMode="contain"
           />

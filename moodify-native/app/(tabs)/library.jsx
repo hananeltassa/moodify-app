@@ -37,6 +37,7 @@ export default function Library() {
         if (user?.spotifyId) {
           console.log("Fetching Spotify playlists...");
           const playlistsData = await fetchSpotifyPlaylists(jwtToken);
+          
           dispatch(setPlaylists(playlistsData));
         } else {
           // Mock data for non-Spotify users
