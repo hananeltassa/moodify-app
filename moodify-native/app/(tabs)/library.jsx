@@ -1,51 +1,83 @@
-import React from "react";
-import { FlatList, View, Text } from "react-native";
+import React, { useEffect, useState } from "react";
+import { FlatList, View, Text, ActivityIndicator, Alert } from "react-native";
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import Playlist from "../../components/Playlist";
-import images from "../../constants/images";
 import { useRouter } from "expo-router";
+import { useSelector } from "react-redux";
+import { getToken } from "../../utils/secureStore";
+import { fetchSpotifyPlaylists } from "../../api/spotifyAuth";
 
 export default function Library() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
-  const playlists = [
-    {
-      id: "1",
-      title: "Liked Songs",
-      subtitle: "Playlist • 58 songs",
-      image: images.playlist,
-    },
-    {
-      id: "2",
-      title: "Workout Hits",
-      subtitle: "Playlist • 35 songs",
-      image: images.playlist,
-    },
-    {
-      id: "3",
-      title: "Chill Vibes",
-      subtitle: "Playlist • 42 songs",
-      image: images.playlist,
-    },
-  ];
+  const user = useSelector((state) => state.user.user);
+
+  const [playlists, setPlaylists] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchPlaylists = async () => {
+      try {
+        setLoading(true);
+
+        const jwtToken = await getToken("jwtToken");
+        if (!jwtToken) {
+          throw new Error("User is not logged in.");
+        }
+
+        console.log("Fetching Spotify playlists...");
+        const playlistsData = await fetchSpotifyPlaylists(jwtToken);
+
+        setPlaylists(playlistsData);
+      } catch (err) {
+        console.error("Error fetching playlists:", err);
+        setError("Failed to load playlists. Please try again later.");
+        Alert.alert("Error", "Failed to load playlists.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlaylists();
+  }, [user]);
+
+  if (loading) {
+    return (
+      <SafeAreaProvider>
+        <SafeAreaView className="flex-1 justify-center items-center bg-black">
+          <ActivityIndicator size="large" color="#FFFFFF" />
+          <Text className="text-white mt-4">Loading your playlists...</Text>
+        </SafeAreaView>
+      </SafeAreaProvider>
+    );
+  }
+
+  if (error) {
+    return (
+      <SafeAreaProvider>
+        <SafeAreaView className="flex-1 justify-center items-center bg-black">
+          <Text className="text-white text-lg">{error}</Text>
+        </SafeAreaView>
+      </SafeAreaProvider>
+    );
+  }
 
   return (
     <SafeAreaProvider>
-       <SafeAreaView
-            style={{
-              flex: 1,
-              paddingTop: 10,
-              paddingBottom: insets.bottom,
-              backgroundColor: "black",
-              paddingHorizontal: 16
-            }}
-          >
-        <View className="flex-1" >
+      <SafeAreaView
+        style={{
+          flex: 1,
+          paddingTop: 10,
+          paddingBottom: insets.bottom,
+          backgroundColor: "black",
+          paddingHorizontal: 16,
+        }}
+      >
+        <View className="flex-1">
           {/* Title */}
-          <Text className="font-Avenir-Bold text-white text-3xl mb-2">
-            Your Library
-          </Text>
+          <Text className="font-Avenir-Bold text-white text-3xl mb-2">Your Library</Text>
 
           {/* Playlist List */}
           <FlatList
@@ -54,13 +86,17 @@ export default function Library() {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <Playlist
-                title={item.title}
-                subtitle={item.subtitle}
-                image={item.image}
+                title={item.name}
+                subtitle={`${item.totalTracks} tracks`}
+                image={
+                  item.images?.length > 0
+                    ? { uri: item.images[0].url }
+                    : null
+                }
                 onPress={() =>
                   router.push({
                     pathname: "/playlist/[playlist]",
-                    params: { playlist: "some-playlist", playlistName: item.title },
+                    params: { playlist: item.id, playlistName: item.name },
                   })
                 }
               />
