@@ -144,7 +144,10 @@ export default function Playlist() {
               onPress={() =>
                 router.push({
                   pathname: "/music/[music]",
-                  params: { music: item.name, title: item.name },
+                  params: { 
+                    songTitle: item.name, 
+                    songImage: item.album?.images?.length > 0 ? item.album.images[0].url : null,
+                    songArtist: item.artists.join(", "), },
                 })
               }
               onMorePress={() => console.log("More options pressed")}
