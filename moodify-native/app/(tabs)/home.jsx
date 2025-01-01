@@ -6,10 +6,12 @@ import images from "../../constants/images";
 import WeeklyProgress from "../../components/WeeklyProgress";
 import RecommendedMusic from "../../components/RecommendedMusic";
 import { LinearGradient } from "expo-linear-gradient";
+import { useSelector, useDispatch } from "react-redux";
 
 export default function Home() {
   const insets = useSafeAreaInsets(); // Get safe area insets for both Android and iOS
-  const profilePic = null;
+  const user = useSelector((state) => state.user.user);
+  const profilePic = user?.profilePic;
 
   const weeklyData = [
     { day: "Mon", emoji: "😐" },
@@ -72,15 +74,21 @@ export default function Home() {
     >
       {/* Profile Picture */}
       <View style={{ marginLeft: 16, marginTop: 16 }}>
-        <Image
-          source={profilePic ? { uri: profilePic } : images.user}
-          style={{ width: 56, height: 56, borderRadius: 28, borderWidth: 2, borderColor: "#FF6100" }}
-          alt="Profile Picture"
-        />
+      <Image
+        source={profilePic ? { uri: profilePic } : images.user}
+        style={{
+          width: 48,
+          height: 48,
+          borderRadius: 30,
+          borderWidth: 2,
+          borderColor: "#FF6100",
+        }}
+        alt="Profile Picture"
+      />
       </View>
 
       {/* Weekly Progress */}
-      <View className="mt-4">
+      <View className="mt-2">
         <WeeklyProgress data={weeklyData} />
       </View>
 
