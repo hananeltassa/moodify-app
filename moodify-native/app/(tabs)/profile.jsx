@@ -101,15 +101,14 @@ export default function ProfileScreen (){
 
   return (
     <SafeAreaView
+      className="flex-1 bg-black"
       style={{
-        flex: 1,
-        backgroundColor: "black",
         paddingTop: insets.top,
         paddingLeft: insets.left,
         paddingRight: insets.right,
       }}
     >
-      <View className="flex-1 bg-black">
+      <View className="flex-1 ">
         {/* Profile Picture Section */}
         <LinearGradient
           colors={["#FF6100", "#B90039"]}
@@ -128,24 +127,14 @@ export default function ProfileScreen (){
                 ? { uri: form.profilePic }
                 : form.profilePic
             }
-            style={{
-              width: 100,
-              height: 100,
-              borderRadius: 50,
-              borderWidth: 2,
-              borderColor: "white",
-            }}
+            className="w-32 h-32 rounded-full border-2 border-white"
           />
           <TouchableOpacity
             onPress={handlePickImage}
+            className="absolute bg-white rounded-lg p-1.5 shadow-md"
             style={{
-              position: "absolute",
               bottom: 65,
               right: 165,
-              backgroundColor: "white",
-              borderRadius: 12,
-              padding: 5,
-              elevation: 5,
             }}
           >
             <Icon name="edit-2" size={16} color="#FF6100" />
