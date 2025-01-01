@@ -1,9 +1,10 @@
-import axios from 'axios';
-import * as AuthSession from 'expo-auth-session';
-import { saveToken } from '../utils/secureStore';
-import { SPOTIFY_CLIENT_ID, SPOTIFY_AUTH_ENDPOINT, SPOTIFY_TOKEN_ENDPOINT, BACKEND_BASE_URL } from '@env';
+import axios from "axios";
+import * as AuthSession from "expo-auth-session";
+import { saveToken } from "../utils/secureStore";
+import { SPOTIFY_CLIENT_ID, SPOTIFY_AUTH_ENDPOINT, SPOTIFY_TOKEN_ENDPOINT, BACKEND_BASE_URL } from "@env";
+import { setUser } from "../redux/slices/userSlice";
 
-export const spotifyAuth = async () => {
+export const spotifyAuth = async (dispatch) => {
   try {
     const redirectUri = AuthSession.makeRedirectUri({ useProxy: true });
 
@@ -40,14 +41,17 @@ export const spotifyAuth = async () => {
         codeVerifier,
       });
 
-      console.log('Tokens received from backend:', backendResponse.data);
+      const { user, token } = backendResponse.data;
 
-      // Save token
-      await saveToken('jwtToken', backendResponse.data.token);
+      // Save token to secure storage
+      await saveToken('jwtToken', token);
 
-      return backendResponse.data; 
+      // Dispatch user data to Redux
+      dispatch(setUser(user));
+
+      return user;
     } else {
-      console.log('Spotify login canceled or failed:', result);
+      console.log('Spotify login canceled:', result);
       return null;
     }
   } catch (error) {
@@ -55,3 +59,4 @@ export const spotifyAuth = async () => {
     throw error;
   }
 };
+
