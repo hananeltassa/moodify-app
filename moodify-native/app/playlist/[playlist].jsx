@@ -7,6 +7,7 @@ import images from "@/constants/images";
 import Music from "../../components/Music";
 import { fetchSpotifyPlaylistTracks } from "../../api/spotifyAuth";
 import { getToken } from "../../utils/secureStore";
+import LoadingScreen from "../../components/LoadingScreen"
 
 export default function Playlist() {
   const { playlist, playlistName } = useLocalSearchParams();
@@ -48,24 +49,7 @@ export default function Playlist() {
   };
 
   if (loading) {
-    return (
-      <SafeAreaProvider>
-        <SafeAreaView
-          style={{
-            flex: 1,
-            paddingTop: insets.top,
-            paddingBottom: insets.bottom,
-            paddingHorizontal: 16,
-            backgroundColor: "black",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <ActivityIndicator size="large" color="#FFFFFF" />
-          <Text className="text-white mt-4">Loading tracks...</Text>
-        </SafeAreaView>
-      </SafeAreaProvider>
-    );
+    return <LoadingScreen message="Loading tracks..." />;
   }
 
   if (!tracks.length) {
