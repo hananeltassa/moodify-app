@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, SafeAreaView, Alert, Image, TouchableOpacity } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
+import { deleteToken } from "../../utils/secureStore";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import RadioButton from "../../components/RadioButton";
@@ -10,10 +11,11 @@ import { LinearGradient } from "expo-linear-gradient";
 import { setUser } from "../../redux/slices/userSlice";
 import Icon from "react-native-vector-icons/Feather";
 import images from "../../constants/images";
-import { updateUserProfile } from "../../api/user"; 
+import { updateUserProfile } from "../../api/user";
 
-export default function ProfileScreen (){
+export default function ProfileScreen() {
   const [loading, setLoading] = useState(false);
+  const [isModified, setIsModified] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
 
@@ -28,17 +30,16 @@ export default function ProfileScreen (){
 
   const handleChange = (field, value) => {
     setForm((prevForm) => ({ ...prevForm, [field]: value }));
+    setIsModified(true);
   };
 
   const handleSave = async () => {
     const updatedProfile = {};
-  
-    // Compare each field with the original user data and add to updatedProfile only if it has changed
+
     if (form.name !== user.name) updatedProfile.name = form.name;
     if (form.gender !== user.gender) updatedProfile.gender = form.gender;
     if (form.dateOfBirth !== user.dateOfBirth) updatedProfile.birthday = form.dateOfBirth;
-  
-    // Only add profilePic if it's not the default image and has been changed to a valid URL
+
     if (
       form.profilePic !== user.profilePic &&
       form.profilePic !== images.user &&
@@ -46,16 +47,17 @@ export default function ProfileScreen (){
     ) {
       updatedProfile.profile_picture = form.profilePic;
     }
-  
+
     if (Object.keys(updatedProfile).length === 0) {
       Alert.alert("No changes detected", "Please make changes before saving.");
       return;
     }
-  
+
     try {
       setLoading(true);
       const updatedUser = await updateUserProfile(updatedProfile);
       dispatch(setUser(updatedUser));
+      setIsModified(false);
       Alert.alert("Success", "Profile updated successfully!");
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -84,10 +86,27 @@ export default function ProfileScreen (){
       if (!result.canceled) {
         const selectedImageUri = result.assets[0].uri;
         setForm((prevForm) => ({ ...prevForm, profilePic: selectedImageUri }));
+        setIsModified(true);
       }
     } catch (error) {
       console.error("Error picking image:", error);
       Alert.alert("Error", "Something went wrong while picking the image.");
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      // Delete the token from SecureStore
+      await deleteToken("jwtToken");
+
+      // Clear user data from Redux
+      dispatch(setUser(null));
+
+      // Show a confirmation message
+      Alert.alert("Logged Out", "You have been successfully logged out.");
+    } catch (error) {
+      console.error("Error during logout:", error);
+      Alert.alert("Error", "Something went wrong while logging out.");
     }
   };
 
@@ -108,8 +127,7 @@ export default function ProfileScreen (){
         paddingRight: insets.right,
       }}
     >
-      <View className="flex-1 ">
-        {/* Profile Picture Section */}
+      <View className="flex-1">
         <LinearGradient
           colors={["#FF6100", "#B90039"]}
           start={{ x: 0, y: 0 }}
@@ -123,7 +141,7 @@ export default function ProfileScreen (){
         >
           <Image
             source={
-              typeof form.profilePic === "string" 
+              typeof form.profilePic === "string"
                 ? { uri: form.profilePic }
                 : form.profilePic
             }
@@ -141,7 +159,6 @@ export default function ProfileScreen (){
           </TouchableOpacity>
         </LinearGradient>
 
-        {/* Name Field */}
         <FormField
           title="Name"
           value={form.name}
@@ -150,7 +167,6 @@ export default function ProfileScreen (){
           otherStyles="mb-4"
         />
 
-        {/* Gender Selection */}
         <Text className="text-white text-2xl font-Avenir-Bold mb-2 p-4">Gender</Text>
         <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
           <RadioButton
@@ -169,7 +185,6 @@ export default function ProfileScreen (){
           />
         </View>
 
-        {/* Date of Birth Field */}
         <FormField
           title="Date of birth"
           type="date"
@@ -179,19 +194,32 @@ export default function ProfileScreen (){
           otherStyles="mb-4"
         />
 
-        {/* Save Button */}
+        {isModified && (
+          <CustomButton
+            text="Save"
+            backgroundColor="bg-white"
+            textColor="text-black"
+            textSize="text-base"
+            marginTop="mt-8"
+            width="w-38"
+            borderStyle="border border-white"
+            containerStyle="mx-auto py-2 px-6"
+            onPress={handleSave}
+          />
+        )}
+
         <CustomButton
-          text="Save"
-          backgroundColor="bg-white"
-          textColor="text-black"
+          text="Logout"
+          backgroundColor="bg-red-500"
+          textColor="text-white"
           textSize="text-base"
-          marginTop="mt-8"
+          marginTop="mt-4"
           width="w-38"
-          borderStyle="border border-white"
+          borderStyle="border border-red-600"
           containerStyle="mx-auto py-2 px-6"
-          onPress={handleSave}
+          onPress={handleLogout}
         />
       </View>
     </SafeAreaView>
   );
-};
+}
