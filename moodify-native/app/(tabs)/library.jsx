@@ -3,23 +3,29 @@ import { FlatList, View, Text, Alert } from "react-native";
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import Playlist from "../../components/Playlist";
 import { useRouter } from "expo-router";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { getToken } from "../../utils/secureStore";
 import { fetchSpotifyPlaylists } from "../../api/spotifyAuth";
+import { setPlaylists } from "../../redux/slices/playlistSlice";
 import LoadingScreen from "../../components/LoadingScreen";
 
 export default function Library() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const dispatch = useDispatch();
 
+
+  const playlists = useSelector((state) => state.playlists.items);
+  const isFetched = useSelector((state) => state.playlists.isFetched);
   const user = useSelector((state) => state.user.user);
 
-  const [playlists, setPlaylists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchPlaylists = async () => {
+      if (isFetched) return;
+
       try {
         setLoading(true);
   
@@ -31,8 +37,7 @@ export default function Library() {
         if (user?.spotifyId) {
           console.log("Fetching Spotify playlists...");
           const playlistsData = await fetchSpotifyPlaylists(jwtToken);
-  
-          setPlaylists(playlistsData);
+          dispatch(setPlaylists(playlistsData));
         } else {
           // Mock data for non-Spotify users
           setPlaylists([
@@ -58,6 +63,7 @@ export default function Library() {
               totalTracks: 40,
             },
           ]);
+          dispatch(setPlaylists(mockPlaylists));
         }
       } catch (err) {
         console.error("Error fetching playlists:", err);

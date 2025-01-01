@@ -28,7 +28,7 @@ export default function Onboarding() {
       Alert.alert('Login Failed', 'Something went wrong during Spotify login. Please try again.');
     } finally {
       setIsLoading(false);
-      console.log("Loading screen is now hidden");
+      //console.log("Loading screen is now hidden");
     }
   };
   
