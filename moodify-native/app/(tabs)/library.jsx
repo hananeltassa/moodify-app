@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, View, Text, ActivityIndicator, Alert } from "react-native";
+import { FlatList, View, Text, Alert } from "react-native";
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import Playlist from "../../components/Playlist";
 import { useRouter } from "expo-router";
 import { useSelector } from "react-redux";
 import { getToken } from "../../utils/secureStore";
 import { fetchSpotifyPlaylists } from "../../api/spotifyAuth";
+import LoadingScreen from "../../components/LoadingScreen";
 
 export default function Library() {
   const router = useRouter();
@@ -71,14 +72,7 @@ export default function Library() {
   
 
   if (loading) {
-    return (
-      <SafeAreaProvider>
-        <SafeAreaView className="flex-1 justify-center items-center bg-black">
-          <ActivityIndicator size="large" color="#FFFFFF" />
-          <Text className="text-white mt-4">Loading your playlists...</Text>
-        </SafeAreaView>
-      </SafeAreaProvider>
-    );
+    return <LoadingScreen message="Loading your playlists..." />;
   }
 
   if (error) {
