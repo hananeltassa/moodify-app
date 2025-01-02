@@ -15,17 +15,7 @@ export default function MiniPlayer() {
   return (
     <TouchableOpacity
       onPress={() => router.push(`/music/[music]?songImage=${currentSong.songImage}&songTitle=${currentSong.songTitle}&songArtist=${currentSong.songArtist}`)}
-      style={{
-        position: "absolute",
-        bottom: 0,
-        left: 0,
-        right: 0,
-        backgroundColor: "#1E1E2E",
-        flexDirection: "row",
-        alignItems: "center",
-        padding: 10,
-        borderRadius: 10,
-      }}
+      className="absolute bottom-1 left-0 right-0 bg-orange-700 flex-row items-center p-2 rounded-xl"
     >
       {/* Thumbnail */}
       <Image
@@ -34,7 +24,7 @@ export default function MiniPlayer() {
       />
       
       {/* Song Info */}
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, gap: 5 }}>
         <Text style={{ color: "white", fontWeight: "bold", fontSize: 14 }}>{currentSong.songTitle}</Text>
         <Text style={{ color: "#AAAAAA", fontSize: 12 }}>{currentSong.songArtist}</Text>
       </View>
