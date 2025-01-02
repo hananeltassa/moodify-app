@@ -75,8 +75,12 @@ export const fetchSpotifyPlaylists = async (jwtToken) => {
 export const fetchSpotifyPlaylistTracks = async (playlistId, jwtToken) => {
   try {
     const response = await axios.get(`${BACKEND_BASE_URL}/api/users/spotify/playlists/${playlistId}/tracks`, {
-      headers: { Authorization: `Bearer ${jwtToken}` },
+      headers: { 
+        Authorization: `Bearer ${jwtToken}` 
+      },
     });
+
+    console.log(JSON.stringify(response.data, null, 2));
 
     return response.data.tracks;
   } catch (error) {
@@ -84,3 +88,21 @@ export const fetchSpotifyPlaylistTracks = async (playlistId, jwtToken) => {
     throw error;
   }
 };
+
+export const playSpotify = async (jwt , payload = {}) => {
+  try {
+    await axios.put(`${BACKEND_BASE_URL}/api/spotify/play`,
+      payload, 
+      { 
+        headers: { 
+          Authorization: `Bearer ${jwtToken}` 
+        } 
+      }
+    );
+    console.log("Playback started successfully.");
+  } catch (error) {
+    console.error("Error starting playback:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
