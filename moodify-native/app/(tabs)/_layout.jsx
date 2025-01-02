@@ -1,31 +1,31 @@
-import { Tabs } from 'expo-router';
-import { Image, Platform, StatusBar, View } from 'react-native';
-import React, { useState } from 'react';
-import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from 'react-native';
-import MiniPlayer from '@/components/MiniPlayer';
+import { Tabs } from "expo-router";
+import { StatusBar, View, Platform } from "react-native";
+import React from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { Colors } from "@/constants/Colors";
+import { useColorScheme } from "react-native";
+import MiniPlayer from "@/components/MiniPlayer";
+import { useSelector } from "react-redux";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const themeColors = Colors[colorScheme ?? 'light'];
+  const themeColors = Colors[colorScheme ?? "light"];
 
-  // State for MiniPlayer
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const togglePlayPause = () => {
-    setIsPlaying((prev) => !prev);
-  };
+  // Redux state for playback
+  const { currentSong } = useSelector((state) => state.playback);
 
   const expandPlayer = () => {
-    console.log('Expanding MiniPlayer...');
-    // Add logic to navigate to a full music player screen
+    if (currentSong) {
+      router.push(
+        `/music/[music]?songImage=${currentSong.songImage}&songTitle=${currentSong.songTitle}&songArtist=${currentSong.songArtist}`
+      );
+    }
   };
 
   return (
     <View className="flex-1 relative">
       <StatusBar
-        barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'}
+        barStyle={colorScheme === "dark" ? "light-content" : "dark-content"}
         backgroundColor={themeColors.background}
       />
 
@@ -41,11 +41,11 @@ export default function TabLayout() {
               borderTopWidth: 0,
               elevation: 0,
               height: 80,
-              paddingBottom: 30, 
+              paddingBottom: 30,
               paddingTop: 10,
               ...Platform.select({
                 ios: {
-                  position: 'absolute',
+                  position: "absolute",
                 },
               }),
             },
@@ -55,7 +55,7 @@ export default function TabLayout() {
           <Tabs.Screen
             name="home"
             options={{
-              title: 'Home',
+              title: "Home",
               tabBarIcon: ({ color }) => (
                 <Ionicons name="home-outline" size={28} color={color} />
               ),
@@ -67,7 +67,7 @@ export default function TabLayout() {
           <Tabs.Screen
             name="search"
             options={{
-              title: 'Search',
+              title: "Search",
               tabBarIcon: ({ color }) => (
                 <Ionicons name="search-outline" size={28} color={color} />
               ),
@@ -79,7 +79,7 @@ export default function TabLayout() {
           <Tabs.Screen
             name="challenge"
             options={{
-              title: 'Challenge',
+              title: "Challenge",
               tabBarIcon: ({ color }) => (
                 <Ionicons name="trophy-outline" size={28} color={color} />
               ),
@@ -91,7 +91,7 @@ export default function TabLayout() {
           <Tabs.Screen
             name="library"
             options={{
-              title: 'Library',
+              title: "Library",
               tabBarIcon: ({ color, size }) => (
                 <Ionicons name="library-outline" size={size} color={color} />
               ),
@@ -99,12 +99,11 @@ export default function TabLayout() {
             }}
           />
 
-
           {/* Profile Tab */}
           <Tabs.Screen
             name="profile"
             options={{
-              title: 'Profile',
+              title: "Profile",
               tabBarIcon: ({ color }) => (
                 <Ionicons name="person-outline" size={28} color={color} />
               ),
@@ -122,13 +121,11 @@ export default function TabLayout() {
       </View>
 
       {/* MiniPlayer */}
-      <View className="absolute bottom-[80px] left-0 right-0 z-10">
-        <MiniPlayer
-          onExpand={expandPlayer}
-          isPlaying={isPlaying}
-          onPlayPause={togglePlayPause}
-        />
-      </View>
+      {currentSong && (
+        <View className="absolute bottom-[80px] left-0 right-0 z-10">
+          <MiniPlayer onExpand={expandPlayer} />
+        </View>
+      )}
     </View>
   );
 }
