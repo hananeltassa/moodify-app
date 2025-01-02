@@ -36,21 +36,21 @@ export default function ChallengeScreen() {
           paddingTop: 10,
           paddingBottom: insets.bottom,
           backgroundColor: "black",
-          paddingHorizontal: 16
+          paddingHorizontal: 16,
         }}
       >
         <ScrollView>
           {/* Title */}
           <Text className="font-Avenir-Bold text-white text-3xl mb-2">
-            Challenges <Text style={{ color: "#FFD700" }}>🏆</Text>
+            Challenges <Text style={{ color: "#FF6100" }}>🏆</Text>
           </Text>
           <Text className="font-avenir-regular text-gray-400 text-sm mb-4">
             Ready to conquer today's challenges, Hanan?
           </Text>
 
           {/* Subtitle */}
-          <Text className="font-Avenir-Bold text-white text-xl mb-4" >
-            Today's AI Coach Challenges <Text style={{ color: "#FFD700" }}>🏆</Text>
+          <Text className="font-Avenir-Bold text-white text-xl mb-4">
+            Today's AI Coach Challenges <Text style={{ color: "#FF6100" }}>🔥</Text>
           </Text>
 
           {/* Challenge Cards */}
