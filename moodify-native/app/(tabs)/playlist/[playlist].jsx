@@ -91,69 +91,71 @@ export default function Playlist() {
         style={{
           flex: 1,
           paddingTop: insets.top,
-          paddingBottom: insets.bottom,
-          paddingHorizontal: 16,
           backgroundColor: "black",
         }}
       >
-        {/* Back Button */}
-        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}>
-          <TouchableOpacity onPress={() => router.back()} style={{ marginRight: 16 }}>
-            <Ionicons name="chevron-back" size={28} color="white" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Playlist Image */}
-        <View className="items-center mb-6">
-          <Image
-            source={
-              playlistImage
-                ? { uri: playlistImage }
-                : images.playlist
-            }
-            className="w-96 h-96"
-            resizeMode="contain"
-          />
-        </View>
-
-        {/* Playlist Title and Like Icon */}
-        <View className="flex-row items-center justify-between p-4 mb-2">
-          <Text className="text-white text-2xl font-Avenir-Bold">{playlistName || "Playlist"}</Text>
-          <TouchableOpacity onPress={toggleLike}>
-            <Ionicons
-              name={isLiked ? "heart" : "heart-outline"}
-              size={28}
-              color={isLiked ? "#FF6100" : "#FFF"}
-            />
-          </TouchableOpacity>
-        </View>
-
-        {/* Playlist Tracks */}
         <FlatList
-          data={tracks}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <Music
-              title={item.name}
-              subtitle={item.artists.join(", ")}
-              image={
-                item.album?.images?.length > 0
-                  ? { uri: item.album.images[0].url }
-                  : images.playlist
-              }
-              onPress={() =>
-                router.push({
-                  pathname: "/music/[music]",
-                  params: { 
-                    songTitle: item.name, 
-                    songImage: item.album?.images?.length > 0 ? item.album.images[0].url : null,
-                    songArtist: item.artists.join(", "), },
-                })
-              }
-              onMorePress={() => console.log("More options pressed")}
-            />
-          )}
+          data={["header", ...tracks]}
+          keyExtractor={(item, index) => (item === "header" ? "header" : index.toString())}
           contentContainerStyle={{ paddingBottom: insets.bottom }}
+          renderItem={({ item }) =>
+            item === "header" ? (
+              <View>
+                {/* Back Button */}
+                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}>
+                  <TouchableOpacity onPress={() => router.back()} style={{ marginRight: 16 }}>
+                    <Ionicons name="chevron-back" size={28} color="white" />
+                  </TouchableOpacity>
+                </View>
+
+                {/* Playlist Image */}
+                <View className="items-center mb-6">
+                  <Image
+                    source={
+                      playlistImage
+                        ? { uri: playlistImage }
+                        : images.playlist
+                    }
+                    className="w-96 h-96"
+                    resizeMode="contain"
+                  />
+                </View>
+
+                {/* Playlist Title and Like Icon */}
+                <View className="flex-row items-center justify-between p-4 mb-2">
+                  <Text className="text-white text-2xl font-Avenir-Bold">{playlistName || "Playlist"}</Text>
+                  <TouchableOpacity onPress={toggleLike}>
+                    <Ionicons
+                      name={isLiked ? "heart" : "heart-outline"}
+                      size={28}
+                      color={isLiked ? "#FF6100" : "#FFF"}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ) : (
+              <Music
+                title={item.name}
+                subtitle={item.artists.join(", ")}
+                image={
+                  item.album?.images?.length > 0
+                    ? { uri: item.album.images[0].url }
+                    : images.playlist
+                }
+                onPress={() =>
+                  router.push({
+                    pathname: "/music/[music]",
+                    params: {
+                      songTitle: item.name,
+                      songImage: item.album?.images?.length > 0 ? item.album.images[0].url : null,
+                      songArtist: item.artists.join(", "),
+                    },
+                  })
+                }
+                onMorePress={() => console.log("More options pressed")}
+              />
+            )
+          }
           showsVerticalScrollIndicator={false}
         />
       </SafeAreaView>
