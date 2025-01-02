@@ -24,8 +24,11 @@ const playbackSlice = createSlice({
     togglePlayPause: (state) => {
       state.isPlaying = !state.isPlaying;
     },
+    updateProgress: (state, action) => {
+      state.progress = action.payload;
+    },
   },
 });
 
-export const { playSong, pauseSong, stopSong, togglePlayPause } = playbackSlice.actions;
+export const { playSong, pauseSong, stopSong, togglePlayPause, updateProgress } = playbackSlice.actions;
 export default playbackSlice.reducer;
