@@ -139,3 +139,20 @@ export const skipToNextSpotify = async (jwtToken) => {
     throw error;
   }
 };
+
+export const skipToPreviousSpotify = async (jwtToken) => {
+  try {
+    await axios.post(`${BACKEND_BASE_URL}/api/spotify/previous`, 
+      {}, 
+      { 
+        headers: { 
+          Authorization: `Bearer ${jwtToken}` 
+        } 
+      }
+    );
+    console.log("Skipped to previous track successfully.");
+  } catch (error) {
+    console.error("Error skipping to previous track:", error.response?.data || error.message);
+    throw error;
+  }
+};
