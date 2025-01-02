@@ -7,7 +7,14 @@ const playbackSlice = createSlice({
     currentSong: null,
     progress: 0,
   },
-  reducers: {}
+  reducers: {
+    playSong: (state, action) => {
+      state.isPlaying = true;
+      state.currentSong = action.payload;
+      state.progress = 0;
+    },
+  },
 });
 
+export const { playSong } = playbackSlice.actions;
 export default playbackSlice.reducer;
