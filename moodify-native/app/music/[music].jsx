@@ -3,6 +3,8 @@ import { View, Image, Text, SafeAreaView, TouchableOpacity, Platform } from "rea
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
+import { playSong, togglePlayPause, updateProgress } from "../../redux/slices/playbackSlice";
 
 export default function SongPage() {
   const { songImage, songTitle, songArtist } = useLocalSearchParams();
