@@ -16,8 +16,13 @@ const playbackSlice = createSlice({
     pauseSong: (state) => {
       state.isPlaying = false;
     },
+    stopSong: (state) => {
+      state.isPlaying = false;
+      state.currentSong = null;
+      state.progress = 0;
+    },
   },
 });
 
-export const { playSong, pauseSong } = playbackSlice.actions;
+export const { playSong, pauseSong, stopSong } = playbackSlice.actions;
 export default playbackSlice.reducer;
