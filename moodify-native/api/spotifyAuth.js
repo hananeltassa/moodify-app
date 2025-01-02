@@ -89,9 +89,9 @@ export const fetchSpotifyPlaylistTracks = async (playlistId, jwtToken) => {
   }
 };
 
-export const playSpotify = async (jwt , payload = {}) => {
+export const playSpotify = async (jwtToken , payload = {}) => {
   try {
-    await axios.put(`${BACKEND_BASE_URL}/api/spotify/play`,
+    await axios.put(`${BACKEND_BASE_URL}/api/users/spotify/play`,
       payload, 
       { 
         headers: { 
