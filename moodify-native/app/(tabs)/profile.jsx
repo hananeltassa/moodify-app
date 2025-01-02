@@ -167,22 +167,30 @@ export default function ProfileScreen() {
           otherStyles="mb-4"
         />
 
-        <Text className="text-white text-2xl font-Avenir-Bold mb-2 p-4">Gender</Text>
-        <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-          <RadioButton
-            label="Female"
-            value="female"
-            selectedValue={form.gender}
-            onPress={() => handleChange("gender", "female")}
-            color="#FF4081"
-          />
-          <RadioButton
-            label="Male"
-            value="male"
-            selectedValue={form.gender}
-            onPress={() => handleChange("gender", "male")}
-            color="#4081FF"
-          />
+        <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 16, marginBottom: 16 }}>
+
+          <Text style={{ color: "white", fontSize: 18, fontWeight: "bold", marginRight: 16 }}>Gender:</Text>
+
+          {/* Gender Options */}
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            {/* Female Option */}
+            <RadioButton
+              label="Female"
+              value="female"
+              selectedValue={form.gender}
+              onPress={(value) => handleChange("gender", value)}
+              color="#FF4081"
+            />
+
+            {/* Male Option */}
+            <RadioButton
+              label="Male"
+              value="male"
+              selectedValue={form.gender}
+              onPress={(value) => handleChange("gender", value)}
+              color="#4081FF"
+            />
+          </View>
         </View>
 
         <FormField
