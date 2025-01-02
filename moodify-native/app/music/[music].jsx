@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, Image, Text, SafeAreaView, TouchableOpacity, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
@@ -8,12 +8,23 @@ import { playSong, togglePlayPause, updateProgress } from "../../redux/slices/pl
 
 export default function SongPage() {
   const { songImage, songTitle, songArtist } = useLocalSearchParams();
-  const [isLiked, setIsLiked] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const dispatch = useDispatch();
   const router = useRouter();
 
-  const toggleLike = () => {
-    setIsLiked(!isLiked);
+  const { isPlaying, progress } = useSelector((state) => state.playback);
+
+  const handlePlayPause = () => {
+    dispatch(togglePlayPause());
+  };
+
+  const startPlaying = () => {
+    dispatch(
+      playSong({
+        songImage,
+        songTitle,
+        songArtist,
+      })
+    );
   };
 
   return (
@@ -39,7 +50,7 @@ export default function SongPage() {
               ? { uri: songImage }
               : { uri: "https://via.placeholder.com/300" }
           }
-          style={{ width: 400, height: 400 }}
+          style={{ width: 400, height: 400, borderRadius: 10 }}
         />
       </View>
 
@@ -50,11 +61,11 @@ export default function SongPage() {
             <Text className="text-white text-2xl font-bold">{songTitle || "Unknown Title"}</Text>
             <Text className="text-gray-400 text-lg">{songArtist || "Unknown Artist"}</Text>
           </View>
-          <TouchableOpacity onPress={toggleLike}>
+          <TouchableOpacity onPress={handlePlayPause}>
             <Ionicons
-              name={isLiked ? "heart" : "heart-outline"}
+              name={isPlaying ? "heart" : "heart-outline"}
               size={32}
-              color={isLiked ? "#FF6100" : "white"}
+              color="#FF6100"
             />
           </TouchableOpacity>
         </View>
@@ -70,10 +81,10 @@ export default function SongPage() {
           maximumTrackTintColor="#FFFFFF"
           thumbTintColor="#FF6100"
           value={progress}
-          onValueChange={(value) => setProgress(value)}
+          onValueChange={(value) => dispatch(updateProgress(value))}
         />
         <View className="flex-row justify-between px-2">
-          <Text className="text-white text-sm">0:38</Text>
+          <Text className="text-white text-sm">{Math.floor(progress * 60)}:{Math.floor((progress * 60) % 60)}</Text>
           <Text className="text-white text-sm">1:18</Text>
         </View>
       </View>
@@ -83,8 +94,8 @@ export default function SongPage() {
         <TouchableOpacity>
           <Ionicons name="play-skip-back" size={36} color="white" />
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Ionicons name="pause-circle" size={80} color="white" />
+        <TouchableOpacity onPress={startPlaying}>
+          <Ionicons name={isPlaying ? "pause-circle" : "play-circle"} size={80} color="white" />
         </TouchableOpacity>
         <TouchableOpacity>
           <Ionicons name="play-skip-forward" size={36} color="white" />
