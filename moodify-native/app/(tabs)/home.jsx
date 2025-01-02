@@ -1,4 +1,4 @@
-import { SafeAreaView, Text, View, Image, TouchableOpacity } from "react-native";
+import { SafeAreaView, Text, View, Image, TouchableOpacity, ScrollView } from "react-native";
 import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import icons from "../../constants/icons";
@@ -6,11 +6,11 @@ import images from "../../constants/images";
 import WeeklyProgress from "../../components/WeeklyProgress";
 import RecommendedMusic from "../../components/RecommendedMusic";
 import { LinearGradient } from "expo-linear-gradient";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { router } from "expo-router";
 
 export default function Home() {
-  const insets = useSafeAreaInsets(); // Get safe area insets for both Android and iOS
+  const insets = useSafeAreaInsets();
   const user = useSelector((state) => state.user.user);
   const profilePic = user?.profilePic;
 
@@ -73,98 +73,92 @@ export default function Home() {
         paddingRight: insets.right,
       }}
     >
-      {/* Profile Picture */}
-      <View style={{ marginLeft: 16, marginTop: 16 }}>
-      <Image
-        source={profilePic ? { uri: profilePic } : images.user}
-        style={{
-          width: 48,
-          height: 48,
-          borderRadius: 30,
-          borderWidth: 2,
-          borderColor: "#FF6100",
+      <ScrollView
+        contentContainerStyle={{
+          paddingBottom: 20,
         }}
-        alt="Profile Picture"
-      />
-      </View>
-
-      {/* Weekly Progress */}
-      <View className="mt-2">
-        <WeeklyProgress data={weeklyData} />
-      </View>
-
-      {/* Discover Your Mood Today */}
-      <TouchableOpacity
-        className="px-2 mt-6 rounded-xl"
-        style={{ elevation: 5 }}
+        showsVerticalScrollIndicator={false}
       >
-        <LinearGradient
-          colors={["#FF6100", "#FF4500"]}
-          style={{
-            borderRadius: 16,
-            height: 120,
-            paddingHorizontal: 16,
-            justifyContent: "space-between",
-            flexDirection: "row",
-            alignItems: "center", 
-          }}
-        >
-          {/* Left Section: Text Content */}
-          <View style={{ flex: 1 }}>
-            <Text className="text-white text-2xl font-Avenir-Bold">
-              Discover Your Mood Today
-            </Text>
-            <Text className="text-white text-sm opacity-80 mt-2">
-              Choose how you'd like to share your mood
-            </Text>
-          </View>
-
-          {/* Right Section: Icons */}
-          <View className="flex-row items-center justify-center"
+        {/* Profile Picture */}
+        <View style={{ marginLeft: 16, marginTop: 16 }}>
+          <Image
+            source={profilePic ? { uri: profilePic } : images.user}
             style={{
-              gap: 6,
+              width: 48,
+              height: 48,
+              borderRadius: 30,
+              borderWidth: 2,
+              borderColor: "#FF6100",
+            }}
+            alt="Profile Picture"
+          />
+        </View>
+
+        {/* Weekly Progress */}
+        <View className="mt-2">
+          <WeeklyProgress data={weeklyData} />
+        </View>
+
+        {/* Discover Your Mood Today */}
+        <TouchableOpacity className="px-2 mt-6 rounded-xl" style={{ elevation: 5 }}>
+          <LinearGradient
+            colors={["#FF6100", "#FF4500"]}
+            style={{
+              borderRadius: 16,
+              height: 120,
+              paddingHorizontal: 16,
+              justifyContent: "space-between",
+              flexDirection: "row",
+              alignItems: "center",
             }}
           >
-            {/* Voice Icon */}
-            <TouchableOpacity
-            className="bg-white p-3 items-center justify-center rounded-full"
-              onPress={() => router.push("/(mood-detection)/voice-recognition")}
-            >
-              <Image
-                source={icons.voice}
-                style={{ width: 24, height: 24, tintColor: "#FF6100" }}
-              />
-            </TouchableOpacity>
+            <View style={{ flex: 1 }}>
+              <Text className="text-white text-2xl font-Avenir-Bold">Discover Your Mood Today</Text>
+              <Text className="text-white text-sm opacity-80 mt-2">
+                Choose how you'd like to share your mood
+              </Text>
+            </View>
 
-            {/* Text Icon */}
-            <TouchableOpacity
-              className="bg-white p-3 items-center justify-center rounded-full"
-              onPress={() => router.push("/(mood-detection)/text-detection")}
-            >
-              <Image
-                source={icons.pen}
-                style={{ width: 24, height: 24, tintColor: "#FF6100" }}
-              />
-            </TouchableOpacity>
+            <View className="flex-row items-center justify-center" style={{ gap: 6 }}>
+              <TouchableOpacity
+                className="bg-white p-3 items-center justify-center rounded-full"
+                onPress={() => router.push("/(mood-detection)/voice-recognition")}
+              >
+                <Image
+                  source={icons.voice}
+                  style={{ width: 24, height: 24, tintColor: "#FF6100" }}
+                />
+              </TouchableOpacity>
 
-            {/* Camera Icon */}
-            <TouchableOpacity
-              className="bg-white p-3 items-center justify-center rounded-full"
-              onPress={() => router.push("/(mood-detection)/image-recognition")}
-            >
-              <Image
-                source={icons.face}
-                style={{ width: 24, height: 24, tintColor: "#FF6100" }}
-              />
-            </TouchableOpacity>
-          </View>
-        </LinearGradient>
-      </TouchableOpacity>
+              <TouchableOpacity
+                className="bg-white p-3 items-center justify-center rounded-full"
+                onPress={() => router.push("/(mood-detection)/text-detection")}
+              >
+                <Image
+                  source={icons.pen}
+                  style={{ width: 24, height: 24, tintColor: "#FF6100" }}
+                />
+              </TouchableOpacity>
 
-      {/* Recommended Music */}
-      <View className="mt-4">
-        <RecommendedMusic title="Recommended Music" data={musicData} />
-      </View>
+              <TouchableOpacity
+                className="bg-white p-3 items-center justify-center rounded-full"
+                onPress={() => router.push("/(mood-detection)/image-recognition")}
+              >
+                <Image
+                  source={icons.face}
+                  style={{ width: 24, height: 24, tintColor: "#FF6100" }}
+                />
+              </TouchableOpacity>
+            </View>
+          </LinearGradient>
+        </TouchableOpacity>
+
+        {/* Recommended Music */}
+        <View className="">
+          <RecommendedMusic title="Recommended Music" data={musicData} />
+        </View>
+
+      </ScrollView>
     </SafeAreaView>
   );
 }
