@@ -40,14 +40,20 @@ export default function MiniPlayer() {
       </View>
 
       {/* Play/Pause Button */}
-      <TouchableOpacity      
+      <TouchableOpacity
+        className="justify-center items-center px-3"
         onPress={(e) => {
-          e.stopPropagation();s
+          e.stopPropagation();
           dispatch(togglePlayPause());
         }}
       >
-        <Ionicons name={isPlaying ? "pause" : "play"} size={24} color="white"/>
+        <Ionicons
+          name={isPlaying ? "pause" : "play"}
+          size={24}
+          color="white"
+        />
       </TouchableOpacity>
+
     </TouchableOpacity>
   );
 }
