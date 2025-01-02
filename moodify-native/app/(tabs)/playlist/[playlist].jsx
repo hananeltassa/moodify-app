@@ -12,7 +12,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setPlaylistTracks } from "../../../redux/slices/playlistTracksSlice";
 
 export default function Playlist() {
-  const { playlist, playlistName, playlistImage } = useLocalSearchParams();
+  const { from, playlist, playlistName, playlistImage } = useLocalSearchParams();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const dispatch = useDispatch();
@@ -96,7 +96,15 @@ export default function Playlist() {
       >
       {/* Back Button */}
         <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}>
-          <TouchableOpacity onPress={() => router.back()} style={{ marginRight: 16 }}>
+          <TouchableOpacity 
+            onPress={() => {
+              if (from === "library") {
+                router.push("/library");
+              } else {
+                router.back();
+              }
+            }}
+            style={{ marginRight: 16 }}>
             <Ionicons name="chevron-back" size={28} color="white" />
           </TouchableOpacity>
         </View>
