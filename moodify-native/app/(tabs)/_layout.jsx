@@ -117,6 +117,13 @@ export default function TabLayout() {
               tabBarShowLabel: false,
             }}
           />
+          <Tabs.Screen
+            name="playlist/[playlist]"
+            options={{
+              href: null,
+              tabBarShowLabel: false,
+            }}
+          />
         </Tabs>
       </View>
 
