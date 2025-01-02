@@ -158,6 +158,7 @@ export default function Playlist() {
                       songTitle: item.name,
                       songImage: item.album?.images?.length > 0 ? item.album.images[0].url : null,
                       songArtist: item.artists.join(", "),
+                      songUri: item.album.uri,
                     },
                   })
                 }
