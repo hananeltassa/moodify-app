@@ -167,12 +167,12 @@ export default function ProfileScreen() {
           otherStyles="mb-4"
         />
 
-        <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 16, marginBottom: 16 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 16, marginBottom: 6 }}>
 
-          <Text style={{ color: "white", fontSize: 18, fontWeight: "bold", marginRight: 16 }}>Gender:</Text>
+          <Text style={{ color: "white", fontSize: 18, fontWeight: "bold", marginRight: 50 }}>Gender:</Text>
 
           {/* Gender Options */}
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 80, marginTop: 20 }}>
             {/* Female Option */}
             <RadioButton
               label="Female"
@@ -208,7 +208,7 @@ export default function ProfileScreen() {
             backgroundColor="bg-white"
             textColor="text-black"
             textSize="text-base"
-            marginTop="mt-8"
+            marginTop="mt-6"
             width="w-38"
             borderStyle="border border-white"
             containerStyle="mx-auto py-2 px-6"
