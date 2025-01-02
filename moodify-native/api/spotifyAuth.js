@@ -106,3 +106,19 @@ export const playSpotify = async (jwt , payload = {}) => {
   }
 };
 
+export const pauseSpotify = async (jwtToken) => {
+  try {
+    await axios.put(`${BACKEND_BASE_URL}/api/spotify/pause`, 
+      {}, 
+      { 
+        headers: { 
+          Authorization: `Bearer ${jwtToken}` 
+        } 
+      }
+    );
+    console.log("Playback paused successfully.");
+  } catch (error) {
+    console.error("Error pausing playback:", error.response?.data || error.message);
+    throw error;
+  }
+};
