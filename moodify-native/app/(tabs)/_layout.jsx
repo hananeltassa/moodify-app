@@ -93,18 +93,12 @@ export default function TabLayout() {
             options={{
               title: 'Library',
               tabBarIcon: ({ color, size }) => (
-                <Image
-                  source={require('../../assets/icons/library.png')}
-                  className="w-7 h-7"
-                  style={{
-                    tintColor: color,
-                  }}
-                  resizeMode="contain"
-                />
+                <Ionicons name="library-outline" size={size} color={color} />
               ),
               tabBarShowLabel: false,
             }}
           />
+
 
           {/* Profile Tab */}
           <Tabs.Screen
