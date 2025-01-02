@@ -4,12 +4,12 @@ import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-cont
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import images from "@/constants/images";
-import Music from "../../components/Music";
-import { fetchSpotifyPlaylistTracks } from "../../api/spotifyAuth";
-import { getToken } from "../../utils/secureStore";
-import LoadingScreen from "../../components/LoadingScreen";
+import Music from "../../../components/Music";
+import { fetchSpotifyPlaylistTracks } from "../../../api/spotifyAuth";
+import { getToken } from "../../../utils/secureStore";
+import LoadingScreen from "../../../components/LoadingScreen";
 import { useSelector, useDispatch } from "react-redux";
-import { setPlaylistTracks } from "../../redux/slices/playlistTracksSlice";
+import { setPlaylistTracks } from "../../../redux/slices/playlistTracksSlice";
 
 export default function Playlist() {
   const { playlist, playlistName, playlistImage } = useLocalSearchParams();
