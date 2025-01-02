@@ -128,6 +128,17 @@ export default function ProfileScreen() {
       }}
     >
       <View className="flex-1">
+        <TouchableOpacity
+          onPress={handleLogout}
+          className="absolute bg-white/10 p-2 rounded-full z-10"
+          style={{
+            top: insets.top - 40,
+            right: insets.right + 10,
+          }}
+        >
+          <Icon name="log-out" size={24} color="white" />
+        </TouchableOpacity>
+
         <LinearGradient
           colors={["#FF6100", "#B90039"]}
           start={{ x: 0, y: 0 }}
@@ -168,7 +179,6 @@ export default function ProfileScreen() {
         />
 
         <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 16, marginBottom: 6 }}>
-
           <Text style={{ color: "white", fontSize: 18, fontWeight: "bold", marginRight: 50 }}>Gender:</Text>
 
           {/* Gender Options */}
@@ -215,18 +225,6 @@ export default function ProfileScreen() {
             onPress={handleSave}
           />
         )}
-
-        <CustomButton
-          text="Logout"
-          backgroundColor="bg-red-500"
-          textColor="text-white"
-          textSize="text-base"
-          marginTop="mt-4"
-          width="w-38"
-          borderStyle="border border-red-600"
-          containerStyle="mx-auto py-2 px-6"
-          onPress={handleLogout}
-        />
       </View>
     </SafeAreaView>
   );
