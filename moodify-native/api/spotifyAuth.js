@@ -122,3 +122,20 @@ export const pauseSpotify = async (jwtToken) => {
     throw error;
   }
 };
+
+export const skipToNextSpotify = async (jwtToken) => {
+  try {
+    await axios.post(`${BACKEND_BASE_URL}/api/spotify/next`, 
+      {}, 
+      { 
+        headers: { 
+        Authorization: `Bearer ${jwtToken}` 
+        } 
+      }
+    );
+    console.log("Skipped to next track successfully.");
+  } catch (error) {
+    console.error("Error skipping to next track:", error.response?.data || error.message);
+    throw error;
+  }
+};
