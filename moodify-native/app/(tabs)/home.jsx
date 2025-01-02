@@ -95,57 +95,68 @@ export default function Home() {
 
       {/* Discover Your Mood Today */}
       <TouchableOpacity
-        onPress={() => console.log("Navigate to Mood Input Options")}
         className="px-2 mt-6 rounded-xl"
         style={{ elevation: 5 }}
       >
         <LinearGradient
           colors={["#FF6100", "#FF4500"]}
-          style={{ borderRadius: 16, height: 80 }}
+          style={{
+            borderRadius: 16,
+            height: 120,
+            paddingHorizontal: 16,
+            justifyContent: "space-between",
+            flexDirection: "row",
+            alignItems: "center", 
+          }}
         >
-          <View className="flex-row items-center justify-between p-4">
-            <View>
-              <Text className="text-white text-2xl font-bold">
-                Discover Your Mood Today
-              </Text>
-              <Text className="text-white text-base opacity-80 mt-2">
-                Choose how you'd like to share your mood
-              </Text>
-            </View>
-            <View className="flex-row space-x-3">
-              {/* Voice Icon */}
-              <TouchableOpacity
-                className="bg-white p-2 rounded-full"
-                onPress={() => router.push("/(mood-detection)/voice-recognition")}
-              >
-                <Image
-                  source={icons.voice}
-                  style={{ width: 24, height: 24, tintColor: "#FF6100" }}
-                />
-              </TouchableOpacity>
+          {/* Left Section: Text Content */}
+          <View style={{ flex: 1 }}>
+            <Text className="text-white text-2xl font-Avenir-Bold">
+              Discover Your Mood Today
+            </Text>
+            <Text className="text-white text-sm opacity-80 mt-2">
+              Choose how you'd like to share your mood
+            </Text>
+          </View>
 
-              {/* Text Icon */}
-              <TouchableOpacity
-                className="bg-white p-2 rounded-full"
-                onPress={() => router.push("/(mood-detection)/text-detection")}
-              >
-                <Image
-                  source={icons.pen}
-                  style={{ width: 24, height: 24, tintColor: "#FF6100" }}
-                />
-              </TouchableOpacity>
+          {/* Right Section: Icons */}
+          <View className="flex-row items-center justify-center"
+            style={{
+              gap: 6,
+            }}
+          >
+            {/* Voice Icon */}
+            <TouchableOpacity
+            className="bg-white p-3 items-center justify-center rounded-full"
+              onPress={() => router.push("/(mood-detection)/voice-recognition")}
+            >
+              <Image
+                source={icons.voice}
+                style={{ width: 24, height: 24, tintColor: "#FF6100" }}
+              />
+            </TouchableOpacity>
 
-              {/* Camera Icon */}
-              <TouchableOpacity
-                className="bg-white p-2 rounded-full"
-                onPress={() => router.push("/(mood-detection)/image-recognition")}
-              >
-                <Image
-                  source={icons.face}
-                  style={{ width: 24, height: 24, tintColor: "#FF6100" }}
-                />
-              </TouchableOpacity>
-            </View>
+            {/* Text Icon */}
+            <TouchableOpacity
+              className="bg-white p-3 items-center justify-center rounded-full"
+              onPress={() => router.push("/(mood-detection)/text-detection")}
+            >
+              <Image
+                source={icons.pen}
+                style={{ width: 24, height: 24, tintColor: "#FF6100" }}
+              />
+            </TouchableOpacity>
+
+            {/* Camera Icon */}
+            <TouchableOpacity
+              className="bg-white p-3 items-center justify-center rounded-full"
+              onPress={() => router.push("/(mood-detection)/image-recognition")}
+            >
+              <Image
+                source={icons.face}
+                style={{ width: 24, height: 24, tintColor: "#FF6100" }}
+              />
+            </TouchableOpacity>
           </View>
         </LinearGradient>
       </TouchableOpacity>
