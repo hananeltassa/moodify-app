@@ -1,30 +1,45 @@
-import React from "react";
-import { View, Image, Text, SafeAreaView, TouchableOpacity, Platform } from "react-native";
+import React, { useState } from "react";
+import { View, Image, Text, SafeAreaView, TouchableOpacity, Platform, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
-import { playSong, togglePlayPause, updateProgress } from "../../redux/slices/playbackSlice";
+import { togglePlayPause, updateProgress } from "../../redux/slices/playbackSlice";
+import { playSpotify, pauseSpotify } from "../../api/spotifyAuth";
+import { getToken } from "../../utils/secureStore";
 
 export default function SongPage() {
-  const { songImage, songTitle, songArtist } = useLocalSearchParams();
+  const { songImage, songTitle, songArtist, songUri } = useLocalSearchParams();
+
   const dispatch = useDispatch();
   const router = useRouter();
 
   const { isPlaying, progress } = useSelector((state) => state.playback);
+  const [loading, setLoading] = useState(false);
 
-  const handlePlayPause = () => {
-    dispatch(togglePlayPause());
-  };
+  const handlePlayPause = async () => {
+    try {
+      setLoading(true);
 
-  const startPlaying = () => {
-    dispatch(
-      playSong({
-        songImage,
-        songTitle,
-        songArtist,
-      })
-    );
+      const jwtToken = await getToken("jwtToken");
+
+      if (!jwtToken) {
+        throw new Error("User is not logged in.");
+      }
+
+      if (isPlaying) {
+        await pauseSpotify(jwtToken);
+      } else {
+        await playSpotify(jwtToken, { uris: [songUri] });
+      }
+
+      dispatch(togglePlayPause()); // Update the Redux state
+    } catch (error) {
+      console.error("Error toggling playback:", error.message);
+      Alert.alert("Playback Error", "Failed to toggle playback. Please try again.");
+    } finally {
+      setLoading(false); // Re-enable UI interactions
+    }
   };
 
   return (
@@ -54,20 +69,13 @@ export default function SongPage() {
         />
       </View>
 
-      {/* Song Info & Like Button */}
+      {/* Song Info */}
       <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
         <View className="flex-row items-center justify-between">
           <View>
             <Text className="text-white text-2xl font-bold">{songTitle || "Unknown Title"}</Text>
             <Text className="text-gray-400 text-lg">{songArtist || "Unknown Artist"}</Text>
           </View>
-          <TouchableOpacity onPress={handlePlayPause}>
-            <Ionicons
-              name={isPlaying ? "heart" : "heart-outline"}
-              size={32}
-              color="#FF6100"
-            />
-          </TouchableOpacity>
         </View>
       </View>
 
@@ -91,14 +99,18 @@ export default function SongPage() {
 
       {/* Playback Controls */}
       <View className="flex-row items-center justify-evenly mb-10">
-        <TouchableOpacity>
-          <Ionicons name="play-skip-back" size={36} color="white" />
+        <TouchableOpacity disabled={loading}>
+          <Ionicons name="play-skip-back" size={36} color={loading ? "gray" : "white"} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={startPlaying}>
-          <Ionicons name={isPlaying ? "pause-circle" : "play-circle"} size={80} color="white" />
+        <TouchableOpacity onPress={handlePlayPause} disabled={loading}>
+          <Ionicons
+            name={isPlaying ? "pause-circle" : "play-circle"}
+            size={80}
+            color={loading ? "gray" : "white"}
+          />
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Ionicons name="play-skip-forward" size={36} color="white" />
+        <TouchableOpacity disabled={loading}>
+          <Ionicons name="play-skip-forward" size={36} color={loading ? "gray" : "white"} />
         </TouchableOpacity>
       </View>
     </SafeAreaView>
