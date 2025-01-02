@@ -7,6 +7,7 @@ import WeeklyProgress from "../../components/WeeklyProgress";
 import RecommendedMusic from "../../components/RecommendedMusic";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSelector, useDispatch } from "react-redux";
+import { router } from "expo-router";
 
 export default function Home() {
   const insets = useSafeAreaInsets(); // Get safe area insets for both Android and iOS
@@ -113,16 +114,36 @@ export default function Home() {
             </View>
             <View className="flex-row space-x-3">
               {/* Voice Icon */}
-              <TouchableOpacity className="bg-white p-2 rounded-full">
-                <Image source={icons.voice} style={{ width: 24, height: 24, tintColor: "#FF6100" }} />
+              <TouchableOpacity
+                className="bg-white p-2 rounded-full"
+                onPress={() => router.push("/(mood-detection)/voice-recognition")}
+              >
+                <Image
+                  source={icons.voice}
+                  style={{ width: 24, height: 24, tintColor: "#FF6100" }}
+                />
               </TouchableOpacity>
+
               {/* Text Icon */}
-              <TouchableOpacity className="bg-white p-2 rounded-full">
-                <Image source={icons.pen} style={{ width: 24, height: 24, tintColor: "#FF6100" }} />
+              <TouchableOpacity
+                className="bg-white p-2 rounded-full"
+                onPress={() => router.push("/(mood-detection)/text-detection")}
+              >
+                <Image
+                  source={icons.pen}
+                  style={{ width: 24, height: 24, tintColor: "#FF6100" }}
+                />
               </TouchableOpacity>
+
               {/* Camera Icon */}
-              <TouchableOpacity className="bg-white p-2 rounded-full">
-                <Image source={icons.face} style={{ width: 24, height: 24, tintColor: "#FF6100" }} />
+              <TouchableOpacity
+                className="bg-white p-2 rounded-full"
+                onPress={() => router.push("/(mood-detection)/image-recognition")}
+              >
+                <Image
+                  source={icons.face}
+                  style={{ width: 24, height: 24, tintColor: "#FF6100" }}
+                />
               </TouchableOpacity>
             </View>
           </View>
