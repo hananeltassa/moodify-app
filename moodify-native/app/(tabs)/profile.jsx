@@ -149,7 +149,7 @@ export default function ProfileScreen() {
           />
           <TouchableOpacity
             onPress={handlePickImage}
-            className="absolute bg-white rounded-lg p-1.5 shadow-md"
+            className="absolute bg-white rounded-full p-1.5 shadow-md"
             style={{
               bottom: 65,
               right: 165,
