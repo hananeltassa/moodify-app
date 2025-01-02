@@ -94,6 +94,12 @@ export default function Playlist() {
           backgroundColor: "black",
         }}
       >
+      {/* Back Button */}
+        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}>
+          <TouchableOpacity onPress={() => router.back()} style={{ marginRight: 16 }}>
+            <Ionicons name="chevron-back" size={28} color="white" />
+          </TouchableOpacity>
+        </View>
         <FlatList
           data={["header", ...tracks]}
           keyExtractor={(item, index) => (item === "header" ? "header" : index.toString())}
@@ -101,12 +107,7 @@ export default function Playlist() {
           renderItem={({ item }) =>
             item === "header" ? (
               <View>
-                {/* Back Button */}
-                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}>
-                  <TouchableOpacity onPress={() => router.back()} style={{ marginRight: 16 }}>
-                    <Ionicons name="chevron-back" size={28} color="white" />
-                  </TouchableOpacity>
-                </View>
+
 
                 {/* Playlist Image */}
                 <View className="items-center mb-6">
