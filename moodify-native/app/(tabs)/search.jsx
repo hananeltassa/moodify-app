@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { getToken } from "../../utils/secureStore";
 import { searchSpotifyTracks } from "../../api/spotifyAuth";
 import Music from "../../components/Music";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 
 export default function Search() {
   const insets = useSafeAreaInsets();
@@ -36,17 +36,24 @@ export default function Search() {
         }
 
         const spotifyResults = await searchSpotifyTracks(text, jwtToken, searchType);
-        setResults(
-          spotifyResults.map((item) => ({
-            id: item.name + (item.artists?.join(", ") || item.owner || ""),
-            name: item.name,
-            artists: item.artists?.join(", ") || item.owner || "",
-            album: item.album,
-            image: item.album?.images?.[0]?.url || item.images?.[0]?.url || "https://via.placeholder.com/100",
-            previewUrl: item.preview_url,
-            externalUrl: item.externalUrl,
-          }))
+        const uniqueResults = Array.from(
+          new Map(
+            spotifyResults.map((item, index) => [
+              `${item.name}-${item.artists?.join(", ")}-${index}`,
+              {
+                id: `${item.name}-${item.artists?.join(", ")}-${index}`,
+                name: item.name,
+                artists: item.artists?.join(", ") || item.owner || "",
+                album: item.album,
+                image: item.album?.images?.[0]?.url || item.images?.[0]?.url || "https://via.placeholder.com/100",
+                previewUrl: item.preview_url,
+                externalUrl: item.externalUrl,
+                duration_ms: item.duration_ms,
+              },
+            ])
+          ).values()
         );
+        setResults(uniqueResults);
       } catch (error) {
         console.error("Error fetching Spotify search results:", error);
         Alert.alert("Error", error.message || "Failed to fetch search results.");
@@ -70,7 +77,7 @@ export default function Search() {
               ? { uri: item.album.images[0].url }
               : { uri: "https://via.placeholder.com/300" }
           }
-         onPress={() =>
+          onPress={() =>
             router.push({
               pathname: "/music/[music]",
               params: {
@@ -80,6 +87,7 @@ export default function Search() {
                 songUri: item.album.uri,
                 externalUrl: item.externalUrl,
                 previewUrl: item.preview_url,
+                duration: item.duration_ms,
               },
             })
           }
