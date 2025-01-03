@@ -6,9 +6,11 @@ import { useSelector } from "react-redux";
 import { getToken } from "../../utils/secureStore";
 import { searchSpotifyTracks } from "../../api/spotifyAuth";
 import Music from "../../components/Music";
+import { useLocalSearchParams, useRouter } from "expo-router";
 
 export default function Search() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const [searchValue, setSearchValue] = useState("");
   const [results, setResults] = useState([]);
   const [searchType, setSearchType] = useState("track");
@@ -68,9 +70,19 @@ export default function Search() {
               ? { uri: item.album.images[0].url }
               : { uri: "https://via.placeholder.com/300" }
           }
-          onPress={() => {
-            Alert.alert("Track Selected", `You selected: ${item.name}`);
-          }}
+         onPress={() =>
+            router.push({
+              pathname: "/music/[music]",
+              params: {
+                songTitle: item.name,
+                songImage: item.album?.images?.length > 0 ? item.album.images[0].url : null,
+                songArtist: item.artists,
+                songUri: item.album.uri,
+                externalUrl: item.externalUrl,
+                previewUrl: item.preview_url,
+              },
+            })
+          }
         />
       );
     }
