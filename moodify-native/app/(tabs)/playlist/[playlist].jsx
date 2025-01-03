@@ -19,6 +19,7 @@ export default function Playlist() {
 
   const cachedTracks = useSelector((state) => state.playlistTracks.tracks[playlist]);
   const isFetched = useSelector((state) => state.playlistTracks.isFetched[playlist]);
+  const user = useSelector((state) => state.user.user);
 
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -40,10 +41,24 @@ export default function Playlist() {
           throw new Error("User is not logged in.");
         }
 
-        const playlistTracks = await fetchSpotifyPlaylistTracks(playlist, jwtToken);
-        setTracks(playlistTracks);
+        if (user?.spotifyId) {
+          const playlistTracks = await fetchSpotifyPlaylistTracks(playlist, jwtToken);
+          setTracks(playlistTracks);
+          dispatch(setPlaylistTracks({ playlistId: playlist, tracks: playlistTracks }));
+        } else {
 
-        dispatch(setPlaylistTracks({ playlistId: playlist, tracks: playlistTracks }));
+          setTracks([
+            {
+              name: "Mock Track 1",
+              artists: ["Mock Artist 1"],
+              album: {
+                images: [{ url: "https://via.placeholder.com/300" }],
+              },
+              externalUrl: "https://mocktrack.com",
+              preview_url: null,
+            },
+          ]);
+        }
       } catch (error) {
         console.error("Error loading playlist tracks:", error);
         Alert.alert("Error", error.message || "Failed to load playlist tracks.");
@@ -55,7 +70,7 @@ export default function Playlist() {
     if (playlist) {
       loadPlaylistTracks();
     }
-  }, [playlist, isFetched, cachedTracks]);
+  }, [playlist, isFetched, cachedTracks, user]);
 
   const toggleLike = () => {
     setIsLiked(!isLiked);
@@ -94,9 +109,9 @@ export default function Playlist() {
           backgroundColor: "black",
         }}
       >
-      {/* Back Button */}
+        {/* Back Button */}
         <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}>
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => {
               if (from === "library") {
                 router.push("/library");
@@ -104,7 +119,8 @@ export default function Playlist() {
                 router.back();
               }
             }}
-            style={{ marginRight: 16 }}>
+            style={{ marginRight: 16 }}
+          >
             <Ionicons name="chevron-back" size={28} color="white" />
           </TouchableOpacity>
         </View>
@@ -115,8 +131,6 @@ export default function Playlist() {
           renderItem={({ item }) =>
             item === "header" ? (
               <View>
-
-
                 {/* Playlist Image */}
                 <View className="items-center mb-6">
                   <Image
@@ -159,6 +173,8 @@ export default function Playlist() {
                       songImage: item.album?.images?.length > 0 ? item.album.images[0].url : null,
                       songArtist: item.artists.join(", "),
                       songUri: item.album.uri,
+                      externalUrl: item.externalUrl,
+                      previewUrl: item.preview_url,
                     },
                   })
                 }
