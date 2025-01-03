@@ -164,7 +164,7 @@ export const searchSpotifyTracks = async (query, jwtToken, type = "track") => {
       params: { query, type },
     });
 
-    console.log(`Search results for ${type}:`, response.data.results);
+    //console.log(`Search results for ${type}:`, response.data.results);
     return response.data.results[type === "track" ? "tracks" : "playlists"];
   } catch (error) {
     console.error(`Error fetching Spotify ${type} results:`, error.response?.data || error.message);

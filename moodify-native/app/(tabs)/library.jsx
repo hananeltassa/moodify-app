@@ -131,8 +131,7 @@ export default function Library() {
                       from: "library",
                     },
                   })
-                }
-                
+                } 
               />
             )}
             contentContainerStyle={{
