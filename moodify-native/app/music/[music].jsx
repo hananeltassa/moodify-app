@@ -26,14 +26,25 @@ export default function SongPage() {
       : undefined;
   }, [sound]);
 
+  const redirectToSpotify = () => {
+    Linking.openURL(externalUrl).catch((err) => {
+      console.error("Failed to open Spotify URL:", err.message);
+      Alert.alert("Error", "Unable to open Spotify.");
+    });
+  };
+
   const handlePlayPause = async () => {
     try {
       if (!previewUrl) {
         if (externalUrl) {
-          Linking.openURL(externalUrl).catch((err) => {
-            console.error("Failed to open Spotify URL:", err.message);
-            Alert.alert("Error", "Unable to open Spotify.");
-          });
+          Alert.alert(
+            "Open in Spotify",
+            "This song preview is unavailable. Do you want to open the song in Spotify?",
+            [
+              { text: "Cancel", style: "cancel" },
+              { text: "OK", onPress: redirectToSpotify },
+            ]
+          );
         } else {
           Alert.alert("Playback Error", "Preview not available. Open Spotify to play the song.");
         }
