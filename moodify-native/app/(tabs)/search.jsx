@@ -55,11 +55,11 @@ export default function Search() {
         }}
       >
         <View>
-          <Text className="font-Avenir-Bold text-white text-3xl mb-2">
+          <Text style={{ fontFamily: "Avenir-Bold", color: "white", fontSize: 24, marginBottom: 16 }}>
             Search
           </Text>
 
-          {/* Search Field */}
+          {/* Search Input */}
           <TextField
             value={searchValue}
             placeholder={`Search ${searchType}...`}
@@ -77,6 +77,12 @@ export default function Search() {
         <View style={{ flex: 1, marginTop: 16 }}>
           {loading ? (
             <ActivityIndicator size="large" color="gray" style={{ marginTop: 20 }} />
+          ) : searchValue.trim() === "" ? (
+            null
+          ) : results.length === 0 ? (
+            <Text style={{ color: "gray", textAlign: "center", marginTop: 20 }}>
+              No results found.
+            </Text>
           ) : (
             <SearchResults results={results} searchType={searchType} onItemPress={handleItemPress} />
           )}

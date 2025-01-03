@@ -64,8 +64,8 @@ const TextField = ({
             fontSize: inputSize,
             fontFamily: "AvenirNextLTPro",
             color: "#fff",
-            paddingBottom:5,
-            paddingTop:5,
+            // paddingBottom:4,
+            // paddingTop:4,
           }}
           secureTextEntry={isSecure}
           {...props}
