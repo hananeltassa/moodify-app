@@ -17,6 +17,15 @@ export default function SongPage() {
   const [sound, setSound] = useState(null);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [totalDuration, setTotalDuration] = useState(duration || 0);
+
+  useEffect(() => {
+    if (duration) {
+      setTotalDuration(duration);
+    } else {
+      console.warn("Duration not provided. Defaulting to 0.");
+    }
+  }, [duration]);
 
   useEffect(() => {
     return sound
@@ -64,7 +73,7 @@ export default function SongPage() {
 
           newSound.setOnPlaybackStatusUpdate((status) => {
             if (status.isLoaded) {
-              setProgress(status.positionMillis / duration || 0);
+              setProgress(status.positionMillis / totalDuration || 0);
               if (status.didJustFinish) {
                 dispatch(togglePlayPause());
               }
@@ -85,6 +94,7 @@ export default function SongPage() {
   };
 
   const formatDuration = (ms) => {
+    if (!ms || ms <= 0) return "0:00";
     const minutes = Math.floor(ms / 60000);
     const seconds = Math.floor((ms % 60000) / 1000);
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
@@ -139,14 +149,14 @@ export default function SongPage() {
           value={progress}
           onValueChange={(value) => {
             if (sound) {
-              sound.setPositionAsync(value * duration);
+              sound.setPositionAsync(value * totalDuration);
               setProgress(value);
             }
           }}
         />
         <View className="flex-row justify-between px-2">
-          <Text className="text-white text-sm">{formatDuration(progress * duration)}</Text>
-          <Text className="text-white text-sm">{formatDuration(duration)}</Text>
+          <Text className="text-white text-sm">{formatDuration(progress * totalDuration)}</Text>
+          <Text className="text-white text-sm">{formatDuration(totalDuration)}</Text>
         </View>
       </View>
 
