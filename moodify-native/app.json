@@ -49,6 +49,12 @@
           "microphonePermission": "Allow Moodify to access your microphone to record audio.",
           "recordAudioAndroid": true
         }
+      ],
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
+        }
       ]
     ],
     "extra": {
