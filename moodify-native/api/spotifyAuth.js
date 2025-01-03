@@ -157,17 +157,17 @@ export const skipToPreviousSpotify = async (jwtToken) => {
   }
 };
 
-export const searchSpotifyTracks = async (query, jwtToken) => {
+export const searchSpotifyTracks = async (query, jwtToken, type = "track") => {
   try {
     const response = await axios.get(`${BACKEND_BASE_URL}/api/users/spotify/search`, {
       headers: { Authorization: `Bearer ${jwtToken}` },
-      params: { query, type: "track" },
+      params: { query, type },
     });
 
-    console.log("Search results:", response.data.results.tracks);
-    return response.data.results.tracks;
+    console.log(`Search results for ${type}:`, response.data.results);
+    return response.data.results[type === "track" ? "tracks" : "playlists"];
   } catch (error) {
-    console.error("Error fetching Spotify search results:", error.response?.data || error.message);
-    throw new Error("Failed to fetch search results.");
+    console.error(`Error fetching Spotify ${type} results:`, error.response?.data || error.message);
+    throw new Error(`Failed to fetch ${type} search results.`);
   }
 };
