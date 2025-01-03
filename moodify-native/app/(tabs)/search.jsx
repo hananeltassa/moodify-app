@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { getToken } from "../../utils/secureStore";
 import { searchSpotifyTracks } from "../../api/spotifyAuth";
 import Music from "../../components/Music";
+import Playlist from "../../components/Playlist";
 import { useRouter } from "expo-router";
 
 export default function Search() {
@@ -22,7 +23,7 @@ export default function Search() {
     setSearchValue(text);
 
     if (text.trim() === "") {
-      setResults([]); // Clear results if the query is empty
+      setResults([]);
       return;
     }
 
@@ -95,15 +96,22 @@ export default function Search() {
       );
     }
 
-    return (
-      <TouchableOpacity
-        className="flex-row items-center p-4"
-        onPress={() => console.log(`Selected: ${item.name}`)}
-      >
-        <Text className="text-white text-base font-bold">{item.name}</Text>
-        <Text className="text-gray-400 text-sm">{item.artists}</Text>
-      </TouchableOpacity>
-    );
+    if (searchType === "playlist") {
+      return (
+        <Playlist
+          title={item.name}
+          subtitle={item.artists || "Various Artists"}
+          image={
+            item.image
+              ? { uri: item.image }
+              : { uri: "https://via.placeholder.com/300" }
+          }
+          onPress={() => console.log(`Selected playlist: ${item.name}`)}
+        />
+      );
+    }
+
+    return null;
   };
 
   const handleSearchTypeChange = (type) => {
