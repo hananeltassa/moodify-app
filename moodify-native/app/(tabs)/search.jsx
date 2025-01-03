@@ -1,10 +1,11 @@
-import { Text, View, FlatList, TouchableOpacity, Image, Alert } from "react-native";
+import { Text, View, FlatList, TouchableOpacity, Alert } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import TextField from "../../components/TextField";
 import { useSelector } from "react-redux";
 import { getToken } from "../../utils/secureStore";
 import { searchSpotifyTracks } from "../../api/spotifyAuth";
+import Music from "../../components/Music";
 
 export default function Search() {
   const insets = useSafeAreaInsets();
@@ -32,12 +33,13 @@ export default function Search() {
           throw new Error("User is not logged in.");
         }
 
-        const spotifyResults = await searchSpotifyTracks(text, jwtToken, searchType); // Pass search type
+        const spotifyResults = await searchSpotifyTracks(text, jwtToken, searchType);
         setResults(
           spotifyResults.map((item) => ({
             id: item.name + (item.artists?.join(", ") || item.owner || ""),
-            title: item.name,
-            subtitle: item.artists?.join(", ") || item.owner || "",
+            name: item.name,
+            artists: item.artists?.join(", ") || item.owner || "",
+            album: item.album,
             image: item.album?.images?.[0]?.url || item.images?.[0]?.url || "https://via.placeholder.com/100",
             previewUrl: item.preview_url,
             externalUrl: item.externalUrl,
@@ -55,27 +57,39 @@ export default function Search() {
     }
   };
 
-  const renderResultItem = ({ item }) => (
-    <TouchableOpacity
-      className="flex-row items-center p-4"
-      onPress={() => console.log(`Selected: ${item.title}`)}
-    >
-      <Image
-        source={{ uri: item.image }}
-        className="w-16 h-16 mr-4"
-        resizeMode="cover"
-      />
-      <View className="flex-1">
-        <Text className="text-white text-base font-bold">{item.title}</Text>
-        <Text className="text-gray-400 text-sm">{item.subtitle}</Text>
-      </View>
-    </TouchableOpacity>
-  );
+  const renderResultItem = ({ item }) => {
+    if (searchType === "track") {
+      return (
+        <Music
+          title={item.name}
+          subtitle={item.artists}
+          image={
+            item.album?.images?.length > 0
+              ? { uri: item.album.images[0].url }
+              : { uri: "https://via.placeholder.com/300" }
+          }
+          onPress={() => {
+            Alert.alert("Track Selected", `You selected: ${item.name}`);
+          }}
+        />
+      );
+    }
+
+    return (
+      <TouchableOpacity
+        className="flex-row items-center p-4"
+        onPress={() => console.log(`Selected: ${item.name}`)}
+      >
+        <Text className="text-white text-base font-bold">{item.name}</Text>
+        <Text className="text-gray-400 text-sm">{item.artists}</Text>
+      </TouchableOpacity>
+    );
+  };
 
   const handleSearchTypeChange = (type) => {
     setSearchType(type);
-    setSearchValue(""); // Clear the search value when changing type
-    setResults([]); // Clear results when changing type
+    setSearchValue("");
+    setResults([]);
   };
 
   return (
@@ -116,7 +130,7 @@ export default function Search() {
             >
               <Text
                 className={`font-Avenir-Demi ${
-                  searchType === "playlist" ? "text-white" : "text-primary"
+                  searchType === "track" ? "text-black" : "text-white"
                 }`}
               >
                 Tracks
@@ -134,7 +148,7 @@ export default function Search() {
             >
               <Text
                 className={`font-Avenir-Demi ${
-                  searchType === "playlist" ? "text-primary" : "text-white"
+                  searchType === "playlist" ? "text-black" : "text-white"
                 }`}
               >
                 Playlists
