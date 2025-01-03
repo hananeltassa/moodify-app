@@ -37,8 +37,8 @@ export default function Search() {
         }
 
         const spotifyResults = await searchSpotifyTracks(text, jwtToken, searchType);
-        const uniqueResults = spotifyResults.map((item) => ({
-          id: item.id,
+        const uniqueResults = spotifyResults.map((item, index) => ({
+          id: item.id || `${item.name}-${index}`,
           name: item.name,
           artists: item.artists?.join(", ") || item.owner || "",
           album: item.album,
@@ -52,6 +52,7 @@ export default function Search() {
           totalTracks: item.totalTracks,
         }));
 
+        //console.log("Processed Results:", uniqueResults);
         setResults(uniqueResults);
       } catch (error) {
         console.error("Error fetching Spotify search results:", error);
@@ -192,7 +193,7 @@ export default function Search() {
         ) : (
           <FlatList
             data={results}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.id.toString()}
             renderItem={renderResultItem}
             ListEmptyComponent={
               searchValue ? (
