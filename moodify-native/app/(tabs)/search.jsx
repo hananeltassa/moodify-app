@@ -1,12 +1,26 @@
-import { Text, View, FlatList, TouchableOpacity, Image } from "react-native";
+import { Text, View, FlatList, TouchableOpacity, Image, Alert } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";;
 import TextField from "../../components/TextField";
+import { useSelector } from "react-redux";
 
 export default function Search() {
   const insets = useSafeAreaInsets();
   const [searchValue, setSearchValue] = useState("");
   const [results, setResults] = useState([]);
+
+  const user = useSelector((state) => state.user.user);
+
+  const searchSpotify = async (query) => {
+    try {
+      console.log(`Searching Spotify for: ${query}`);
+      //Spotify search logic
+      Alert.alert("Spotify Search", `Searching Spotify for: ${query}`);
+    } catch (error) {
+      console.error("Error searching Spotify:", error);
+      Alert.alert("Error", "Failed to search Spotify. Please try again.");
+    }
+  };
 
   const searchDatabase = (query) => {
     // Mock data to simulate a database
@@ -28,9 +42,13 @@ export default function Search() {
     }
   };
 
-  const handleSearchChange = (text) => {
-    setSearchValue(text); // Update the search value
-    searchDatabase(text); // Perform search
+  const handleSearchChange = async (text) => {
+    setSearchValue(text);
+    if (user?.spotifyId) {
+      await searchSpotify(text);
+    } else {
+      searchDatabase(text);
+    }
   };
 
   const renderResultItem = ({ item }) => (
