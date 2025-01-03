@@ -1,120 +1,46 @@
-import React, { useState } from "react";
-import { Text, View, FlatList, TouchableOpacity, Alert } from "react-native";
+import React from "react";
+import { Text, View, ActivityIndicator } from "react-native";
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import TextField from "../../components/TextField";
-import { useSelector } from "react-redux";
-import { getToken } from "../../utils/secureStore";
-import { searchSpotifyTracks } from "../../api/spotifyAuth";
-import Music from "../../components/Music";
-import Playlist from "../../components/Playlist";
+import SearchFilters from "../../components/Search/SearchFilters";
+import SearchResults from "../../components/Search/SearchResults";
+import { useSearch } from "../../hooks/useSearch";
 import { useRouter } from "expo-router";
 
 export default function Search() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const [searchValue, setSearchValue] = useState("");
-  const [results, setResults] = useState([]);
-  const [searchType, setSearchType] = useState("track");
+  const {
+    searchValue,
+    results,
+    searchType,
+    loading,
+    handleSearchChange,
+    handleSearchTypeChange,
+  } = useSearch();
 
-  const user = useSelector((state) => state.user.user);
-  const [loading, setLoading] = useState(false);
-
-  const handleSearchChange = async (text) => {
-    setSearchValue(text);
-
-    if (text.trim() === "") {
-      setResults([]);
-      return;
-    }
-
-    if (user?.spotifyId) {
-      try {
-        setLoading(true);
-        const jwtToken = await getToken("jwtToken");
-
-        if (!jwtToken) {
-          throw new Error("User is not logged in.");
-        }
-
-        const spotifyResults = await searchSpotifyTracks(text, jwtToken, searchType);
-        const uniqueResults = spotifyResults.map((item, index) => ({
-          id: item.id || `${item.name}-${index}`,
-          name: item.name,
-          artists: item.artists?.join(", ") || item.owner || "",
-          album: item.album,
-          image:
-            item.album?.images?.[0]?.url ||
-            item.images?.[0]?.url ||
-            "https://via.placeholder.com/100",
-          previewUrl: item.preview_url,
-          externalUrl: item.externalUrl,
-          duration_ms: item.duration_ms,
-          totalTracks: item.totalTracks,
-        }));
-
-        //console.log("Processed Results:", uniqueResults);
-        setResults(uniqueResults);
-      } catch (error) {
-        console.error("Error fetching Spotify search results:", error);
-        Alert.alert("Error", error.message || "Failed to fetch search results.");
-      } finally {
-        setLoading(false);
-      }
-    }
-  };
-
-  const renderResultItem = ({ item }) => {
-    if (searchType === "track") {
-      return (
-        <Music
-          title={item.name}
-          subtitle={item.artists}
-          image={item.image ? { uri: item.image } : { uri: "https://via.placeholder.com/300" }}
-          onPress={() =>
-            router.push({
-              pathname: "/music/[music]",
-              params: {
-                songTitle: item.name,
-                songImage: item.image,
-                songArtist: item.artists,
-                externalUrl: item.externalUrl,
-                previewUrl: item.previewUrl,
-                duration: item.duration_ms,
-              },
-            })
-          }
-        />
-      );
-    }
-
-    if (searchType === "playlist") {
-      return (
-        <Playlist
-          title={item.name}
-          subtitle={item.owner}
-          image={item.image ? { uri: item.image } : { uri: "https://via.placeholder.com/300" }}
-          onPress={() =>
-            router.push({
-              pathname: "/(tabs)/playlist/[playlist]",
-              params: {
-                playlist: item.id,
-                playlistName: item.name,
-                playlistImage: item.image,
-                from: "search",
-              },
-            })
-          }
-        />
-      );
-    }
-
-    return null;
-  };
-
-  const handleSearchTypeChange = (type) => {
-    setSearchType(type);
-    setSearchValue("");
-    setResults([]);
+  const handleItemPress = (type, item) => {
+    const route = type === "track" ? "/music/[music]" : "/(tabs)/playlist/[playlist]";
+    router.push({
+      pathname: route,
+      params: {
+        ...(type === "track"
+          ? {
+              songTitle: item.name,
+              songImage: item.image,
+              songArtist: item.artists,
+              externalUrl: item.externalUrl,
+              previewUrl: item.previewUrl,
+              duration: item.duration_ms,
+            }
+          : {
+              playlist: item.id,
+              playlistName: item.name,
+              playlistImage: item.image,
+              from: "search",
+            }),
+      },
+    });
   };
 
   return (
@@ -129,12 +55,12 @@ export default function Search() {
         }}
       >
         <View>
-          <Text style={{ fontFamily: "Avenir-Bold", color: "white", fontSize: 24, marginBottom: 10 }}>
+          <Text className="font-Avenir-Bold text-white text-3xl mb-2">
             Search
           </Text>
 
+          {/* Search Field */}
           <TextField
-            title="Search"
             value={searchValue}
             placeholder={`Search ${searchType}...`}
             handleChangeText={handleSearchChange}
@@ -144,66 +70,17 @@ export default function Search() {
           />
 
           {/* Filter Buttons */}
-          <View style={{ flexDirection: "row", gap: 16, marginTop: 16 }}>
-            <TouchableOpacity
-              style={{
-                paddingHorizontal: 16,
-                paddingVertical: 8,
-                borderRadius: 25,
-                borderWidth: 1,
-                borderColor: "white",
-                backgroundColor: searchType === "track" ? "white" : "transparent",
-              }}
-              onPress={() => handleSearchTypeChange("track")}
-            >
-              <Text
-                style={{
-                  fontFamily: "Avenir-Demi",
-                  color: searchType === "track" ? "black" : "white",
-                }}
-              >
-                Tracks
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                paddingHorizontal: 16,
-                paddingVertical: 8,
-                borderRadius: 25,
-                borderWidth: 1,
-                borderColor: "white",
-                backgroundColor: searchType === "playlist" ? "white" : "transparent",
-              }}
-              onPress={() => handleSearchTypeChange("playlist")} // Correct type here
-            >
-              <Text
-                style={{
-                  fontFamily: "Avenir-Demi",
-                  color: searchType === "playlist" ? "black" : "white",
-                }}
-              >
-                Playlists
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <SearchFilters currentType={searchType} onChangeType={handleSearchTypeChange} />
         </View>
 
-        {loading ? (
-          <Text style={{ color: "gray", textAlign: "center", marginTop: 20 }}>Searching...</Text>
-        ) : (
-          <FlatList
-            data={results}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={renderResultItem}
-            ListEmptyComponent={
-              searchValue ? (
-                <Text style={{ color: "gray", textAlign: "center", marginTop: 20 }}>
-                  No results found.
-                </Text>
-              ) : null
-            }
-          />
-        )}
+        {/* Results Section */}
+        <View style={{ flex: 1, marginTop: 16 }}>
+          {loading ? (
+            <ActivityIndicator size="large" color="gray" style={{ marginTop: 20 }} />
+          ) : (
+            <SearchResults results={results} searchType={searchType} onItemPress={handleItemPress} />
+          )}
+        </View>
       </SafeAreaView>
     </SafeAreaProvider>
   );
