@@ -41,8 +41,18 @@ export default function Music({ title, subtitle, image, onPress }) {
 
         {/* Text Content */}
         <View className="flex-1 mr-2">
-          <Text className="text-white text-lg font-Avenir-Demi">{title}</Text>
-          <Text className="text-gray-400 text-base">{subtitle}</Text>
+          <Text
+            className="text-white text-lg font-Avenir-Demi"
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {title}
+          </Text>
+
+          <Text className="text-gray-400 text-base" numberOfLines={1}
+            ellipsizeMode="tail">
+              {subtitle}
+          </Text>
         </View>
 
         {/* Three Dots Icon */}
