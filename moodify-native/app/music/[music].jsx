@@ -1,44 +1,75 @@
-import React, { useState } from "react";
-import { View, Image, Text, SafeAreaView, TouchableOpacity, Platform, Alert } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Image, Text, SafeAreaView, TouchableOpacity, Platform, Alert, Linking } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
-import { togglePlayPause, updateProgress } from "../../redux/slices/playbackSlice";
-import { playSpotify, pauseSpotify } from "../../api/spotifyAuth";
-import { getToken } from "../../utils/secureStore";
+import { togglePlayPause } from "../../redux/slices/playbackSlice";
+import { Audio } from "expo-av";
 
 export default function SongPage() {
-  const { songImage, songTitle, songArtist, songUri } = useLocalSearchParams();
+  const { songImage, songTitle, songArtist, songUri, externalUrl, previewUrl } = useLocalSearchParams();
 
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const { isPlaying, progress } = useSelector((state) => state.playback);
+  const { isPlaying } = useSelector((state) => state.playback);
+  const [sound, setSound] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    return sound
+      ? () => {
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, [sound]);
 
   const handlePlayPause = async () => {
     try {
+      if (!previewUrl) {
+        if (externalUrl) {
+          Linking.openURL(externalUrl).catch((err) => {
+            console.error("Failed to open Spotify URL:", err.message);
+            Alert.alert("Error", "Unable to open Spotify.");
+          });
+        } else {
+          Alert.alert("Playback Error", "Preview not available. Open Spotify to play the song.");
+        }
+        return;
+      }
       setLoading(true);
 
-      const jwtToken = await getToken("jwtToken");
-
-      if (!jwtToken) {
-        throw new Error("User is not logged in.");
-      }
-
-      if (isPlaying) {
-        await pauseSpotify(jwtToken);
+      if (isPlaying && sound) {
+        await sound.pauseAsync();
       } else {
-        await playSpotify(jwtToken, { uris: [songUri] });
+        if (!sound) {
+          const { sound: newSound } = await Audio.Sound.createAsync(
+            { uri: previewUrl },
+            { shouldPlay: true }
+          );
+          setSound(newSound);
+
+          newSound.setOnPlaybackStatusUpdate((status) => {
+            if (status.isLoaded) {
+              setProgress(status.positionMillis / status.durationMillis || 0);
+              if (status.didJustFinish) {
+                dispatch(togglePlayPause());
+              }
+            }
+          });
+        } else {
+          await sound.playAsync();
+        }
       }
 
-      dispatch(togglePlayPause()); // Update the Redux state
+      dispatch(togglePlayPause());
     } catch (error) {
       console.error("Error toggling playback:", error.message);
       Alert.alert("Playback Error", "Failed to toggle playback. Please try again.");
     } finally {
-      setLoading(false); // Re-enable UI interactions
+      setLoading(false);
     }
   };
 
@@ -65,16 +96,16 @@ export default function SongPage() {
               ? { uri: songImage }
               : { uri: "https://via.placeholder.com/300" }
           }
-          style={{ width: 400, height: 400, borderRadius: 10 }}
+          style={{ width: 400, height: 400, borderRadius: 2 }}
         />
       </View>
 
       {/* Song Info */}
-      <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
+      <View style={{ paddingHorizontal: 20, marginBottom: 30 }}>
         <View className="flex-row items-center justify-between">
           <View>
-            <Text className="text-white text-2xl font-bold">{songTitle || "Unknown Title"}</Text>
-            <Text className="text-gray-400 text-lg">{songArtist || "Unknown Artist"}</Text>
+            <Text className="text-white text-2xl font-Avenir-Bold">{songTitle || "Unknown Title"}</Text>
+            <Text className="text-gray-400 text-lg font-avenir-regular">{songArtist || "Unknown Artist"}</Text>
           </View>
         </View>
       </View>
@@ -89,7 +120,12 @@ export default function SongPage() {
           maximumTrackTintColor="#FFFFFF"
           thumbTintColor="#FF6100"
           value={progress}
-          onValueChange={(value) => dispatch(updateProgress(value))}
+          onValueChange={(value) => {
+            if (sound) {
+              sound.setPositionAsync(value * sound.getStatusAsync().durationMillis);
+              setProgress(value);
+            }
+          }}
         />
         <View className="flex-row justify-between px-2">
           <Text className="text-white text-sm">{Math.floor(progress * 60)}:{Math.floor((progress * 60) % 60)}</Text>
