@@ -175,6 +175,7 @@ export default function Playlist() {
                       songUri: item.album.uri,
                       externalUrl: item.externalUrl,
                       previewUrl: item.preview_url,
+                      duration: item.duration_ms,
                     },
                   })
                 }
