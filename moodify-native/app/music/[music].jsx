@@ -8,7 +8,7 @@ import { togglePlayPause } from "../../redux/slices/playbackSlice";
 import { Audio } from "expo-av";
 
 export default function SongPage() {
-  const { songImage, songTitle, songArtist, songUri, externalUrl, previewUrl } = useLocalSearchParams();
+  const { songImage, songTitle, songArtist, externalUrl, previewUrl, duration } = useLocalSearchParams();
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -64,7 +64,7 @@ export default function SongPage() {
 
           newSound.setOnPlaybackStatusUpdate((status) => {
             if (status.isLoaded) {
-              setProgress(status.positionMillis / status.durationMillis || 0);
+              setProgress(status.positionMillis / duration || 0);
               if (status.didJustFinish) {
                 dispatch(togglePlayPause());
               }
@@ -82,6 +82,12 @@ export default function SongPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const formatDuration = (ms) => {
+    const minutes = Math.floor(ms / 60000);
+    const seconds = Math.floor((ms % 60000) / 1000);
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
   return (
@@ -133,14 +139,14 @@ export default function SongPage() {
           value={progress}
           onValueChange={(value) => {
             if (sound) {
-              sound.setPositionAsync(value * sound.getStatusAsync().durationMillis);
+              sound.setPositionAsync(value * duration);
               setProgress(value);
             }
           }}
         />
         <View className="flex-row justify-between px-2">
-          <Text className="text-white text-sm">{Math.floor(progress * 60)}:{Math.floor((progress * 60) % 60)}</Text>
-          <Text className="text-white text-sm">1:18</Text>
+          <Text className="text-white text-sm">{formatDuration(progress * duration)}</Text>
+          <Text className="text-white text-sm">{formatDuration(duration)}</Text>
         </View>
       </View>
 
