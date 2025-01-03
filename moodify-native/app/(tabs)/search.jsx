@@ -1,5 +1,5 @@
-import { Text, View, FlatList, TouchableOpacity, Alert } from "react-native";
 import React, { useState } from "react";
+import { Text, View, FlatList, TouchableOpacity, Alert } from "react-native";
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import TextField from "../../components/TextField";
 import { useSelector } from "react-redux";
@@ -37,23 +37,21 @@ export default function Search() {
         }
 
         const spotifyResults = await searchSpotifyTracks(text, jwtToken, searchType);
-        const uniqueResults = Array.from(
-          new Map(
-            spotifyResults.map((item, index) => [
-              `${item.name}-${item.artists?.join(", ")}-${index}`,
-              {
-                id: `${item.name}-${item.artists?.join(", ")}-${index}`,
-                name: item.name,
-                artists: item.artists?.join(", ") || item.owner || "",
-                album: item.album,
-                image: item.album?.images?.[0]?.url || item.images?.[0]?.url || "https://via.placeholder.com/100",
-                previewUrl: item.preview_url,
-                externalUrl: item.externalUrl,
-                duration_ms: item.duration_ms,
-              },
-            ])
-          ).values()
-        );
+        const uniqueResults = spotifyResults.map((item) => ({
+          id: item.id,
+          name: item.name,
+          artists: item.artists?.join(", ") || item.owner || "",
+          album: item.album,
+          image:
+            item.album?.images?.[0]?.url ||
+            item.images?.[0]?.url ||
+            "https://via.placeholder.com/100",
+          previewUrl: item.preview_url,
+          externalUrl: item.externalUrl,
+          duration_ms: item.duration_ms,
+          totalTracks: item.totalTracks,
+        }));
+
         setResults(uniqueResults);
       } catch (error) {
         console.error("Error fetching Spotify search results:", error);
@@ -61,9 +59,6 @@ export default function Search() {
       } finally {
         setLoading(false);
       }
-    } else {
-      // Fallback to mock search if the user is not a Spotify user
-      searchDatabase(text);
     }
   };
 
@@ -73,21 +68,16 @@ export default function Search() {
         <Music
           title={item.name}
           subtitle={item.artists}
-          image={
-            item.album?.images?.length > 0
-              ? { uri: item.album.images[0].url }
-              : { uri: "https://via.placeholder.com/300" }
-          }
+          image={item.image ? { uri: item.image } : { uri: "https://via.placeholder.com/300" }}
           onPress={() =>
             router.push({
               pathname: "/music/[music]",
               params: {
                 songTitle: item.name,
-                songImage: item.album?.images?.length > 0 ? item.album.images[0].url : null,
+                songImage: item.image,
                 songArtist: item.artists,
-                songUri: item.album.uri,
                 externalUrl: item.externalUrl,
-                previewUrl: item.preview_url,
+                previewUrl: item.previewUrl,
                 duration: item.duration_ms,
               },
             })
@@ -100,13 +90,19 @@ export default function Search() {
       return (
         <Playlist
           title={item.name}
-          subtitle={item.artists || "Various Artists"}
-          image={
-            item.image
-              ? { uri: item.image }
-              : { uri: "https://via.placeholder.com/300" }
+          subtitle={item.owner}
+          image={item.image ? { uri: item.image } : { uri: "https://via.placeholder.com/300" }}
+          onPress={() =>
+            router.push({
+              pathname: "/(tabs)/playlist/[playlist]",
+              params: {
+                playlist: item.id,
+                playlistName: item.name,
+                playlistImage: item.image,
+                from: "search",
+              },
+            })
           }
-          onPress={() => console.log(`Selected playlist: ${item.name}`)}
         />
       );
     }
@@ -132,7 +128,9 @@ export default function Search() {
         }}
       >
         <View>
-          <Text className="font-Avenir-Bold text-white text-3xl mb-2">Search</Text>
+          <Text style={{ fontFamily: "Avenir-Bold", color: "white", fontSize: 24, marginBottom: 10 }}>
+            Search
+          </Text>
 
           <TextField
             title="Search"
@@ -145,39 +143,43 @@ export default function Search() {
           />
 
           {/* Filter Buttons */}
-          <View className="flex-row gap-4 mt-4">
+          <View style={{ flexDirection: "row", gap: 16, marginTop: 16 }}>
             <TouchableOpacity
-              className={`px-4 py-2 rounded-full border ${
-                searchType === "track" ? "bg-white" : "bg-transparent"
-              }`}
               style={{
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+                borderRadius: 25,
                 borderWidth: 1,
                 borderColor: "white",
+                backgroundColor: searchType === "track" ? "white" : "transparent",
               }}
               onPress={() => handleSearchTypeChange("track")}
             >
               <Text
-                className={`font-Avenir-Demi ${
-                  searchType === "track" ? "text-black" : "text-white"
-                }`}
+                style={{
+                  fontFamily: "Avenir-Demi",
+                  color: searchType === "track" ? "black" : "white",
+                }}
               >
                 Tracks
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              className={`px-4 py-2 rounded-full border ${
-                searchType === "playlist" ? "bg-white" : "bg-transparent"
-              }`}
               style={{
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+                borderRadius: 25,
                 borderWidth: 1,
                 borderColor: "white",
+                backgroundColor: searchType === "playlist" ? "white" : "transparent",
               }}
-              onPress={() => handleSearchTypeChange("playlist")}
+              onPress={() => handleSearchTypeChange("playlist")} // Correct type here
             >
               <Text
-                className={`font-Avenir-Demi ${
-                  searchType === "playlist" ? "text-black" : "text-white"
-                }`}
+                style={{
+                  fontFamily: "Avenir-Demi",
+                  color: searchType === "playlist" ? "black" : "white",
+                }}
               >
                 Playlists
               </Text>
@@ -186,9 +188,7 @@ export default function Search() {
         </View>
 
         {loading ? (
-          <Text style={{ color: "gray", textAlign: "center", marginTop: 20 }}>
-            Searching...
-          </Text>
+          <Text style={{ color: "gray", textAlign: "center", marginTop: 20 }}>Searching...</Text>
         ) : (
           <FlatList
             data={results}
