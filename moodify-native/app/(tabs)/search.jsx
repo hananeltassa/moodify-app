@@ -17,6 +17,7 @@ export default function Search() {
     loading,
     handleSearchChange,
     handleSearchTypeChange,
+    isSpotifyUser,
   } = useSearch();
 
   const handleItemPress = (type, item) => {
@@ -55,8 +56,8 @@ export default function Search() {
         }}
       >
         <View>
-          <Text style={{ fontFamily: "Avenir-Bold", color: "white", fontSize: 24, marginBottom: 16 }}>
-            Search
+          <Text className="font-Avenir-Bold text-white text-3xl mb-4">
+            {isSpotifyUser ? "Search on Spotify" : "Search on Jamendo"}
           </Text>
 
           {/* Search Input */}
