@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, Image, Text, SafeAreaView, TouchableOpacity, Platform, Alert, Linking } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
-import { togglePlayPause } from "../../redux/slices/playbackSlice";
+import { playSong, togglePlayPause, updateProgress, stopPlayback } from "../../redux/slices/playbackSlice";
 import { Audio } from "expo-av";
 
 export default function SongPage() {
@@ -12,79 +12,86 @@ export default function SongPage() {
 
   const dispatch = useDispatch();
   const router = useRouter();
+  const soundRef = useRef(null);
 
   const { isPlaying } = useSelector((state) => state.playback);
-  const [sound, setSound] = useState(null);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [totalDuration, setTotalDuration] = useState(duration || 0);
 
   useEffect(() => {
-    if (duration) {
-      setTotalDuration(duration);
-    } else {
-      console.warn("Duration not provided. Defaulting to 0.");
-    }
-  }, [duration]);
+    if (duration) setTotalDuration(duration);
 
-  useEffect(() => {
-    return sound
-      ? () => {
-          sound.unloadAsync();
+    // Dispatch current song to Redux
+    dispatch(
+      playSong({
+        songImage,
+        songTitle,
+        songArtist,
+        externalUrl,
+        previewUrl,
+        duration,
+      })
+    );
+
+    // Set up sound instance
+    const setupSound = async () => {
+      try {
+        // Unload existing sound
+        if (soundRef.current) {
+          await soundRef.current.unloadAsync();
+          soundRef.current = null;
         }
-      : undefined;
-  }, [sound]);
 
-  const redirectToSpotify = () => {
-    Linking.openURL(externalUrl).catch((err) => {
-      console.error("Failed to open Spotify URL:", err.message);
-      Alert.alert("Error", "Unable to open Spotify.");
-    });
-  };
+        // Create a new sound instance
+        const { sound } = await Audio.Sound.createAsync(
+          { uri: previewUrl },
+          { shouldPlay: isPlaying }
+        );
+
+        soundRef.current = sound;
+
+        sound.setOnPlaybackStatusUpdate((status) => {
+          if (status.isLoaded) {
+            setProgress(status.positionMillis / totalDuration || 0);
+            dispatch(updateProgress(status.positionMillis));
+            if (status.didJustFinish) {
+              dispatch(togglePlayPause());
+            }
+          }
+        });
+      } catch (error) {
+        console.error("Error setting up sound:", error);
+        Alert.alert("Playback Error", "Failed to set up audio. Please try again.");
+      }
+    };
+
+    setupSound();
+
+    return () => {
+      if (soundRef.current) {
+        soundRef.current.pauseAsync().catch(() => {});
+        soundRef.current.unloadAsync().catch(() => {});
+        soundRef.current = null;
+      }
+      dispatch(stopPlayback());
+    };
+  }, [dispatch, songImage, songTitle, songArtist, externalUrl, previewUrl, duration]);
 
   const handlePlayPause = async () => {
     try {
-      if (!previewUrl) {
-        if (externalUrl) {
-          Alert.alert(
-            "Open in Spotify",
-            "This song preview is unavailable. Do you want to open the song in Spotify?",
-            [
-              { text: "Cancel", style: "cancel" },
-              { text: "OK", onPress: redirectToSpotify },
-            ]
-          );
-        } else {
-          Alert.alert("Playback Error", "Preview not available. Open Spotify to play the song.");
-        }
-        return;
-      }
       setLoading(true);
 
-      if (isPlaying && sound) {
-        await sound.pauseAsync();
-      } else {
-        if (!sound) {
-          const { sound: newSound } = await Audio.Sound.createAsync(
-            { uri: previewUrl },
-            { shouldPlay: true }
-          );
-          setSound(newSound);
-
-          newSound.setOnPlaybackStatusUpdate((status) => {
-            if (status.isLoaded) {
-              setProgress(status.positionMillis / totalDuration || 0);
-              if (status.didJustFinish) {
-                dispatch(togglePlayPause());
-              }
-            }
-          });
+      if (soundRef.current) {
+        if (isPlaying) {
+          await soundRef.current.pauseAsync();
         } else {
-          await sound.playAsync();
+          await soundRef.current.playAsync();
         }
+        dispatch(togglePlayPause());
+      } else {
+        Alert.alert("Playback Error", "Audio is not loaded. Please wait.");
       }
-
-      dispatch(togglePlayPause());
     } catch (error) {
       console.error("Error toggling playback:", error.message);
       Alert.alert("Playback Error", "Failed to toggle playback. Please try again.");
@@ -118,22 +125,18 @@ export default function SongPage() {
       {/* Album Art */}
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Image
-          source={
-            songImage
-              ? { uri: songImage }
-              : { uri: "https://via.placeholder.com/300" }
-          }
+          source={{
+            uri: songImage || "https://via.placeholder.com/300",
+          }}
           style={{ width: 400, height: 400, borderRadius: 2 }}
         />
       </View>
 
       {/* Song Info */}
       <View style={{ paddingHorizontal: 20, marginBottom: 30 }}>
-        <View className="flex-row items-center justify-between">
-          <View>
-            <Text className="text-white text-2xl font-Avenir-Bold">{songTitle || "Unknown Title"}</Text>
-            <Text className="text-gray-400 text-lg font-avenir-regular">{songArtist || "Unknown Artist"}</Text>
-          </View>
+        <View>
+          <Text className="text-white text-2xl font-Avenir-Bold">{songTitle || "Unknown Title"}</Text>
+          <Text className="text-gray-400 text-lg font-avenir-regular">{songArtist || "Unknown Artist"}</Text>
         </View>
       </View>
 
@@ -147,9 +150,9 @@ export default function SongPage() {
           maximumTrackTintColor="#FFFFFF"
           thumbTintColor="#FF6100"
           value={progress}
-          onValueChange={(value) => {
-            if (sound) {
-              sound.setPositionAsync(value * totalDuration);
+          onSlidingComplete={(value) => {
+            if (soundRef.current) {
+              soundRef.current.setPositionAsync(value * totalDuration);
               setProgress(value);
             }
           }}
