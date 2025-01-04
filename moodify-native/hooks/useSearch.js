@@ -106,7 +106,7 @@ export const useSearch = () => {
   return {
     searchValue,
     results,
-    searchType: isSpotifyUser ? searchType : "track", // Default "track" for Jamendo
+    searchType: isSpotifyUser ? searchType : "track", 
     loading,
     handleSearchChange,
     handleSearchTypeChange,

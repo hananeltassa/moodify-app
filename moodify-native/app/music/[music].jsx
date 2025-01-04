@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, Text, SafeAreaView, TouchableOpacity, Platform, Alert } from "react-native";
+import { View, Image, Text, SafeAreaView, TouchableOpacity, Platform, Alert, Linking } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { useRouter, useLocalSearchParams } from "expo-router";
@@ -8,15 +8,7 @@ import { playSong, togglePlayPause, updateProgress } from "../../redux/slices/pl
 import audioPlayerInstance from "../../utils/audioUtils";
 
 export default function SongPage() {
-  const {
-    songImage,
-    songTitle,
-    songArtist,
-    externalUrl,
-    previewUrl,
-    duration,
-    progress: initialProgress = 0,
-  } = useLocalSearchParams();
+  const { songImage, songTitle, songArtist, externalUrl, previewUrl, duration, progress: initialProgress = 0 } = useLocalSearchParams();
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -28,7 +20,25 @@ export default function SongPage() {
   useEffect(() => {
     const loadSong = async () => {
       if (!previewUrl) {
-        console.warn("No preview URL provided.");
+        Alert.alert(
+          "No Preview Available",
+          "This song does not have a preview. Would you like to open it on Spotify?",
+          [
+            { text: "Cancel", style: "cancel" },
+            {
+              text: "Open Spotify",
+              onPress: () => {
+                if (externalUrl) {
+                  Linking.openURL(externalUrl).catch((err) =>
+                    Alert.alert("Error", "Unable to open Spotify.")
+                  );
+                } else {
+                  Alert.alert("Error", "No Spotify link available.");
+                }
+              },
+            },
+          ]
+        );
         return;
       }
 
