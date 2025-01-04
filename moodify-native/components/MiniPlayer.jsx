@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useSelector, useDispatch } from "react-redux";
@@ -13,49 +13,87 @@ export default function MiniPlayer() {
 
   const soundRef = useRef(null);
 
-  const handlePlayPause = async () => {
-    if (!currentSong?.previewUrl) {
-      return;
-    }
+  useEffect(() => {
+    const setupSound = async () => {
+      if (!currentSong?.previewUrl) return;
 
-    try {
-      if (!soundRef.current) {
+      try {
+        // Unload previous sound if it exists
+        if (soundRef.current) {
+          await soundRef.current.unloadAsync();
+          soundRef.current = null;
+        }
+
+        // Create a new sound instance
         const { sound } = await Audio.Sound.createAsync(
           { uri: currentSong.previewUrl },
-          { shouldPlay: true }
+          { shouldPlay: isPlaying }
         );
+
         soundRef.current = sound;
 
         sound.setOnPlaybackStatusUpdate((status) => {
           if (status.isLoaded) {
             dispatch(updateProgress(status.positionMillis));
-            if (status.didJustFinish) {
-              dispatch(togglePlayPause());
-            }
           }
         });
-      } else {
+
         if (isPlaying) {
-          await soundRef.current.pauseAsync();
-        } else {
           await soundRef.current.playAsync();
+        } else {
+          await soundRef.current.pauseAsync();
         }
+      } catch (error) {
+        console.error("Error setting up sound in MiniPlayer:", error);
+      }
+    };
+
+    if (currentSong) {
+      setupSound();
+    }
+
+    return () => {
+      if (soundRef.current) {
+        soundRef.current.unloadAsync().catch(() => {});
+        soundRef.current = null;
+      }
+    };
+  }, [currentSong, isPlaying]);
+
+  const handlePlayPause = async () => {
+    if (!soundRef.current) return;
+
+    try {
+      if (isPlaying) {
+        await soundRef.current.pauseAsync();
+      } else {
+        await soundRef.current.playAsync();
       }
       dispatch(togglePlayPause());
     } catch (error) {
-      console.error("Error toggling play/pause:", error);
+      console.error("Error toggling play/pause in MiniPlayer:", error);
     }
+  };
+
+  const navigateToSongPage = () => {
+    router.push({
+      pathname: "/music/[music]",
+      params: {
+        songImage: currentSong.songImage,
+        songTitle: currentSong.songTitle,
+        songArtist: currentSong.songArtist,
+        externalUrl: currentSong.externalUrl,
+        previewUrl: currentSong.previewUrl,
+        duration: currentSong.duration,
+      },
+    });
   };
 
   if (!currentSong) return null;
 
   return (
     <TouchableOpacity
-      onPress={() =>
-        router.push(
-          `/music/[music]?songImage=${currentSong.songImage}&songTitle=${currentSong.songTitle}&songArtist=${currentSong.songArtist}&externalUrl=${currentSong.externalUrl}&previewUrl=${currentSong.previewUrl}&duration=${currentSong.duration}`
-        )
-      }
+      onPress={navigateToSongPage}
       style={{
         position: "absolute",
         bottom: 0,
@@ -67,19 +105,14 @@ export default function MiniPlayer() {
         alignItems: "center",
       }}
     >
-      {/* Thumbnail */}
       <Image
         source={{ uri: currentSong.songImage || "https://via.placeholder.com/50" }}
         style={{ width: 50, height: 50, borderRadius: 5, marginRight: 10 }}
       />
-
-      {/* Song Info */}
       <View style={{ flex: 1 }}>
         <Text style={{ color: "#fff", fontWeight: "bold" }}>{currentSong.songTitle}</Text>
         <Text style={{ color: "#aaa" }}>{currentSong.songArtist}</Text>
       </View>
-
-      {/* Play/Pause Button */}
       <TouchableOpacity onPress={handlePlayPause}>
         <Ionicons name={isPlaying ? "pause" : "play"} size={24} color="#fff" />
       </TouchableOpacity>
