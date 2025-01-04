@@ -2,7 +2,7 @@ import React from "react";
 import { View, TouchableOpacity, Text } from "react-native";
 
 export default function SearchFilters({ currentType, onChangeType }) {
-  const filters = ["track", "playlist"];
+  const filters = ["track", "playlist"]; // Adjusted to match searchType values
 
   return (
     <View className="flex-row space-x-4 mt-4 gap-3">
@@ -20,7 +20,7 @@ export default function SearchFilters({ currentType, onChangeType }) {
               currentType === type ? "text-black" : "text-white"
             }`}
           >
-            {type.charAt(0).toUpperCase() + type.slice(1)}s
+            {type.charAt(0).toUpperCase() + type.slice(1)}
           </Text>
         </TouchableOpacity>
       ))}

@@ -8,7 +8,7 @@ import { searchJamendoMusic } from "../api/jamendo";
 export const useSearch = () => {
   const [searchValue, setSearchValue] = useState("");
   const [results, setResults] = useState([]);
-  const [searchType, setSearchType] = useState("tracks");
+  const [searchType, setSearchType] = useState("track");
   const [loading, setLoading] = useState(false);
 
   const user = useSelector((state) => state.user.user);
@@ -106,7 +106,7 @@ export const useSearch = () => {
   return {
     searchValue,
     results,
-    searchType: isSpotifyUser ? searchType : "track", 
+    searchType, // Tracks by default
     loading,
     handleSearchChange,
     handleSearchTypeChange,
