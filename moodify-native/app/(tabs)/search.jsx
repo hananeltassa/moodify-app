@@ -6,6 +6,7 @@ import SearchFilters from "../../components/Search/SearchFilters";
 import SearchResults from "../../components/Search/SearchResults";
 import { useSearch } from "../../hooks/useSearch";
 import { useRouter } from "expo-router";
+import LoadingScreen from "../../components/LoadingScreen";
 
 export default function Search() {
   const insets = useSafeAreaInsets();
@@ -79,12 +80,12 @@ export default function Search() {
         {/* Results Section */}
         <View style={{ flex: 1, marginTop: 16 }}>
           {loading ? (
-            <ActivityIndicator size="large" color="gray" style={{ marginTop: 20 }} />
-          ) : searchValue.trim() === "" ? (
+            <LoadingScreen/>
+          )  : searchValue.trim() === "" ? (
             <Text style={{ color: "gray", textAlign: "center", marginTop: 20 }}>
-              Please enter a search query.
+              Start your search and groove away!
             </Text>
-          ) : results.length === 0 ? (
+          ): results.length === 0 ? (
             <Text style={{ color: "gray", textAlign: "center", marginTop: 20 }}>
               No results found.
             </Text>
