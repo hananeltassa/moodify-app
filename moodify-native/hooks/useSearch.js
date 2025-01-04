@@ -12,6 +12,45 @@ export const useSearch = () => {
 
   const user = useSelector((state) => state.user.user);
 
+  const fetchSpotifyResults = async (query) => {
+    try {
+      setLoading(true);
+      const jwtToken = await getToken("jwtToken");
+
+      if (!jwtToken) {
+        throw new Error("User is not logged in.");
+      }
+
+      const spotifyResults = await searchSpotifyTracks(query, jwtToken, searchType);
+      return spotifyResults.map((item, index) => ({
+        id: item.id || `${item.name}-${index}`,
+        name: item.name,
+        artists: item.artists?.join(", ") || item.owner || "",
+        album: item.album,
+        image:
+          item.album?.images?.[0]?.url ||
+          item.images?.[0]?.url ||
+          "https://via.placeholder.com/100",
+        previewUrl: item.preview_url,
+        externalUrl: item.externalUrl,
+        duration_ms: item.duration_ms,
+        totalTracks: item.totalTracks,
+      }));
+    } catch (error) {
+      console.error("Error fetching Spotify search results:", error);
+      Alert.alert("Error", error.message || "Failed to fetch search results.");
+      return [];
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchJamendoResults = async (query) => {
+    console.log(`Jamendo search for query: ${query}, type: ${searchType}`);
+    // Placeholder for Jamendo API logic
+    return [];
+  };
+
   const handleSearchChange = async (text) => {
     setSearchValue(text);
 
@@ -21,37 +60,11 @@ export const useSearch = () => {
     }
 
     if (user?.spotifyId) {
-      try {
-        setLoading(true);
-        const jwtToken = await getToken("jwtToken");
-
-        if (!jwtToken) {
-          throw new Error("User is not logged in.");
-        }
-
-        const spotifyResults = await searchSpotifyTracks(text, jwtToken, searchType);
-        const uniqueResults = spotifyResults.map((item, index) => ({
-          id: item.id || `${item.name}-${index}`,
-          name: item.name,
-          artists: item.artists?.join(", ") || item.owner || "",
-          album: item.album,
-          image:
-            item.album?.images?.[0]?.url ||
-            item.images?.[0]?.url ||
-            "https://via.placeholder.com/100",
-          previewUrl: item.preview_url,
-          externalUrl: item.externalUrl,
-          duration_ms: item.duration_ms,
-          totalTracks: item.totalTracks,
-        }));
-
-        setResults(uniqueResults);
-      } catch (error) {
-        console.error("Error fetching Spotify search results:", error);
-        Alert.alert("Error", error.message || "Failed to fetch search results.");
-      } finally {
-        setLoading(false);
-      }
+      const spotifyResults = await fetchSpotifyResults(text);
+      setResults(spotifyResults);
+    } else {
+      const jamendoResults = await fetchJamendoResults(text);
+      setResults(jamendoResults);
     }
   };
 
@@ -68,5 +81,6 @@ export const useSearch = () => {
     loading,
     handleSearchChange,
     handleSearchTypeChange,
+    isSpotifyUser: !!user?.spotifyId,
   };
 };
