@@ -30,8 +30,8 @@ export default function Search() {
               songTitle: item.name,
               songImage: item.image,
               songArtist: item.artists,
-              externalUrl: item.externalUrl,
-              previewUrl: item.previewUrl,
+              externalUrl: item.externalUrl || item.audioUrl,
+              previewUrl: item.previewUrl || item.audioUrl,
               duration: item.duration_ms,
             }
           : {
@@ -63,15 +63,17 @@ export default function Search() {
           {/* Search Input */}
           <TextField
             value={searchValue}
-            placeholder={`Search ${searchType}...`}
+            placeholder={`Search ${isSpotifyUser ? searchType : "track"}...`}
             handleChangeText={handleSearchChange}
             inputSize={16}
             iconName="search"
             iconColor="#7B7B8B"
           />
 
-          {/* Filter Buttons */}
-          <SearchFilters currentType={searchType} onChangeType={handleSearchTypeChange} />
+          {/* Filter Buttons: Only show for Spotify users */}
+          {isSpotifyUser && (
+            <SearchFilters currentType={searchType} onChangeType={handleSearchTypeChange} />
+          )}
         </View>
 
         {/* Results Section */}
@@ -79,7 +81,9 @@ export default function Search() {
           {loading ? (
             <ActivityIndicator size="large" color="gray" style={{ marginTop: 20 }} />
           ) : searchValue.trim() === "" ? (
-            null
+            <Text style={{ color: "gray", textAlign: "center", marginTop: 20 }}>
+              Please enter a search query.
+            </Text>
           ) : results.length === 0 ? (
             <Text style={{ color: "gray", textAlign: "center", marginTop: 20 }}>
               No results found.
