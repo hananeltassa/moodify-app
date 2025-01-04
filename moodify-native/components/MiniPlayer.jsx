@@ -14,36 +14,33 @@ export default function MiniPlayer() {
 
   return (
     <TouchableOpacity
-      onPress={() => router.push(`/music/[music]?songImage=${currentSong.songImage}&songTitle=${currentSong.songTitle}&songArtist=${currentSong.songArtist}`)}
-      className="absolute bottom-1 left-0 right-0 bg-orange-700 flex-row items-center p-2 rounded-xl"
+      onPress={() =>
+        router.push(
+          `/music/[music]?songImage=${currentSong.songImage}&songTitle=${currentSong.songTitle}&songArtist=${currentSong.songArtist}&externalUrl=${currentSong.externalUrl}&previewUrl=${currentSong.previewUrl}&duration=${currentSong.duration}`
+        )
+      }
+      style={{
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: "#333",
+        padding: 10,
+        flexDirection: "row",
+        alignItems: "center",
+      }}
     >
-      {/* Thumbnail */}
       <Image
         source={{ uri: currentSong.songImage || "https://via.placeholder.com/50" }}
-        style={{ width: 50, height: 50, borderRadius: 10, marginRight: 10 }}
+        style={{ width: 50, height: 50, borderRadius: 5, marginRight: 10 }}
       />
-      
-      {/* Song Info */}
-      <View style={{ flex: 1, gap: 5 }}>
-        <Text style={{ color: "white", fontWeight: "bold", fontSize: 14 }}>{currentSong.songTitle}</Text>
-        <Text style={{ color: "#AAAAAA", fontSize: 12 }}>{currentSong.songArtist}</Text>
+      <View style={{ flex: 1 }}>
+        <Text style={{ color: "#fff", fontWeight: "bold" }}>{currentSong.songTitle}</Text>
+        <Text style={{ color: "#aaa" }}>{currentSong.songArtist}</Text>
       </View>
-
-      {/* Play/Pause Button */}
-      <TouchableOpacity
-        className="justify-center items-center px-3"
-        onPress={(e) => {
-          e.stopPropagation();
-          dispatch(togglePlayPause());
-        }}
-      >
-        <Ionicons
-          name={isPlaying ? "pause" : "play"}
-          size={24}
-          color="white"
-        />
+      <TouchableOpacity onPress={() => dispatch(togglePlayPause())}>
+        <Ionicons name={isPlaying ? "pause" : "play"} size={24} color="#fff" />
       </TouchableOpacity>
-
     </TouchableOpacity>
   );
 }
