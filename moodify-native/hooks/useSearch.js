@@ -3,14 +3,16 @@ import { Alert } from "react-native";
 import { useSelector } from "react-redux";
 import { getToken } from "../utils/secureStore";
 import { searchSpotifyTracks } from "../api/spotifyAuth";
+import { searchJamendoMusic } from "../api/jamendo";
 
 export const useSearch = () => {
   const [searchValue, setSearchValue] = useState("");
   const [results, setResults] = useState([]);
-  const [searchType, setSearchType] = useState("track");
+  const [searchType, setSearchType] = useState("tracks");
   const [loading, setLoading] = useState(false);
 
   const user = useSelector((state) => state.user.user);
+  const isSpotifyUser = !!user?.spotifyId;
 
   const fetchSpotifyResults = async (query) => {
     try {
@@ -22,6 +24,7 @@ export const useSearch = () => {
       }
 
       const spotifyResults = await searchSpotifyTracks(query, jwtToken, searchType);
+
       return spotifyResults.map((item, index) => ({
         id: item.id || `${item.name}-${index}`,
         name: item.name,
@@ -38,7 +41,7 @@ export const useSearch = () => {
       }));
     } catch (error) {
       console.error("Error fetching Spotify search results:", error);
-      Alert.alert("Error", error.message || "Failed to fetch search results.");
+      Alert.alert("Error", error.message || "Failed to fetch Spotify results.");
       return [];
     } finally {
       setLoading(false);
@@ -46,9 +49,27 @@ export const useSearch = () => {
   };
 
   const fetchJamendoResults = async (query) => {
-    console.log(`Jamendo search for query: ${query}, type: ${searchType}`);
-    // Placeholder for Jamendo API logic
-    return [];
+    try {
+      setLoading(true);
+
+      const jamendoResults = await searchJamendoMusic(query, "tracks");
+
+      return jamendoResults.map((item) => ({
+        id: item.id,
+        name: item.name,
+        artists: item.artist,
+        album: item.album,
+        image: item.image || "https://via.placeholder.com/100",
+        duration_ms: item.duration * 1000,
+        audioUrl: item.audio,
+      }));
+    } catch (error) {
+      console.error("Error fetching Jamendo search results:", error);
+      Alert.alert("Error", error.message || "Failed to fetch Jamendo results.");
+      return [];
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSearchChange = async (text) => {
@@ -59,16 +80,24 @@ export const useSearch = () => {
       return;
     }
 
-    if (user?.spotifyId) {
-      const spotifyResults = await fetchSpotifyResults(text);
-      setResults(spotifyResults);
-    } else {
-      const jamendoResults = await fetchJamendoResults(text);
-      setResults(jamendoResults);
+    try {
+      const fetchedResults = isSpotifyUser
+        ? await fetchSpotifyResults(text)
+        : await fetchJamendoResults(text);
+
+      setResults(fetchedResults);
+    } catch (error) {
+      console.error("Error during search:", error);
+      setResults([]);
     }
   };
 
   const handleSearchTypeChange = (type) => {
+    if (!isSpotifyUser && type === "playlist") {
+      Alert.alert("Notice", "Playlists are only available for Spotify users.");
+      return;
+    }
+
     setSearchType(type);
     setSearchValue("");
     setResults([]);
@@ -77,10 +106,10 @@ export const useSearch = () => {
   return {
     searchValue,
     results,
-    searchType,
+    searchType: isSpotifyUser ? searchType : "track", // Default "track" for Jamendo
     loading,
     handleSearchChange,
     handleSearchTypeChange,
-    isSpotifyUser: !!user?.spotifyId,
+    isSpotifyUser,
   };
 };
