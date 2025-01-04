@@ -12,6 +12,8 @@ export default function SearchResults({ results, searchType, onItemPress }) {
           subtitle={item.artists}
           image={item.image ? { uri: item.image } : { uri: "https://via.placeholder.com/300" }}
           onPress={() => onItemPress("track", item)}
+          audioUrl={item.audioUrl || item.previewUrl}
+          duration={item.duration_ms}
         />
       );
     }
@@ -20,7 +22,7 @@ export default function SearchResults({ results, searchType, onItemPress }) {
       return (
         <Playlist
           title={item.name}
-          subtitle={item.owner}
+          subtitle={item.owner || "Unknown Owner"}
           image={item.image ? { uri: item.image } : { uri: "https://via.placeholder.com/300" }}
           onPress={() => onItemPress("playlist", item)}
         />
