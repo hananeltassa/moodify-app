@@ -34,10 +34,9 @@ export default function SongPage() {
       })
     );
 
-    // Set up sound instance
     const setupSound = async () => {
       try {
-        // Unload existing sound
+        // Stop and unload any existing sound
         if (soundRef.current) {
           await soundRef.current.unloadAsync();
           soundRef.current = null;
@@ -46,15 +45,18 @@ export default function SongPage() {
         // Create a new sound instance
         const { sound } = await Audio.Sound.createAsync(
           { uri: previewUrl },
-          { shouldPlay: isPlaying }
+          { shouldPlay: true }
         );
 
         soundRef.current = sound;
 
+        // Update progress and playback status
         sound.setOnPlaybackStatusUpdate((status) => {
           if (status.isLoaded) {
             setProgress(status.positionMillis / totalDuration || 0);
             dispatch(updateProgress(status.positionMillis));
+
+            // Handle end of playback
             if (status.didJustFinish) {
               dispatch(togglePlayPause());
             }
