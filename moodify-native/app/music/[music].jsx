@@ -4,12 +4,11 @@ import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
-import { playSong, togglePlayPause, updateProgress, stopPlayback } from "../../redux/slices/playbackSlice";
+import { playSong, togglePlayPause, updateProgress } from "../../redux/slices/playbackSlice";
 import audioPlayerInstance from "../../utils/audioUtils";
 
 export default function SongPage() {
   const { songImage, songTitle, songArtist, externalUrl, previewUrl, duration } = useLocalSearchParams();
-
   const dispatch = useDispatch();
   const router = useRouter();
   const { isPlaying, currentSong } = useSelector((state) => state.playback);
@@ -23,42 +22,31 @@ export default function SongPage() {
         console.warn("No preview URL provided.");
         return;
       }
-  
+
       try {
-        // Load and play the song
-        await audioPlayerInstance.loadAndPlay(previewUrl, (status) => {
-          if (status.isLoaded) {
-            setProgress(status.positionMillis / (duration || status.durationMillis));
-            dispatch(updateProgress(status.positionMillis));
-  
-            if (status.didJustFinish) {
-              dispatch(togglePlayPause());
+        if (audioPlayerInstance.currentUri !== previewUrl) {
+          // Load and play the song
+          await audioPlayerInstance.loadAndPlay(previewUrl, (status) => {
+            if (status.isLoaded) {
+              setProgress(status.positionMillis / (duration || status.durationMillis));
+              dispatch(updateProgress(status.positionMillis));
+              if (status.didJustFinish) {
+                dispatch(togglePlayPause());
+              }
             }
-          }
-        });
-  
-        dispatch(
-          playSong({ songImage, songTitle, songArtist, externalUrl, previewUrl, duration })
-        );
+          });
+
+          dispatch(
+            playSong({ songImage, songTitle, songArtist, externalUrl, previewUrl, duration })
+          );
+        }
       } catch (error) {
         Alert.alert("Error", "Unable to load the song.");
       }
     };
-  
-    // Only load the song if it's not the currently playing song
-    if (audioPlayerInstance.currentUri !== previewUrl) {
-      loadSong();
-    }
-  
-    return () => {
-      // Ensure proper unload when leaving the page
-      audioPlayerInstance.unload().catch((err) => {
-        console.error("Error during unload:", err);
-      });
-      dispatch(stopPlayback());
-    };
+
+    loadSong();
   }, [dispatch, previewUrl, songImage, songTitle, songArtist, externalUrl, duration]);
-  
 
   const handlePlayPause = async () => {
     setLoading(true);
