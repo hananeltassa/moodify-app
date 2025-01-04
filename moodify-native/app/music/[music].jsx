@@ -1,89 +1,72 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Image, Text, SafeAreaView, TouchableOpacity, Platform, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { playSong, togglePlayPause, updateProgress, stopPlayback } from "../../redux/slices/playbackSlice";
-import { Audio } from "expo-av";
+import audioPlayerInstance from "../../utils/audioUtils";
 
 export default function SongPage() {
   const { songImage, songTitle, songArtist, externalUrl, previewUrl, duration } = useLocalSearchParams();
 
   const dispatch = useDispatch();
   const router = useRouter();
-  const soundRef = useRef(null);
-
   const { isPlaying, currentSong } = useSelector((state) => state.playback);
+
   const [progress, setProgress] = useState(0);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const loadSong = async () => {
-      if (!previewUrl) return;
-
+      if (!previewUrl) {
+        console.warn("No preview URL provided.");
+        return;
+      }
+  
       try {
-        // Stop and unload any previous sound
-        if (soundRef.current) {
-          await soundRef.current.unloadAsync();
-          soundRef.current = null;
-        }
-
-        // Load and play the new sound
-        const { sound } = await Audio.Sound.createAsync(
-          { uri: previewUrl },
-          { shouldPlay: true }
-        );
-
-        soundRef.current = sound;
-        dispatch(
-          playSong({
-            songImage,
-            songTitle,
-            songArtist,
-            externalUrl,
-            previewUrl,
-            duration,
-          })
-        );
-
-        // Set playback status update
-        sound.setOnPlaybackStatusUpdate((status) => {
+        // Load and play the song
+        await audioPlayerInstance.loadAndPlay(previewUrl, (status) => {
           if (status.isLoaded) {
             setProgress(status.positionMillis / (duration || status.durationMillis));
             dispatch(updateProgress(status.positionMillis));
-
+  
             if (status.didJustFinish) {
               dispatch(togglePlayPause());
             }
           }
         });
+  
+        dispatch(
+          playSong({ songImage, songTitle, songArtist, externalUrl, previewUrl, duration })
+        );
       } catch (error) {
-        console.error("Error loading song:", error);
         Alert.alert("Error", "Unable to load the song.");
       }
     };
-
-    loadSong();
-
+  
+    // Only load the song if it's not the currently playing song
+    if (audioPlayerInstance.currentUri !== previewUrl) {
+      loadSong();
+    }
+  
     return () => {
-      if (soundRef.current) {
-        soundRef.current.unloadAsync().catch(() => {});
-        soundRef.current = null;
-      }
+      // Ensure proper unload when leaving the page
+      audioPlayerInstance.unload().catch((err) => {
+        console.error("Error during unload:", err);
+      });
       dispatch(stopPlayback());
     };
   }, [dispatch, previewUrl, songImage, songTitle, songArtist, externalUrl, duration]);
+  
 
   const handlePlayPause = async () => {
-    if (!soundRef.current) return;
-
+    setLoading(true);
     try {
-      setLoading(true);
       if (isPlaying) {
-        await soundRef.current.pauseAsync();
+        await audioPlayerInstance.pause();
       } else {
-        await soundRef.current.playAsync();
+        await audioPlayerInstance.play();
       }
       dispatch(togglePlayPause());
     } catch (error) {
@@ -135,10 +118,8 @@ export default function SongPage() {
           thumbTintColor="#FF6100"
           value={progress}
           onSlidingComplete={(value) => {
-            if (soundRef.current) {
-              soundRef.current.setPositionAsync(value * duration);
-              setProgress(value);
-            }
+            audioPlayerInstance.setPosition(value * duration);
+            setProgress(value);
           }}
         />
         <View className="flex-row justify-between px-2">
