@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Image, Text, SafeAreaView, TouchableOpacity, Platform, Alert, Linking } from "react-native";
+import { View, Image, Text, SafeAreaView, TouchableOpacity, Platform, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { useRouter, useLocalSearchParams } from "expo-router";
@@ -14,96 +14,86 @@ export default function SongPage() {
   const router = useRouter();
   const soundRef = useRef(null);
 
-  const { isPlaying } = useSelector((state) => state.playback);
-  const [loading, setLoading] = useState(false);
+  const { isPlaying, currentSong } = useSelector((state) => state.playback);
   const [progress, setProgress] = useState(0);
-  const [totalDuration, setTotalDuration] = useState(duration || 0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (duration) setTotalDuration(duration);
+    const loadSong = async () => {
+      if (!previewUrl) return;
 
-    // Dispatch current song to Redux
-    dispatch(
-      playSong({
-        songImage,
-        songTitle,
-        songArtist,
-        externalUrl,
-        previewUrl,
-        duration,
-      })
-    );
-
-    const setupSound = async () => {
       try {
-        // Stop and unload any existing sound
+        // Stop and unload any previous sound
         if (soundRef.current) {
           await soundRef.current.unloadAsync();
           soundRef.current = null;
         }
 
-        // Create a new sound instance
+        // Load and play the new sound
         const { sound } = await Audio.Sound.createAsync(
           { uri: previewUrl },
           { shouldPlay: true }
         );
 
         soundRef.current = sound;
+        dispatch(
+          playSong({
+            songImage,
+            songTitle,
+            songArtist,
+            externalUrl,
+            previewUrl,
+            duration,
+          })
+        );
 
-        // Update progress and playback status
+        // Set playback status update
         sound.setOnPlaybackStatusUpdate((status) => {
           if (status.isLoaded) {
-            setProgress(status.positionMillis / totalDuration || 0);
+            setProgress(status.positionMillis / (duration || status.durationMillis));
             dispatch(updateProgress(status.positionMillis));
 
-            // Handle end of playback
             if (status.didJustFinish) {
               dispatch(togglePlayPause());
             }
           }
         });
       } catch (error) {
-        console.error("Error setting up sound:", error);
-        Alert.alert("Playback Error", "Failed to set up audio. Please try again.");
+        console.error("Error loading song:", error);
+        Alert.alert("Error", "Unable to load the song.");
       }
     };
 
-    setupSound();
+    loadSong();
 
     return () => {
       if (soundRef.current) {
-        soundRef.current.pauseAsync().catch(() => {});
         soundRef.current.unloadAsync().catch(() => {});
         soundRef.current = null;
       }
       dispatch(stopPlayback());
     };
-  }, [dispatch, songImage, songTitle, songArtist, externalUrl, previewUrl, duration]);
+  }, [dispatch, previewUrl, songImage, songTitle, songArtist, externalUrl, duration]);
 
   const handlePlayPause = async () => {
+    if (!soundRef.current) return;
+
     try {
       setLoading(true);
-
-      if (soundRef.current) {
-        if (isPlaying) {
-          await soundRef.current.pauseAsync();
-        } else {
-          await soundRef.current.playAsync();
-        }
-        dispatch(togglePlayPause());
+      if (isPlaying) {
+        await soundRef.current.pauseAsync();
       } else {
-        Alert.alert("Playback Error", "Audio is not loaded. Please wait.");
+        await soundRef.current.playAsync();
       }
+      dispatch(togglePlayPause());
     } catch (error) {
-      console.error("Error toggling playback:", error.message);
-      Alert.alert("Playback Error", "Failed to toggle playback. Please try again.");
+      console.error("Playback toggle error:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const formatDuration = (ms) => {
-    if (!ms || ms <= 0) return "0:00";
     const minutes = Math.floor(ms / 60000);
     const seconds = Math.floor((ms % 60000) / 1000);
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
@@ -111,7 +101,6 @@ export default function SongPage() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black", margin: 10 }}>
-      {/* Header with Close Icon */}
       <View className="flex-row items-center justify-between px-4 py-2">
         <TouchableOpacity onPress={() => router.back()}>
           <Ionicons
@@ -124,25 +113,18 @@ export default function SongPage() {
         <View style={{ width: 28 }} />
       </View>
 
-      {/* Album Art */}
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Image
-          source={{
-            uri: songImage || "https://via.placeholder.com/300",
-          }}
+          source={{ uri: songImage || "https://via.placeholder.com/300" }}
           style={{ width: 400, height: 400, borderRadius: 2 }}
         />
       </View>
 
-      {/* Song Info */}
       <View style={{ paddingHorizontal: 20, marginBottom: 30 }}>
-        <View>
-          <Text className="text-white text-2xl font-Avenir-Bold">{songTitle || "Unknown Title"}</Text>
-          <Text className="text-gray-400 text-lg font-avenir-regular">{songArtist || "Unknown Artist"}</Text>
-        </View>
+        <Text className="text-white text-2xl font-Avenir-Bold">{songTitle || "Unknown Title"}</Text>
+        <Text className="text-gray-400 text-lg font-avenir-regular">{songArtist || "Unknown Artist"}</Text>
       </View>
 
-      {/* Progress Slider */}
       <View style={{ marginBottom: 20, paddingHorizontal: 20 }}>
         <Slider
           style={{ width: "100%", height: 40 }}
@@ -154,18 +136,17 @@ export default function SongPage() {
           value={progress}
           onSlidingComplete={(value) => {
             if (soundRef.current) {
-              soundRef.current.setPositionAsync(value * totalDuration);
+              soundRef.current.setPositionAsync(value * duration);
               setProgress(value);
             }
           }}
         />
         <View className="flex-row justify-between px-2">
-          <Text className="text-white text-sm">{formatDuration(progress * totalDuration)}</Text>
-          <Text className="text-white text-sm">{formatDuration(totalDuration)}</Text>
+          <Text className="text-white text-sm">{formatDuration(progress * duration)}</Text>
+          <Text className="text-white text-sm">{formatDuration(duration)}</Text>
         </View>
       </View>
 
-      {/* Playback Controls */}
       <View className="flex-row items-center justify-evenly mb-10">
         <TouchableOpacity disabled={loading}>
           <Ionicons name="play-skip-back" size={36} color={loading ? "gray" : "white"} />
