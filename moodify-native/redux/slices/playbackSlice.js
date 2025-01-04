@@ -1,23 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const initialState = {
+  isPlaying: false,
+  currentSong: null,
+  progress: 0,
+};
+
 const playbackSlice = createSlice({
   name: "playback",
-  initialState: {
-    isPlaying: false,
-    currentSong: null,
-    progress: 0,
-  },
+  initialState,
   reducers: {
     playSong: (state, action) => {
-      state.isPlaying = true;
       state.currentSong = action.payload;
-      state.progress = 0;
-    },
-    pauseSong: (state) => {
-      state.isPlaying = false;
-    },
-    stopPlayback: (state) => {
-      state.isPlaying = false;
+      state.isPlaying = true;
       state.progress = 0;
     },
     togglePlayPause: (state) => {
@@ -26,8 +21,13 @@ const playbackSlice = createSlice({
     updateProgress: (state, action) => {
       state.progress = action.payload;
     },
+    stopPlayback: (state) => {
+      state.isPlaying = false;
+      state.progress = 0;
+    },
   },
 });
 
-export const { playSong, pauseSong, stopPlayback, togglePlayPause, updateProgress } = playbackSlice.actions;
+export const { playSong, togglePlayPause, updateProgress, stopPlayback } = playbackSlice.actions;
+
 export default playbackSlice.reducer;
