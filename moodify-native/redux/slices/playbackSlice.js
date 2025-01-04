@@ -6,7 +6,6 @@ const playbackSlice = createSlice({
     isPlaying: false,
     currentSong: null,
     progress: 0,
-    soundInstance: null, // Add soundInstance to manage Audio.Sound
   },
   reducers: {
     playSong: (state, action) => {
@@ -17,14 +16,9 @@ const playbackSlice = createSlice({
     pauseSong: (state) => {
       state.isPlaying = false;
     },
-    stopSong: (state) => {
-      state.isPlaying = false;
-      state.currentSong = null;
-      state.progress = 0;
-    },
     stopPlayback: (state) => {
       state.isPlaying = false;
-      state.soundInstance = null; // Clear soundInstance
+      state.progress = 0;
     },
     togglePlayPause: (state) => {
       state.isPlaying = !state.isPlaying;
@@ -32,20 +26,8 @@ const playbackSlice = createSlice({
     updateProgress: (state, action) => {
       state.progress = action.payload;
     },
-    setSoundInstance: (state, action) => {
-      state.soundInstance = action.payload; // Set the active Audio.Sound instance
-    },
   },
 });
 
-export const {
-  playSong,
-  pauseSong,
-  stopSong,
-  stopPlayback,
-  togglePlayPause,
-  updateProgress,
-  setSoundInstance,
-} = playbackSlice.actions;
-
+export const { playSong, pauseSong, stopPlayback, togglePlayPause, updateProgress } = playbackSlice.actions;
 export default playbackSlice.reducer;
