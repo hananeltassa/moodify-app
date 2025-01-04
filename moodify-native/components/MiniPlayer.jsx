@@ -24,7 +24,10 @@ export default function MiniPlayer() {
     }
   };
 
-  const navigateToSongPage = () => {
+  const navigateToSongPage = async () => {
+    const status = await audioPlayerInstance.soundRef?.getStatusAsync(); // Get current playback status
+    const currentProgress = status?.positionMillis || 0;
+
     router.push({
       pathname: "/music/[music]",
       params: {
@@ -34,6 +37,7 @@ export default function MiniPlayer() {
         externalUrl: currentSong.externalUrl,
         previewUrl: currentSong.previewUrl,
         duration: currentSong.duration,
+        progress: currentProgress, // Pass current playback progress
       },
     });
   };
