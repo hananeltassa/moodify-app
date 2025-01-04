@@ -8,12 +8,21 @@ import { playSong, togglePlayPause, updateProgress } from "../../redux/slices/pl
 import audioPlayerInstance from "../../utils/audioUtils";
 
 export default function SongPage() {
-  const { songImage, songTitle, songArtist, externalUrl, previewUrl, duration } = useLocalSearchParams();
+  const {
+    songImage,
+    songTitle,
+    songArtist,
+    externalUrl,
+    previewUrl,
+    duration,
+    progress: initialProgress = 0,
+  } = useLocalSearchParams();
+
   const dispatch = useDispatch();
   const router = useRouter();
   const { isPlaying, currentSong } = useSelector((state) => state.playback);
 
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState(initialProgress / duration);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -35,6 +44,10 @@ export default function SongPage() {
               }
             }
           });
+          // Seek to the initial progress
+          if (initialProgress > 0) {
+            await audioPlayerInstance.setPosition(initialProgress);
+          }
 
           dispatch(
             playSong({ songImage, songTitle, songArtist, externalUrl, previewUrl, duration })
@@ -46,7 +59,18 @@ export default function SongPage() {
     };
 
     loadSong();
-  }, [dispatch, previewUrl, songImage, songTitle, songArtist, externalUrl, duration]);
+
+    const interval = setInterval(async () => {
+      const status = await audioPlayerInstance.soundRef?.getStatusAsync();
+      if (status?.isLoaded) {
+        const currentProgress = status.positionMillis / status.durationMillis;
+        setProgress(currentProgress);
+        dispatch(updateProgress(status.positionMillis));
+      }
+    }, 500); // Update progress every 500ms
+
+    return () => clearInterval(interval); // Clear interval when leaving the page
+  }, [dispatch, previewUrl, songImage, songTitle, songArtist, externalUrl, duration, initialProgress]);
 
   const handlePlayPause = async () => {
     setLoading(true);
@@ -106,7 +130,8 @@ export default function SongPage() {
           thumbTintColor="#FF6100"
           value={progress}
           onSlidingComplete={(value) => {
-            audioPlayerInstance.setPosition(value * duration);
+            const position = value * duration;
+            audioPlayerInstance.setPosition(position);
             setProgress(value);
           }}
         />
@@ -117,18 +142,18 @@ export default function SongPage() {
       </View>
 
       <View className="flex-row items-center justify-evenly mb-10">
-        <TouchableOpacity disabled={loading}>
-          <Ionicons name="play-skip-back" size={36} color={loading ? "gray" : "white"} />
+        <TouchableOpacity>
+          <Ionicons name="play-skip-back" size={36} color="white" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={handlePlayPause} disabled={loading}>
+        <TouchableOpacity onPress={handlePlayPause}>
           <Ionicons
             name={isPlaying ? "pause-circle" : "play-circle"}
             size={80}
-            color={loading ? "gray" : "white"}
+            color="white"
           />
         </TouchableOpacity>
-        <TouchableOpacity disabled={loading}>
-          <Ionicons name="play-skip-forward" size={36} color={loading ? "gray" : "white"} />
+        <TouchableOpacity>
+          <Ionicons name="play-skip-forward" size={36} color="white" />
         </TouchableOpacity>
       </View>
     </SafeAreaView>

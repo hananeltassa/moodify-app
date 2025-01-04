@@ -25,21 +25,25 @@ export default function MiniPlayer() {
   };
 
   const navigateToSongPage = async () => {
-    const status = await audioPlayerInstance.soundRef?.getStatusAsync(); // Get current playback status
-    const currentProgress = status?.positionMillis || 0;
+    try {
+      const status = await audioPlayerInstance.soundRef?.getStatusAsync();
+      const currentProgress = status?.positionMillis || 0;
 
-    router.push({
-      pathname: "/music/[music]",
-      params: {
-        songImage: currentSong.songImage,
-        songTitle: currentSong.songTitle,
-        songArtist: currentSong.songArtist,
-        externalUrl: currentSong.externalUrl,
-        previewUrl: currentSong.previewUrl,
-        duration: currentSong.duration,
-        progress: currentProgress, // Pass current playback progress
-      },
-    });
+      router.push({
+        pathname: "/music/[music]",
+        params: {
+          songImage: currentSong.songImage,
+          songTitle: currentSong.songTitle,
+          songArtist: currentSong.songArtist,
+          externalUrl: currentSong.externalUrl,
+          previewUrl: currentSong.previewUrl,
+          duration: currentSong.duration,
+          progress: currentProgress,
+        },
+      });
+    } catch (error) {
+      console.error("Error navigating to song page:", error);
+    }
   };
 
   if (!currentSong) return null;
