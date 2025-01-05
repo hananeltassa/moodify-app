@@ -27,12 +27,12 @@ export default function Library() {
   const ensureDefaultPlaylistExists = async (jwtToken) => {
     try {
       const { playlists: fetchedPlaylists } = await getUserPlaylists(jwtToken);
-
+  
       const likedSongsPlaylist = fetchedPlaylists.find((playlist) => playlist.is_default);
       if (!likedSongsPlaylist) {
         console.log("Creating default 'Liked Songs' playlist...");
         await createPlaylist(jwtToken, "My Favorite Songs", true);
-
+  
         // Fetch playlists again after creation
         const updatedPlaylists = await getUserPlaylists(jwtToken);
         dispatch(setPlaylists(updatedPlaylists.playlists));
@@ -44,7 +44,7 @@ export default function Library() {
       throw error;
     }
   };
-
+  
   const fetchPlaylists = async () => {
     try {
       setLoading(true);
@@ -54,7 +54,6 @@ export default function Library() {
         throw new Error("User is not logged in.");
       }
 
-      // Ensure default playlist exists
       await ensureDefaultPlaylistExists(jwtToken);
 
       if (user?.spotifyId) {
