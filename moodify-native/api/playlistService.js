@@ -52,3 +52,19 @@ export const addSongToPlaylist = async (jwtToken, playlistId, source, externalId
     throw error;
   }
 };
+
+// Get songs in a playlist
+export const getPlaylistSongs = async (jwtToken, playlistId) => {
+  try {
+    const response = await axios.get(`${BACKEND_BASE_URL}/api/playlists/${playlistId}/songs`, {
+      headers: { Authorization: `Bearer ${jwtToken}` },
+    });
+
+    console.log("Fetched songs in playlist:", JSON.stringify(response.data, null, 2));
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching playlist songs:", error);
+    throw error;
+  }
+};
+

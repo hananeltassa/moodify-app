@@ -77,9 +77,9 @@ export default function SongPage() {
         setProgress(currentProgress);
         dispatch(updateProgress(status.positionMillis));
       }
-    }, 500); // Update progress every 500ms
+    }, 500);
 
-    return () => clearInterval(interval); // Clear interval when leaving the page
+    return () => clearInterval(interval);
   }, [dispatch, previewUrl, songImage, songTitle, songArtist, externalUrl, duration, initialProgress]);
 
   const handlePlayPause = async () => {
