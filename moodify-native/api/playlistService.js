@@ -18,3 +18,18 @@ export const createPlaylist = async (jwtToken, name, isDefault = false) => {
     throw error;
   }
 };
+
+// Get all playlists for the authenticated user
+export const getUserPlaylists = async (jwtToken) => {
+  try {
+    const response = await axios.get(`${BACKEND_BASE_URL}/api/playlists`, {
+      headers: { Authorization: `Bearer ${jwtToken}` },
+    });
+
+    console.log("Fetched playlists:", JSON.stringify(response.data, null, 2));
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching playlists:", error);
+    throw error;
+  }
+};
