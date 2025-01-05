@@ -29,7 +29,7 @@ export const getUserPlaylists = async (jwtToken) => {
   } catch (error) {
     if (error.response?.status === 404) {
       console.warn("No playlists found. Returning an empty array.");
-      return { playlists: [] }; // Return an empty array if no playlists are found
+      return { playlists: [] };
     }
     console.error("Error fetching playlists:", error);
     throw error;
@@ -66,6 +66,11 @@ export const getPlaylistSongs = async (jwtToken, playlistId) => {
     console.log("Fetched songs in playlist:", JSON.stringify(response.data, null, 2));
     return response.data;
   } catch (error) {
+    if (error.response?.status === 401) {
+      console.error("Unauthorized: Invalid token or session expired.");
+    } else if (error.response?.status === 404) {
+      console.error("Playlist not found.");
+    }
     console.error("Error fetching playlist songs:", error);
     throw error;
   }
