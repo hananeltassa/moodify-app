@@ -1,21 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const playlistSlice = createSlice({
-    name: 'playlists',
-    initialState: {
-        items: [],
-        isFetched: false,
+  name: "playlists",
+  initialState: {
+    items: [],
+    isFetched: false,
+  },
+  reducers: {
+    setPlaylists: (state, action) => {
+      state.items = action.payload;
+      state.isFetched = true;
     },
-    reducers:{
-        setPlaylists: (state, action) => {
-            state.items= action.payload;
-            state.isFetched= true;
-        },
-        clearPlaylists: (state) => {
-            state.items=[];
-            state.isFetched= false;
-        },
+
+    clearPlaylists: (state) => {
+      state.items = [];
+      state.isFetched = false;
     },
+  },
 });
 
 export const { setPlaylists, clearPlaylists } = playlistSlice.actions;

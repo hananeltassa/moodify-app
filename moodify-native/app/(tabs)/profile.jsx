@@ -8,11 +8,13 @@ import CustomButton from "../../components/CustomButton";
 import RadioButton from "../../components/RadioButton";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import { setUser } from "../../redux/slices/userSlice";
-import Icon from "react-native-vector-icons/Feather";
-import images from "../../constants/images";
+import { setUser, clearUser } from "../../redux/slices/userSlice";
+import { clearPlaylists } from "../../redux/slices/playlistSlice";
+import { stopPlayback } from "../../redux/slices/playbackSlice";
 import { useRouter } from "expo-router";
 import { updateUserProfile } from "../../api/user";
+import Icon from "react-native-vector-icons/Feather";
+import images from "../../constants/images";
 
 export default function ProfileScreen() {
   const [loading, setLoading] = useState(false);
@@ -29,6 +31,23 @@ export default function ProfileScreen() {
   });
 
   const insets = useSafeAreaInsets();
+
+  const handleLogout = async () => {
+    try {
+      await deleteToken("jwtToken");
+
+      dispatch(clearUser());
+      dispatch(clearPlaylists());
+      dispatch(stopPlayback());
+
+      router.replace("/onboarding");
+
+      Alert.alert("Logged Out", "You have been successfully logged out.");
+    } catch (error) {
+      console.error("Error during logout:", error);
+      Alert.alert("Error", "Something went wrong while logging out.");
+    }
+  };
 
   const handleChange = (field, value) => {
     setForm((prevForm) => ({ ...prevForm, [field]: value }));
@@ -96,20 +115,6 @@ export default function ProfileScreen() {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await deleteToken("jwtToken");
-
-      dispatch(setUser(null));
-      router.replace("/onboarding");
-
-      Alert.alert("Logged Out", "You have been successfully logged out.");
-    } catch (error) {
-      console.error("Error during logout:", error);
-      Alert.alert("Error", "Something went wrong while logging out.");
-    }
-  };
-
   if (!user) {
     return (
       <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "black" }}>
@@ -139,6 +144,7 @@ export default function ProfileScreen() {
           <Icon name="log-out" size={24} color="white" />
         </TouchableOpacity>
 
+        {/* Profile Content */}
         <LinearGradient
           colors={["#FF6100", "#B90039"]}
           start={{ x: 0, y: 0 }}

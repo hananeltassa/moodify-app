@@ -12,9 +12,13 @@ const playlistTracksSlice = createSlice({
       state.tracks[playlistId] = tracks;
       state.isFetched[playlistId] = true;
     },
+    clearPlaylistTracks: (state) => {
+      state.tracks = {};
+      state.isFetched = {};
+    },
   },
 });
 
-export const { setPlaylistTracks } = playlistTracksSlice.actions;
+export const { setPlaylistTracks, clearPlaylistTracks } = playlistTracksSlice.actions;
 
 export default playlistTracksSlice.reducer;
