@@ -25,14 +25,17 @@ export const getUserPlaylists = async (jwtToken) => {
     const response = await axios.get(`${BACKEND_BASE_URL}/api/playlists`, {
       headers: { Authorization: `Bearer ${jwtToken}` },
     });
-
-    console.log("Fetched playlists:", JSON.stringify(response.data, null, 2));
     return response.data;
   } catch (error) {
+    if (error.response?.status === 404) {
+      console.warn("No playlists found. Returning an empty array.");
+      return { playlists: [] }; // Return an empty array if no playlists are found
+    }
     console.error("Error fetching playlists:", error);
     throw error;
   }
 };
+
 
 // Add a song to a playlist
 export const addSongToPlaylist = async (jwtToken, playlistId, source, externalId, metadata) => {
