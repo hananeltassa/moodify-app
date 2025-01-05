@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import images from "@/constants/images";
 import Music from "../../../components/Music";
 import { fetchSpotifyPlaylistTracks } from "../../../api/spotifyAuth";
+import { getPlaylistSongs } from "../../../api/playlistService";
 import { getToken } from "../../../utils/secureStore";
 import LoadingScreen from "../../../components/LoadingScreen";
 import { useSelector, useDispatch } from "react-redux";
@@ -25,52 +26,46 @@ export default function Playlist() {
   const [loading, setLoading] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
 
+  const loadPlaylistTracks = async () => {
+    if (isFetched) {
+      setTracks(cachedTracks || []);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const jwtToken = await getToken("jwtToken");
+      if (!jwtToken) {
+        throw new Error("User is not logged in.");
+      }
+
+      if (user?.spotifyId && playlistName !== "My Favorite Songs") {
+        // Fetch Spotify playlist tracks
+        const playlistTracks = await fetchSpotifyPlaylistTracks(playlist, jwtToken);
+        setTracks(playlistTracks || []);
+        dispatch(setPlaylistTracks({ playlistId: playlist, tracks: playlistTracks || [] }));
+      } else {
+        // Fetch local playlist tracks
+        const localTracks = await getPlaylistSongs(jwtToken, playlist);
+        setTracks(localTracks?.songs || []);
+        dispatch(setPlaylistTracks({ playlistId: playlist, tracks: localTracks?.songs || [] }));
+      }
+    } catch (error) {
+      console.error("Error loading playlist tracks:", error.message || error);
+      Alert.alert("Error", "Failed to load playlist tracks. Please try again.");
+      setTracks([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const loadPlaylistTracks = async () => {
-      if (isFetched) {
-        setTracks(cachedTracks);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        setLoading(true);
-
-        const jwtToken = await getToken("jwtToken");
-        if (!jwtToken) {
-          throw new Error("User is not logged in.");
-        }
-
-        if (user?.spotifyId) {
-          const playlistTracks = await fetchSpotifyPlaylistTracks(playlist, jwtToken);
-          setTracks(playlistTracks);
-          dispatch(setPlaylistTracks({ playlistId: playlist, tracks: playlistTracks }));
-        } else {
-
-          setTracks([
-            {
-              name: "Mock Track 1",
-              artists: ["Mock Artist 1"],
-              album: {
-                images: [{ url: "https://via.placeholder.com/300" }],
-              },
-              externalUrl: "https://mocktrack.com",
-              preview_url: null,
-            },
-          ]);
-        }
-      } catch (error) {
-        console.error("Error loading playlist tracks:", error);
-        Alert.alert("Error", error.message || "Failed to load playlist tracks.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     if (playlist) {
       loadPlaylistTracks();
     }
-  }, [playlist, isFetched, cachedTracks, user]);
+  }, [playlist, isFetched, cachedTracks, user, playlistName]);
 
   const toggleLike = () => {
     setIsLiked(!isLiked);
@@ -80,45 +75,13 @@ export default function Playlist() {
     return <LoadingScreen message="Loading tracks..." />;
   }
 
-  if (!tracks.length) {
-    return (
-      <SafeAreaProvider>
-        <SafeAreaView
-          style={{
-            flex: 1,
-            paddingTop: insets.top,
-            paddingBottom: insets.bottom,
-            paddingHorizontal: 16,
-            backgroundColor: "black",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text className="text-white text-lg">No tracks found for this playlist.</Text>
-        </SafeAreaView>
-      </SafeAreaProvider>
-    );
-  }
-
   return (
     <SafeAreaProvider>
-      <SafeAreaView
-        style={{
-          flex: 1,
-          paddingTop: insets.top,
-          backgroundColor: "black",
-        }}
-      >
+      <SafeAreaView style={{ flex: 1, paddingTop: insets.top, backgroundColor: "black" }}>
         {/* Back Button */}
         <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}>
           <TouchableOpacity
-            onPress={() => {
-              if (from === "library") {
-                router.push("/library");
-              } else {
-                router.back();
-              }
-            }}
+            onPress={() => (from === "library" ? router.replace("/library") : router.back())}
             style={{ marginRight: 16 }}
           >
             <Ionicons name="chevron-back" size={28} color="white" />
@@ -126,25 +89,18 @@ export default function Playlist() {
         </View>
         <FlatList
           data={["header", ...tracks]}
-          keyExtractor={(item, index) => (item === "header" ? "header" : index.toString())}
+          keyExtractor={(item, index) => (item === "header" ? "header" : `${item.id || index}`)}
           contentContainerStyle={{ paddingBottom: insets.bottom }}
           renderItem={({ item }) =>
             item === "header" ? (
               <View>
-                {/* Playlist Image */}
                 <View className="items-center mb-6">
                   <Image
-                    source={
-                      playlistImage
-                        ? { uri: playlistImage }
-                        : images.playlist
-                    }
+                    source={playlistImage ? { uri: playlistImage } : images.playlist}
                     className="w-96 h-96"
                     resizeMode="contain"
                   />
                 </View>
-
-                {/* Playlist Title and Like Icon */}
                 <View className="flex-row items-center justify-between p-4 mb-2">
                   <Text className="text-white text-2xl font-Avenir-Bold">{playlistName || "Playlist"}</Text>
                   <TouchableOpacity onPress={toggleLike}>
@@ -159,7 +115,7 @@ export default function Playlist() {
             ) : (
               <Music
                 title={item.name}
-                subtitle={item.artists.join(", ")}
+                subtitle={item.artists?.join(", ") || "Unknown Artist"}
                 image={
                   item.album?.images?.length > 0
                     ? { uri: item.album.images[0].url }
@@ -171,7 +127,7 @@ export default function Playlist() {
                     params: {
                       songTitle: item.name,
                       songImage: item.album?.images?.length > 0 ? item.album.images[0].url : null,
-                      songArtist: item.artists.join(", "),
+                      songArtist: item.artists?.join(", ") || "Unknown Artist",
                       songUri: item.album.uri,
                       externalUrl: item.externalUrl,
                       previewUrl: item.preview_url,
