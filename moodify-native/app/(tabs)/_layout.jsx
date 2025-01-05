@@ -1,18 +1,21 @@
-import { Tabs } from "expo-router";
+import { Tabs, useRouter } from "expo-router";
 import { StatusBar, View, Platform } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "react-native";
 import MiniPlayer from "@/components/MiniPlayer";
 import { useSelector } from "react-redux";
+import { getToken } from "@/utils/secureStore";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? "light"];
+  const router = useRouter();
 
   // Redux state for playback
   const { currentSong } = useSelector((state) => state.playback);
+  const user = useSelector((state) => state.user.user); // Redux state for user
 
   const expandPlayer = () => {
     if (currentSong) {
@@ -21,6 +24,18 @@ export default function TabLayout() {
       );
     }
   };
+
+  // Redirect to onboarding if the user is not logged in
+  useEffect(() => {
+    const checkAuth = async () => {
+      const jwtToken = await getToken("jwtToken");
+      if (!jwtToken || !user) {
+        router.replace("/onboarding");
+      }
+    };
+
+    checkAuth();
+  }, [user]);
 
   return (
     <View className="flex-1 relative">
@@ -110,6 +125,8 @@ export default function TabLayout() {
               tabBarShowLabel: false,
             }}
           />
+
+          {/* Playlist Tab */}
           <Tabs.Screen
             name="playlist/[playlist]"
             options={{

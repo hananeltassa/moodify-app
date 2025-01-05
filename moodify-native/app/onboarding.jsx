@@ -21,7 +21,7 @@ export default function Onboarding() {
         router.replace('/home');
       } else {
         console.log('Spotify login was canceled.');
-        Alert.alert('Login Canceled', 'Spotify login was canceled by the user.');
+        //Alert.alert('Login Canceled', 'Spotify login was canceled by the user.');
       }
     } catch (error) {
       console.error('Error during Spotify login:', error);
