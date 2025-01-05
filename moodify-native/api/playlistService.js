@@ -68,3 +68,17 @@ export const getPlaylistSongs = async (jwtToken, playlistId) => {
   }
 };
 
+// Delete a song from a playlist
+export const deleteSongFromPlaylist = async (jwtToken, playlistId, songId) => {
+  try {
+    const response = await axios.delete(`${BACKEND_BASE_URL}/api/playlists/${playlistId}/songs/${songId}`, {
+      headers: { Authorization: `Bearer ${jwtToken}` },
+    });
+
+    console.log("Deleted song from playlist:", JSON.stringify(response.data, null, 2));
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting song from playlist:", error);
+    throw error;
+  }
+};
