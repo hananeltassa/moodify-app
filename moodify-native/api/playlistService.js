@@ -33,3 +33,22 @@ export const getUserPlaylists = async (jwtToken) => {
     throw error;
   }
 };
+
+// Add a song to a playlist
+export const addSongToPlaylist = async (jwtToken, playlistId, source, externalId, metadata) => {
+  try {
+    const response = await axios.post(
+      `${BACKEND_BASE_URL}/api/playlists/${playlistId}/songs`,
+      { source, externalId, metadata },
+      {
+        headers: { Authorization: `Bearer ${jwtToken}` },
+      }
+    );
+
+    console.log("Added song to playlist:", JSON.stringify(response.data, null, 2));
+    return response.data;
+  } catch (error) {
+    console.error("Error adding song to playlist:", error);
+    throw error;
+  }
+};
