@@ -10,6 +10,7 @@ import { useFavoritePlaylist } from "../../hooks/useFavoritePlaylist";
 import { useSongPlayback } from "../../hooks/useSongPlayback";
 import audioPlayerInstance from "../../utils/audioUtils";
 import { getToken } from "../../utils/secureStore";
+import { togglePlayPause } from "../../redux/slices/playbackSlice";
 
 export default function SongPage() {
   const {
