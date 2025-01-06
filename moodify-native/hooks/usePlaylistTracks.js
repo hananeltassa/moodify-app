@@ -8,8 +8,10 @@ import { setPlaylistTracks, clearPlaylistTracks } from "../redux/slices/playlist
 
 export const usePlaylistTracks = (playlistId, playlistName, user) => {
   const dispatch = useDispatch();
-  const cachedTracks = useSelector((state) => state.playlistTracks.tracks[playlistId]);
-  const isFetched = useSelector((state) => state.playlistTracks.isFetched[playlistId]);
+
+  // Select cached tracks and fetch state from Redux
+  const cachedTracks = useSelector((state) => state.playlistTracks.tracks[playlistId] || []);
+  const isFetched = useSelector((state) => state.playlistTracks.isFetched[playlistId] || false);
 
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,10 +22,6 @@ export const usePlaylistTracks = (playlistId, playlistName, user) => {
 
       const jwtToken = await getToken("jwtToken");
       if (!jwtToken) throw new Error("User is not logged in.");
-
-      // Clear existing tracks before fetching new ones
-      setTracks([]);
-      dispatch(clearPlaylistTracks(playlistId));
 
       let fetchedTracks = [];
       if (playlistName === "My Favorite Songs") {
@@ -50,6 +48,7 @@ export const usePlaylistTracks = (playlistId, playlistName, user) => {
         fetchedTracks = localTracks?.songs || [];
       }
 
+      // Save fetched tracks to both local state and Redux
       setTracks(fetchedTracks || []);
       dispatch(setPlaylistTracks({ playlistId, tracks: fetchedTracks || [] }));
     } catch (error) {
@@ -61,13 +60,18 @@ export const usePlaylistTracks = (playlistId, playlistName, user) => {
     }
   };
 
+  // Fetch data from Redux or API
   useEffect(() => {
-    // Always fetch new data if the playlist is "My Favorite Songs" or data is not cached
-    if (playlistId && (!isFetched || playlistName === "My Favorite Songs")) {
-      loadPlaylistTracks();
+    if (playlistId) {
+      if (cachedTracks.length > 0) {
+        setTracks(cachedTracks);
+        setLoading(false);
+      } else if (!isFetched || playlistName === "My Favorite Songs") {
+        // Fetch data from API if not cached or if playlist is "My Favorite Songs"
+        loadPlaylistTracks();
+      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playlistId, playlistName, user]);
+  }, [playlistId, playlistName, user, cachedTracks, isFetched]); // Depend on Redux state to auto-update tracks
 
   return { tracks, loading };
 };
