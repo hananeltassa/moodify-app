@@ -71,20 +71,22 @@ export default function SongPage() {
         Alert.alert("Error", "User is not logged in.");
         return;
       }
-
+  
       if (isLiked) {
-        // Remove song from favorites
+        // Call the API to delete the song from the playlist
         await deleteSongFromPlaylist(jwtToken, favoritePlaylistId, songTitle);
-
+  
+        // Remove the song from Redux state
         dispatch(removeTrackFromPlaylist({ playlistId: favoritePlaylistId, trackId: songTitle }));
-
+  
         Alert.alert("Removed", "Song removed from 'My Favorite Songs'.");
       } else {
         if (!favoritePlaylistId) {
           Alert.alert("Error", "Default playlist not set.");
           return;
         }
-
+  
+        // Prepare metadata for adding the song
         const metadata = {
           id: songTitle,
           image: songImage || "https://via.placeholder.com/300",
@@ -95,9 +97,11 @@ export default function SongPage() {
           duration: duration || 0,
           liked: true, // Set liked to true when adding to favorites
         };
-
+  
+        // Call the API to add the song to the playlist
         const response = await addSongToPlaylist(jwtToken, favoritePlaylistId, "local", null, metadata);
-
+  
+        // Add the song to Redux state
         dispatch(
           addTrackToPlaylist({
             playlistId: favoritePlaylistId,
@@ -115,16 +119,17 @@ export default function SongPage() {
             },
           })
         );
-
+  
         Alert.alert("Added", "Song added to 'My Favorite Songs'.");
       }
-
-      setIsLiked(!isLiked);
+  
+      setIsLiked(!isLiked); // Toggle the `isLiked` state
     } catch (error) {
       console.error("Error updating favorites:", error);
       Alert.alert("Error", "Failed to update 'My Favorite Songs'. Please try again.");
     }
   };
+  
 
   const formatDuration = (ms) => {
     const minutes = Math.floor(ms / 60000);
