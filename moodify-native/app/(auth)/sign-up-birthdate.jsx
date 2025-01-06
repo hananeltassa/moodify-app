@@ -6,13 +6,13 @@ import CustomButton from "../../components/CustomButton";
 import { useRegistration } from "../../context/RegistrationContext";
 import { router } from "expo-router";
 
-export default function SignInBirthdate() {
+export default function SignInBirthday() {
   const { registrationData, updateRegistrationData } = useRegistration();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isUserOver12 = (birthdate) => {
+  const calculateAge = (birthday) => {
     const today = new Date();
-    const birthDate = new Date(birthdate);
+    const birthDate = new Date(birthday);
     const age = today.getFullYear() - birthDate.getFullYear();
 
     const hasBirthdayPassed =
@@ -24,12 +24,12 @@ export default function SignInBirthdate() {
   };
 
   const handleSubmit = async () => {
-    if (!registrationData.birthdate) {
-      Alert.alert("Error", "Please select your birthdate.");
+    if (!registrationData.birthday) {
+      Alert.alert("Error", "Please select your birthday.");
       return;
     }
 
-    const age = isUserOver12(registrationData.birthdate);
+    const age = calculateAge(registrationData.birthday);
 
     if (age < 12) {
       Alert.alert("Error", "You must be at least 12 years old to sign up.");
@@ -39,7 +39,7 @@ export default function SignInBirthdate() {
     setIsSubmitting(true);
 
     try {
-      console.log("Birthdate submitted:", registrationData.birthdate);
+      console.log("Birthday submitted:", registrationData.birthday);
       router.push("/(auth)/sign-up-gender");
     } catch (error) {
       Alert.alert("Error", "An error occurred. Please try again.");
@@ -53,9 +53,9 @@ export default function SignInBirthdate() {
       <View className="w-full h-full -mt-8 px-4">
         <FormField
           title="What's your date of birth?"
-          value={registrationData.birthdate}
-          handleChangeText={(date) => updateRegistrationData("birthdate", date)}
-          placeholder="Enter your birthdate"
+          value={registrationData.birthday}
+          handleChangeText={(date) => updateRegistrationData("birthday", date)}
+          placeholder="Enter your birthday"
           titleSize={22}
           inputSize={16}
           type="date"
