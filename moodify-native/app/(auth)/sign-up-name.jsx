@@ -1,18 +1,20 @@
 import React, { useState } from "react";
 import { SafeAreaView, View, Text } from "react-native";
 import { router } from "expo-router";
+import { useDispatch } from "react-redux";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import { useRegistration } from "../../context/RegistrationContext";
 import { registerUser } from "../../api/authService";
+import { setUser } from "../../redux/slices/userSlice";
 
 export default function SignUpName() {
   const { registrationData, updateRegistrationData } = useRegistration();
   const [isSubmitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const dispatch = useDispatch();
 
   const handleSubmit = async () => {
-    // Validate the name field
     if (!registrationData.name.trim()) {
       setErrorMessage("Please enter your name.");
       return;
@@ -23,7 +25,18 @@ export default function SignUpName() {
 
     try {
       const response = await registerUser(registrationData);
-      router.push("/(tabs)/home");
+
+      dispatch(
+        setUser({
+          name: response.user.name,
+          email: response.user.email,
+          profilePic: response.user.profilePic || "",
+          gender: response.user.gender || "",
+          birthday: response.user.birthday || "",
+        })
+      );
+
+      router.replace("/(tabs)/home");
     } catch (error) {
       setErrorMessage("An error occurred. Please try again.");
     } finally {
