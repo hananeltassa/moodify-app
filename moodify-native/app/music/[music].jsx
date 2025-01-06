@@ -5,18 +5,57 @@ import Slider from "@react-native-community/slider";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { playSong, togglePlayPause, updateProgress } from "../../redux/slices/playbackSlice";
+import { addSongToPlaylist, getUserPlaylists } from "../../api/playlistService";
 import audioPlayerInstance from "../../utils/audioUtils";
+import { getToken } from "../../utils/secureStore";
 
 export default function SongPage() {
-  const { songImage, songTitle, songArtist, externalUrl, previewUrl, duration, progress: initialProgress = 0 } = useLocalSearchParams();
+  const {
+    songImage,
+    songTitle,
+    songArtist,
+    externalUrl,
+    previewUrl,
+    duration,
+    progress: initialProgress = 0,
+  } = useLocalSearchParams();
 
   const dispatch = useDispatch();
   const router = useRouter();
-  const { isPlaying, currentSong } = useSelector((state) => state.playback);
-
+  const { isPlaying } = useSelector((state) => state.playback);
   const [progress, setProgress] = useState(initialProgress / duration);
   const [loading, setLoading] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [favoritePlaylistId, setFavoritePlaylistId] = useState(null);
 
+  // Fetch default playlist ID
+  useEffect(() => {
+    const loadFavoritePlaylist = async () => {
+      try {
+        const jwtToken = await getToken("jwtToken");
+        if (!jwtToken) {
+          Alert.alert("Error", "User is not logged in.");
+          return;
+        }
+
+        const playlists = await getUserPlaylists(jwtToken);
+        const favoritePlaylist = playlists.playlists.find((playlist) => playlist.is_default);
+
+        if (favoritePlaylist) {
+          setFavoritePlaylistId(favoritePlaylist.id);
+        } else {
+          Alert.alert("Error", "Default playlist not found.");
+        }
+      } catch (error) {
+        console.error("Error fetching favorite playlist:", error);
+        Alert.alert("Error", "Failed to fetch favorite playlist.");
+      }
+    };
+
+    loadFavoritePlaylist();
+  }, []);
+
+  // Load song and manage progress
   useEffect(() => {
     const loadSong = async () => {
       if (!previewUrl) {
@@ -29,7 +68,7 @@ export default function SongPage() {
               text: "Open Spotify",
               onPress: () => {
                 if (externalUrl) {
-                  Linking.openURL(externalUrl).catch((err) =>
+                  Linking.openURL(externalUrl).catch(() =>
                     Alert.alert("Error", "Unable to open Spotify.")
                   );
                 } else {
@@ -44,7 +83,6 @@ export default function SongPage() {
 
       try {
         if (audioPlayerInstance.currentUri !== previewUrl) {
-          // Load and play the song
           await audioPlayerInstance.loadAndPlay(previewUrl, (status) => {
             if (status.isLoaded) {
               setProgress(status.positionMillis / (duration || status.durationMillis));
@@ -54,14 +92,12 @@ export default function SongPage() {
               }
             }
           });
-          // Seek to the initial progress
+
           if (initialProgress > 0) {
             await audioPlayerInstance.setPosition(initialProgress);
           }
 
-          dispatch(
-            playSong({ songImage, songTitle, songArtist, externalUrl, previewUrl, duration })
-          );
+          dispatch(playSong({ songImage, songTitle, songArtist, externalUrl, previewUrl, duration }));
         }
       } catch (error) {
         Alert.alert("Error", "Unable to load the song.");
@@ -98,6 +134,42 @@ export default function SongPage() {
     }
   };
 
+  const handleToggleFavorite = async () => {
+    try {
+      const jwtToken = await getToken("jwtToken");
+      if (!jwtToken) {
+        Alert.alert("Error", "User is not logged in.");
+        return;
+      }
+
+      if (isLiked) {
+        Alert.alert("Removed", "Song removed from 'My Favorite Songs'.");
+      } else {
+        if (!favoritePlaylistId) {
+          Alert.alert("Error", "Default playlist not set.");
+          return;
+        }
+
+        const metadata = {
+          image: songImage || "https://via.placeholder.com/300",
+          title: songTitle || "Unknown Title",
+          artist: songArtist || "Unknown Artist",
+          externalUrl: externalUrl || null,
+          previewUrl: previewUrl || null,
+          duration: duration || 0,
+        };
+
+        await addSongToPlaylist(jwtToken, favoritePlaylistId, "local", null, metadata);
+        Alert.alert("Added", "Song added to 'My Favorite Songs'.");
+      }
+
+      setIsLiked(!isLiked);
+    } catch (error) {
+      console.error("Error updating favorites:", error);
+      Alert.alert("Error", "Failed to update 'My Favorite Songs'. Please try again.");
+    }
+  };
+
   const formatDuration = (ms) => {
     const minutes = Math.floor(ms / 60000);
     const seconds = Math.floor((ms % 60000) / 1000);
@@ -126,7 +198,16 @@ export default function SongPage() {
       </View>
 
       <View style={{ paddingHorizontal: 20, marginBottom: 30 }}>
-        <Text className="text-white text-2xl font-Avenir-Bold">{songTitle || "Unknown Title"}</Text>
+        <View className="flex-row justify-between items-center">
+          <Text className="text-white text-2xl font-Avenir-Bold">{songTitle || "Unknown Title"}</Text>
+          <TouchableOpacity onPress={handleToggleFavorite}>
+            <Ionicons
+              name={isLiked ? "heart" : "heart-outline"}
+              size={28}
+              color={isLiked ? "#FF6100" : "#FFF"}
+            />
+          </TouchableOpacity>
+        </View>
         <Text className="text-gray-400 text-lg font-avenir-regular">{songArtist || "Unknown Artist"}</Text>
       </View>
 
