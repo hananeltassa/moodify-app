@@ -36,14 +36,22 @@ export const usePlaylistTracks = (playlistId, playlistName, user) => {
           externalUrl: song.metadata?.externalUrl || null,
           preview_url: song.metadata?.previewUrl || null,
           duration_ms: parseInt(song.metadata?.duration || 0, 10),
+          liked: true,
         }));
       } else if (user?.spotifyId) {
         // Fetch tracks from Spotify
         fetchedTracks = await fetchSpotifyPlaylistTracks(playlistId, jwtToken);
+        fetchedTracks = fetchedTracks.map((track) => ({
+          ...track,
+          liked: false, // Default to not liked
+        }));
       } else {
         // Fetch tracks from local playlist
         const localTracks = await getPlaylistSongs(jwtToken, playlistId);
-        fetchedTracks = localTracks?.songs || [];
+        fetchedTracks = localTracks?.songs?.map((track) => ({
+          ...track,
+          liked: false, // Default to not liked
+        }));
       }
 
       // Update Redux state with fetched tracks
@@ -56,11 +64,18 @@ export const usePlaylistTracks = (playlistId, playlistName, user) => {
     }
   };
 
+  const toggleLike = (trackId) => {
+    const updatedTracks = cachedTracks.map((track) =>
+      track.id === trackId ? { ...track, liked: !track.liked } : track
+    );
+    dispatch(setPlaylistTracks({ playlistId, tracks: updatedTracks }));
+  };
+
   useEffect(() => {
     if (playlistId && !isFetched) {
       loadPlaylistTracks();
     }
   }, [playlistId, isFetched, user]);
 
-  return { tracks: cachedTracks, loading };
+  return { tracks: cachedTracks, loading, toggleLike };
 };

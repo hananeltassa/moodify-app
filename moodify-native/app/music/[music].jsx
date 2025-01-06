@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Image, Text, SafeAreaView, TouchableOpacity, Platform, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { addTrackToPlaylist, removeTrackFromPlaylist } from "../../redux/slices/playlistTracksSlice";
-import { addSongToPlaylist, deleteSongFromPlaylist  } from "../../api/playlistService";
+import { addSongToPlaylist, deleteSongFromPlaylist } from "../../api/playlistService";
 import { useFavoritePlaylist } from "../../hooks/useFavoritePlaylist";
 import { useSongPlayback } from "../../hooks/useSongPlayback";
 import audioPlayerInstance from "../../utils/audioUtils";
@@ -26,6 +26,7 @@ export default function SongPage() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { isPlaying } = useSelector((state) => state.playback);
+  const favoriteTracks = useSelector((state) => state.playlistTracks.tracks);
   const [loading, setLoading] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const favoritePlaylistId = useFavoritePlaylist();
@@ -36,6 +37,16 @@ export default function SongPage() {
     externalUrl,
     songData: { songImage, songTitle, songArtist, externalUrl, previewUrl, duration },
   });
+
+  // Check if the song is already in the favorite playlist using metadata
+  useEffect(() => {
+    if (favoritePlaylistId && favoriteTracks[favoritePlaylistId]) {
+      const isFavorite = favoriteTracks[favoritePlaylistId].some(
+        (track) => track.name === songTitle && track.liked
+      );
+      setIsLiked(isFavorite);
+    }
+  }, [favoritePlaylistId, favoriteTracks, songTitle]);
 
   const handlePlayPause = async () => {
     setLoading(true);
@@ -60,19 +71,20 @@ export default function SongPage() {
         Alert.alert("Error", "User is not logged in.");
         return;
       }
-  
+
       if (isLiked) {
+        // Remove song from favorites
         await deleteSongFromPlaylist(jwtToken, favoritePlaylistId, songTitle);
-  
+
         dispatch(removeTrackFromPlaylist({ playlistId: favoritePlaylistId, trackId: songTitle }));
-  
+
         Alert.alert("Removed", "Song removed from 'My Favorite Songs'.");
       } else {
         if (!favoritePlaylistId) {
           Alert.alert("Error", "Default playlist not set.");
           return;
         }
-  
+
         const metadata = {
           id: songTitle,
           image: songImage || "https://via.placeholder.com/300",
@@ -81,10 +93,11 @@ export default function SongPage() {
           externalUrl: externalUrl || null,
           previewUrl: previewUrl || null,
           duration: duration || 0,
+          liked: true, // Set liked to true when adding to favorites
         };
-  
+
         const response = await addSongToPlaylist(jwtToken, favoritePlaylistId, "local", null, metadata);
-  
+
         dispatch(
           addTrackToPlaylist({
             playlistId: favoritePlaylistId,
@@ -98,21 +111,21 @@ export default function SongPage() {
               externalUrl: response.song.metadata.externalUrl || null,
               preview_url: response.song.metadata.previewUrl || null,
               duration_ms: parseInt(response.song.metadata.duration || 0, 10),
+              liked: true, // Update Redux state with `liked` status
             },
           })
         );
-  
+
         Alert.alert("Added", "Song added to 'My Favorite Songs'.");
       }
-  
+
       setIsLiked(!isLiked);
     } catch (error) {
       console.error("Error updating favorites:", error);
       Alert.alert("Error", "Failed to update 'My Favorite Songs'. Please try again.");
     }
   };
-  
-  
+
   const formatDuration = (ms) => {
     const minutes = Math.floor(ms / 60000);
     const seconds = Math.floor((ms % 60000) / 1000);
