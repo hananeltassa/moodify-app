@@ -15,7 +15,7 @@ export default function TabLayout() {
 
   // Redux state for playback
   const { currentSong } = useSelector((state) => state.playback);
-  const user = useSelector((state) => state.user.user); // Redux state for user
+  const user = useSelector((state) => state.user.user);
 
   const expandPlayer = () => {
     if (currentSong) {

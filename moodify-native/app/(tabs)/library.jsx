@@ -125,7 +125,11 @@ export default function Library() {
             renderItem={({ item }) => (
               <Playlist
                 title={item.name}
-                subtitle={`${item.totalTracks || 0} tracks`}
+                subtitle={
+                  item.name === "My Favorite Songs"
+                    ? null 
+                    : `${item.totalTracks || 0} tracks`
+                }
                 image={
                   item.images?.length > 0
                     ? { uri: item.images[0].url }
@@ -149,6 +153,7 @@ export default function Library() {
             }}
             showsVerticalScrollIndicator={false}
           />
+
         </View>
       </SafeAreaView>
     </SafeAreaProvider>
