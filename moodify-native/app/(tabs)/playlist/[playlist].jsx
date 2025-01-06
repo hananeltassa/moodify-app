@@ -25,6 +25,7 @@ export default function Playlist() {
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
+  const [isFetching, setIsFetching] = useState(false); // Prevent multiple fetches
 
   const loadPlaylistTracks = async () => {
     if (isFetched) {
@@ -32,6 +33,9 @@ export default function Playlist() {
       setLoading(false);
       return;
     }
+
+    if (isFetching) return; // Prevent multiple calls
+    setIsFetching(true);
 
     try {
       setLoading(true);
@@ -41,13 +45,32 @@ export default function Playlist() {
         throw new Error("User is not logged in.");
       }
 
-      if (user?.spotifyId && playlistName !== "My Favorite Songs") {
-        // Fetch Spotify playlist tracks
+      if (playlistName === "My Favorite Songs") {
+        console.log("Fetching songs for 'My Favorite Songs'...");
+        const favoriteSongs = await getPlaylistSongs(jwtToken, playlist);
+
+        const formattedSongs = favoriteSongs?.songs?.map((song) => ({
+          id: song.id,
+          name: song.metadata?.title || "Unknown Title",
+          artists: [song.metadata?.artist || "Unknown Artist"],
+          album: {
+            images: song.metadata?.image ? [{ url: song.metadata.image }] : [],
+            uri: song.metadata?.uri || null,
+          },
+          externalUrl: song.metadata?.externalUrl || null,
+          preview_url: song.metadata?.previewUrl || null,
+          duration_ms: parseInt(song.metadata?.duration || 0, 10),
+        }));
+
+        setTracks(formattedSongs || []);
+        dispatch(setPlaylistTracks({ playlistId: playlist, tracks: formattedSongs || [] }));
+      } else if (user?.spotifyId) {
+        console.log("Fetching Spotify playlist tracks...");
         const playlistTracks = await fetchSpotifyPlaylistTracks(playlist, jwtToken);
         setTracks(playlistTracks || []);
         dispatch(setPlaylistTracks({ playlistId: playlist, tracks: playlistTracks || [] }));
       } else {
-        // Fetch local playlist tracks
+        console.log("Fetching local playlist tracks...");
         const localTracks = await getPlaylistSongs(jwtToken, playlist);
         setTracks(localTracks?.songs || []);
         dispatch(setPlaylistTracks({ playlistId: playlist, tracks: localTracks?.songs || [] }));
@@ -58,11 +81,12 @@ export default function Playlist() {
       setTracks([]);
     } finally {
       setLoading(false);
+      setIsFetching(false);
     }
   };
 
   useEffect(() => {
-    if (playlist) {
+    if (playlist && !isFetched) {
       loadPlaylistTracks();
     }
   }, [playlist, isFetched, cachedTracks, user, playlistName]);
