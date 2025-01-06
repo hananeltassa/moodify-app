@@ -84,7 +84,7 @@ export default function Onboarding() {
           />
 
           {/* Log In Link */}
-          <TouchableOpacity onPress={() => router.replace('/(auth)/sign-in')}>
+          <TouchableOpacity onPress={() => router.push('/(auth)/sign-in')}>
             <Text className="text-white text-lg font-Avenir-Bold text-center mt-6">
               Log in
             </Text>
