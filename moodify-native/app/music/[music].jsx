@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { View, Image, Text, SafeAreaView, TouchableOpacity, Platform, Alert, Linking } from "react-native";
+import React, { useState } from "react";
+import { View, Image, Text, SafeAreaView, TouchableOpacity, Platform, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
-import { playSong, togglePlayPause, updateProgress } from "../../redux/slices/playbackSlice";
-import { addSongToPlaylist, getUserPlaylists } from "../../api/playlistService";
+import { togglePlayPause } from "../../redux/slices/playbackSlice";
+import { addSongToPlaylist } from "../../api/playlistService";
+import { useFavoritePlaylist } from "../../hooks/useFavoritePlaylist";
+import { useSongPlayback } from "../../hooks/useSongPlayback";
 import audioPlayerInstance from "../../utils/audioUtils";
 import { getToken } from "../../utils/secureStore";
 
@@ -23,100 +25,16 @@ export default function SongPage() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { isPlaying } = useSelector((state) => state.playback);
-  const [progress, setProgress] = useState(initialProgress / duration);
   const [loading, setLoading] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
-  const [favoritePlaylistId, setFavoritePlaylistId] = useState(null);
-
-  // Fetch default playlist ID
-  useEffect(() => {
-    const loadFavoritePlaylist = async () => {
-      try {
-        const jwtToken = await getToken("jwtToken");
-        if (!jwtToken) {
-          Alert.alert("Error", "User is not logged in.");
-          return;
-        }
-
-        const playlists = await getUserPlaylists(jwtToken);
-        const favoritePlaylist = playlists.playlists.find((playlist) => playlist.is_default);
-
-        if (favoritePlaylist) {
-          setFavoritePlaylistId(favoritePlaylist.id);
-        } else {
-          Alert.alert("Error", "Default playlist not found.");
-        }
-      } catch (error) {
-        console.error("Error fetching favorite playlist:", error);
-        Alert.alert("Error", "Failed to fetch favorite playlist.");
-      }
-    };
-
-    loadFavoritePlaylist();
-  }, []);
-
-  // Load song and manage progress
-  useEffect(() => {
-    const loadSong = async () => {
-      if (!previewUrl) {
-        Alert.alert(
-          "No Preview Available",
-          "This song does not have a preview. Would you like to open it on Spotify?",
-          [
-            { text: "Cancel", style: "cancel" },
-            {
-              text: "Open Spotify",
-              onPress: () => {
-                if (externalUrl) {
-                  Linking.openURL(externalUrl).catch(() =>
-                    Alert.alert("Error", "Unable to open Spotify.")
-                  );
-                } else {
-                  Alert.alert("Error", "No Spotify link available.");
-                }
-              },
-            },
-          ]
-        );
-        return;
-      }
-
-      try {
-        if (audioPlayerInstance.currentUri !== previewUrl) {
-          await audioPlayerInstance.loadAndPlay(previewUrl, (status) => {
-            if (status.isLoaded) {
-              setProgress(status.positionMillis / (duration || status.durationMillis));
-              dispatch(updateProgress(status.positionMillis));
-              if (status.didJustFinish) {
-                dispatch(togglePlayPause());
-              }
-            }
-          });
-
-          if (initialProgress > 0) {
-            await audioPlayerInstance.setPosition(initialProgress);
-          }
-
-          dispatch(playSong({ songImage, songTitle, songArtist, externalUrl, previewUrl, duration }));
-        }
-      } catch (error) {
-        Alert.alert("Error", "Unable to load the song.");
-      }
-    };
-
-    loadSong();
-
-    const interval = setInterval(async () => {
-      const status = await audioPlayerInstance.soundRef?.getStatusAsync();
-      if (status?.isLoaded) {
-        const currentProgress = status.positionMillis / status.durationMillis;
-        setProgress(currentProgress);
-        dispatch(updateProgress(status.positionMillis));
-      }
-    }, 500);
-
-    return () => clearInterval(interval);
-  }, [dispatch, previewUrl, songImage, songTitle, songArtist, externalUrl, duration, initialProgress]);
+  const favoritePlaylistId = useFavoritePlaylist();
+  const { progress, setProgress } = useSongPlayback({
+    previewUrl,
+    duration,
+    initialProgress,
+    externalUrl,
+    songData: { songImage, songTitle, songArtist, externalUrl, previewUrl, duration },
+  });
 
   const handlePlayPause = async () => {
     setLoading(true);
