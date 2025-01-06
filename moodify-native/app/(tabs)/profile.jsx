@@ -26,7 +26,7 @@ export default function ProfileScreen() {
   const [form, setForm] = useState({
     name: user?.name || "",
     gender: user?.gender || "",
-    dateOfBirth: user?.dateOfBirth || "",
+    dateOfBirth: user?.birthday || "",
     profilePic: user?.profilePic || images.user,
   });
 
