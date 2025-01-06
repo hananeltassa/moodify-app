@@ -4,8 +4,8 @@ import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
-import { togglePlayPause } from "../../redux/slices/playbackSlice";
-import { addSongToPlaylist } from "../../api/playlistService";
+import { addTrackToPlaylist, removeTrackFromPlaylist } from "../../redux/slices/playlistTracksSlice";
+import { addSongToPlaylist, deleteSongFromPlaylist  } from "../../api/playlistService";
 import { useFavoritePlaylist } from "../../hooks/useFavoritePlaylist";
 import { useSongPlayback } from "../../hooks/useSongPlayback";
 import audioPlayerInstance from "../../utils/audioUtils";
@@ -59,16 +59,21 @@ export default function SongPage() {
         Alert.alert("Error", "User is not logged in.");
         return;
       }
-
+  
       if (isLiked) {
+        await deleteSongFromPlaylist(jwtToken, favoritePlaylistId, songTitle);
+  
+        dispatch(removeTrackFromPlaylist({ playlistId: favoritePlaylistId, trackId: songTitle }));
+  
         Alert.alert("Removed", "Song removed from 'My Favorite Songs'.");
       } else {
         if (!favoritePlaylistId) {
           Alert.alert("Error", "Default playlist not set.");
           return;
         }
-
+  
         const metadata = {
+          id: songTitle,
           image: songImage || "https://via.placeholder.com/300",
           title: songTitle || "Unknown Title",
           artist: songArtist || "Unknown Artist",
@@ -76,18 +81,37 @@ export default function SongPage() {
           previewUrl: previewUrl || null,
           duration: duration || 0,
         };
-
-        await addSongToPlaylist(jwtToken, favoritePlaylistId, "local", null, metadata);
+  
+        const response = await addSongToPlaylist(jwtToken, favoritePlaylistId, "local", null, metadata);
+  
+        dispatch(
+          addTrackToPlaylist({
+            playlistId: favoritePlaylistId,
+            track: {
+              id: response.song.metadata.id || songTitle,
+              name: response.song.metadata.title || "Unknown Title",
+              artists: [response.song.metadata.artist || "Unknown Artist"],
+              album: {
+                images: response.song.metadata.image ? [{ url: response.song.metadata.image }] : [],
+              },
+              externalUrl: response.song.metadata.externalUrl || null,
+              preview_url: response.song.metadata.previewUrl || null,
+              duration_ms: parseInt(response.song.metadata.duration || 0, 10),
+            },
+          })
+        );
+  
         Alert.alert("Added", "Song added to 'My Favorite Songs'.");
       }
-
+  
       setIsLiked(!isLiked);
     } catch (error) {
       console.error("Error updating favorites:", error);
       Alert.alert("Error", "Failed to update 'My Favorite Songs'. Please try again.");
     }
   };
-
+  
+  
   const formatDuration = (ms) => {
     const minutes = Math.floor(ms / 60000);
     const seconds = Math.floor((ms % 60000) / 1000);
