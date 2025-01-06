@@ -73,11 +73,21 @@ export default function SongPage() {
       }
   
       if (isLiked) {
+
+        const trackToRemove = favoriteTracks[favoritePlaylistId]?.find(
+          (track) => track.name === songTitle
+        );
+  
+        if (!trackToRemove) {
+          Alert.alert("Error", "Track not found in the playlist.");
+          return;
+        }
+  
         // Call the API to delete the song from the playlist
         await deleteSongFromPlaylist(jwtToken, favoritePlaylistId, songTitle);
   
         // Remove the song from Redux state
-        dispatch(removeTrackFromPlaylist({ playlistId: favoritePlaylistId, trackId: songTitle }));
+        dispatch(removeTrackFromPlaylist({ playlistId: favoritePlaylistId, trackId: trackToRemove.id }));
   
         Alert.alert("Removed", "Song removed from 'My Favorite Songs'.");
       } else {
@@ -95,7 +105,7 @@ export default function SongPage() {
           externalUrl: externalUrl || null,
           previewUrl: previewUrl || null,
           duration: duration || 0,
-          liked: true, // Set liked to true when adding to favorites
+          liked: true,
         };
   
         // Call the API to add the song to the playlist
@@ -115,7 +125,7 @@ export default function SongPage() {
               externalUrl: response.song.metadata.externalUrl || null,
               preview_url: response.song.metadata.previewUrl || null,
               duration_ms: parseInt(response.song.metadata.duration || 0, 10),
-              liked: true, // Update Redux state with `liked` status
+              liked: true,
             },
           })
         );
@@ -123,12 +133,12 @@ export default function SongPage() {
         Alert.alert("Added", "Song added to 'My Favorite Songs'.");
       }
   
-      setIsLiked(!isLiked); // Toggle the `isLiked` state
+      setIsLiked(!isLiked);
     } catch (error) {
       console.error("Error updating favorites:", error);
       Alert.alert("Error", "Failed to update 'My Favorite Songs'. Please try again.");
     }
-  };
+  };  
   
 
   const formatDuration = (ms) => {
