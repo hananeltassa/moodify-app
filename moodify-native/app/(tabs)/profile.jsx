@@ -11,6 +11,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { setUser, clearUser } from "../../redux/slices/userSlice";
 import { clearPlaylists } from "../../redux/slices/playlistSlice";
 import { stopPlayback } from "../../redux/slices/playbackSlice";
+import { clearPlaylistTracks } from "../../redux/slices/playlistTracksSlice";
 import { useRouter } from "expo-router";
 import { updateUserProfile } from "../../api/user";
 import Icon from "react-native-vector-icons/Feather";
@@ -23,12 +24,16 @@ export default function ProfileScreen() {
   const router = useRouter();
   const user = useSelector((state) => state.user.user);
 
+  //console.log("Redux user state:", user);
+
   const [form, setForm] = useState({
     name: user?.name || "",
     gender: user?.gender || "",
-    dateOfBirth: user?.birthday || "",
+    dateOfBirth: user?.dateOfBirth  || "",
     profilePic: user?.profilePic || images.user,
   });
+
+  //console.log("Initialized form state:", form);
 
   const insets = useSafeAreaInsets();
 
@@ -39,6 +44,7 @@ export default function ProfileScreen() {
       dispatch(clearUser());
       dispatch(clearPlaylists());
       dispatch(stopPlayback());
+      dispatch(clearPlaylistTracks());
 
       router.replace("/onboarding");
 
@@ -59,7 +65,7 @@ export default function ProfileScreen() {
 
     if (form.name !== user.name) updatedProfile.name = form.name;
     if (form.gender !== user.gender) updatedProfile.gender = form.gender;
-    if (form.dateOfBirth !== user.dateOfBirth) updatedProfile.birthday = form.dateOfBirth;
+    if (form.dateOfBirth !== user.birthday) updatedProfile.birthday = form.dateOfBirth;
 
     if (
       form.profilePic !== user.profilePic &&
@@ -69,6 +75,9 @@ export default function ProfileScreen() {
       updatedProfile.profile_picture = form.profilePic;
     }
 
+    // Debugging the updated profile before API call
+    console.log("Updated profile payload:", updatedProfile);
+
     if (Object.keys(updatedProfile).length === 0) {
       Alert.alert("No changes detected", "Please make changes before saving.");
       return;
@@ -77,6 +86,8 @@ export default function ProfileScreen() {
     try {
       setLoading(true);
       const updatedUser = await updateUserProfile(updatedProfile);
+      console.log("API response - updated user:", updatedUser);
+
       dispatch(setUser(updatedUser));
       setIsModified(false);
       Alert.alert("Success", "Profile updated successfully!");
