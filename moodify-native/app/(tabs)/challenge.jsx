@@ -4,11 +4,15 @@ import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-
 import ChallengeCard from "../../components/Challenge/ChallengeCard";
 import { createChallenge, fetchChallenges } from "../../api/challengeApi";
 import dayjs from "dayjs";
+import { useSelector } from "react-redux";
 
 export default function ChallengeScreen() {
   const insets = useSafeAreaInsets();
   const [challenges, setChallenges] = useState([]);
   const [loading, setLoading] = useState(true);
+  const user = useSelector((state) => state.user.user);
+
+  const name = user?.name;
 
   useEffect(() => {
     const manageDailyChallenges = async () => {
@@ -72,7 +76,7 @@ export default function ChallengeScreen() {
             Challenges <Text style={{ color: "#FF6100" }}>🏆</Text>
           </Text>
           <Text className="font-avenir-regular text-gray-400 text-sm mb-4">
-            Ready to conquer today's challenges, Hanan?
+            Ready to conquer today's challenges, {name}?
           </Text>
 
           {/* Subtitle */}
