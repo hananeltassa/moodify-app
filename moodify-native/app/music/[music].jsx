@@ -5,12 +5,11 @@ import Slider from "@react-native-community/slider";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { addTrackToPlaylist, removeTrackFromPlaylist, selectTracksByPlaylistId,} from "../../redux/slices/playlistTracksSlice";
+import { togglePlayPause, playSong } from "../../redux/slices/playbackSlice";
 import { addSongToPlaylist, deleteSongFromPlaylist } from "../../api/playlistService";
 import audioPlayerInstance from "../../utils/audioUtils";
-import { togglePlayPause, playSong } from "../../redux/slices/playbackSlice";
 import { formatDuration } from "../../utils/timeUtils";
 import { getToken } from "../../utils/secureStore";
-
 import { useFavoritePlaylist } from "../../hooks/Music/useFavoritePlaylist";
 import { useTrackNavigation } from "../../hooks/Music/useTrackNavigation";
 import { useSongPlayback } from "../../hooks/Music/useSongPlayback";
