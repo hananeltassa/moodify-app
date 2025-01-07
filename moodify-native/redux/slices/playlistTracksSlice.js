@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { createSelector } from "reselect";
 
 const initialState = {
-  tracks: {},
-  isFetched: {},
+  tracks: {}, // { playlistId: [track1, track2, ...] }
+  isFetched: {}, // { playlistId: true/false }
 };
 
 const playlistTracksSlice = createSlice({
@@ -26,7 +27,9 @@ const playlistTracksSlice = createSlice({
     },
     removeTrackFromPlaylist: (state, action) => {
       const { playlistId, trackId } = action.payload;
-      state.tracks[playlistId] = state.tracks[playlistId].filter((t) => t.id !== trackId);
+      state.tracks[playlistId] = state.tracks[playlistId].filter(
+        (t) => t.id !== trackId
+      );
     },
   },
 });
@@ -37,5 +40,20 @@ export const {
   addTrackToPlaylist,
   removeTrackFromPlaylist,
 } = playlistTracksSlice.actions;
+
+// Selectors
+const selectPlaylistTracksState = (state) => state.playlistTracks;
+
+export const selectTracksByPlaylistId = createSelector(
+  [selectPlaylistTracksState, (_, playlistId) => playlistId],
+  (playlistTracksState, playlistId) =>
+    playlistTracksState.tracks[playlistId] || []
+);
+
+export const selectIsFetchedByPlaylistId = createSelector(
+  [selectPlaylistTracksState, (_, playlistId) => playlistId],
+  (playlistTracksState, playlistId) =>
+    playlistTracksState.isFetched[playlistId] || false
+);
 
 export default playlistTracksSlice.reducer;
