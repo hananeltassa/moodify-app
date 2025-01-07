@@ -28,7 +28,7 @@ const ChallengeCard = ({ title, description, tags, onAction }) => {
         <Text className="text-black font-Avenir-Bold text-lg mb-1">{title}</Text>
         <Text className="text-gray-700 text-sm mb-2 font-avenir-regular">{description}</Text>
         <Text className="text-orange-500 text-xs font-avenir-regular">
-          {tags.map((tag) => `#${tag} `).join(" ")}
+          {tags.map((tag) => `${tag} `).join(" ")}
         </Text>
       </View>
 
