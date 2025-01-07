@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView, ActivityIndicator } from "react-native";
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import ChallengeCard from "../../components/Challenge/ChallengeCard";
-import { createChallenge, fetchChallenges } from "../../api/challengeApi";
-import dayjs from "dayjs";
+import { getValidChallenges, createChallengeForCurrentTime } from "../../utils/challengeUtils";
 import { useSelector } from "react-redux";
 
 export default function ChallengeScreen() {
@@ -17,18 +16,14 @@ export default function ChallengeScreen() {
   useEffect(() => {
     const manageDailyChallenges = async () => {
       try {
-        const fetchedChallenges = await fetchChallenges();
-
-        const today = dayjs().startOf("day");
-        const validChallenges = fetchedChallenges.filter((challenge) => {
-          const createdAt = dayjs(challenge.created_at);
-          return createdAt.isAfter(today);
-        });
-
+        // Fetch and filter valid challenges
+        const validChallenges = await getValidChallenges();
         setChallenges(validChallenges);
 
+        // If no valid challenges exist, create two new challenges
         if (validChallenges.length === 0) {
-          await createChallengesForCurrentTime();
+          const newChallenges = await createChallengeForCurrentTime();
+          setChallenges(newChallenges);
         }
       } catch (error) {
         console.error("Error managing daily challenges:", error);
@@ -39,28 +34,6 @@ export default function ChallengeScreen() {
 
     manageDailyChallenges();
   }, []);
-
-  const createChallengesForCurrentTime = async () => {
-    const currentTime = dayjs();
-    let timeOfDay;
-
-    // Determine the current time of day
-    if (currentTime.hour() < 12) {
-      timeOfDay = "morning";
-    } else if (currentTime.hour() < 18) {
-      timeOfDay = "afternoon";
-    } else {
-      timeOfDay = "night";
-    }
-
-    try {
-      console.log(`Creating challenge for: ${timeOfDay}`);
-      const challenge = await createChallenge("neutral", timeOfDay); // Adjust mood if needed
-      setChallenges([challenge]); // Replace or merge with existing challenges
-    } catch (error) {
-      console.error("Error creating challenge:", error);
-    }
-  };
 
   const handleChallengeAction = async (id) => {
     console.log(`Challenge ${id} action triggered`);
