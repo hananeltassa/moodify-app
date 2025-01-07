@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, Text, SafeAreaView, TouchableOpacity, Platform, Alert } from "react-native";
+import { View, Image, Text, SafeAreaView, TouchableOpacity, Platform, Alert, } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
-import { addTrackToPlaylist, removeTrackFromPlaylist } from "../../redux/slices/playlistTracksSlice";
+import { addTrackToPlaylist, removeTrackFromPlaylist, selectTracksByPlaylistId,} from "../../redux/slices/playlistTracksSlice";
 import { addSongToPlaylist, deleteSongFromPlaylist } from "../../api/playlistService";
 import { useFavoritePlaylist } from "../../hooks/useFavoritePlaylist";
 import { useSongPlayback } from "../../hooks/useSongPlayback";
 import audioPlayerInstance from "../../utils/audioUtils";
-import { getToken } from "../../utils/secureStore";
-import { togglePlayPause } from "../../redux/slices/playbackSlice";
+import { togglePlayPause, playSong } from "../../redux/slices/playbackSlice";
 
 export default function SongPage() {
   const {
@@ -21,16 +20,18 @@ export default function SongPage() {
     previewUrl,
     duration,
     progress: initialProgress = 0,
+    playlistId, // Dynamic playlist id
   } = useLocalSearchParams();
-  
 
   const dispatch = useDispatch();
   const router = useRouter();
-  const { isPlaying } = useSelector((state) => state.playback);
-  const favoriteTracks = useSelector((state) => state.playlistTracks.tracks);
+  const { isPlaying, currentSong } = useSelector((state) => state.playback);
+  const playlistTracks = useSelector((state) =>
+    selectTracksByPlaylistId(state, playlistId)
+  );
+
   const [loading, setLoading] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
-  const favoritePlaylistId = useFavoritePlaylist();
   const { progress, setProgress } = useSongPlayback({
     previewUrl,
     duration,
@@ -39,15 +40,25 @@ export default function SongPage() {
     songData: { songImage, songTitle, songArtist, externalUrl, previewUrl, duration },
   });
 
-  // Check if the song is already in the favorite playlist using metadata
-  useEffect(() => {
-    if (favoritePlaylistId && favoriteTracks[favoritePlaylistId]) {
-      const isFavorite = favoriteTracks[favoritePlaylistId].some(
-        (track) => track.name === songTitle && track.liked
+  const updateIsLiked = (title) => {
+    if (playlistTracks) {
+      const isFavorite = playlistTracks.some(
+        (track) => track.name === title && track.liked
       );
       setIsLiked(isFavorite);
     }
-  }, [favoritePlaylistId, favoriteTracks, songTitle]);
+  };
+
+  useEffect(() => {
+    console.log("Current playlistId:", playlistId);
+    console.log("Current track list:", playlistTracks);
+    console.log("Current track title:", songTitle);
+    updateIsLiked(songTitle);
+  }, [playlistTracks, songTitle]);
+
+  const currentIndex = playlistTracks.findIndex(
+    (track) => track.name === songTitle
+  );
 
   const handlePlayPause = async () => {
     setLoading(true);
@@ -65,6 +76,66 @@ export default function SongPage() {
     }
   };
 
+  const handleSkipForward = () => {
+    if (currentIndex < playlistTracks.length - 1) {
+      const nextTrack = playlistTracks[currentIndex + 1];
+      console.log("Skipping to next track:", nextTrack);
+      dispatch(
+        playSong({
+          songImage: nextTrack.album?.images?.[0]?.url || "",
+          songTitle: nextTrack.name,
+          songArtist: nextTrack.artists?.join(", ") || "Unknown Artist",
+          externalUrl: nextTrack.externalUrl,
+          previewUrl: nextTrack.preview_url,
+          duration: nextTrack.duration_ms,
+        })
+      );
+      router.replace({
+        pathname: "/music/[music]",
+        params: {
+          songImage: nextTrack.album?.images?.[0]?.url || "",
+          songTitle: nextTrack.name,
+          songArtist: nextTrack.artists?.join(", ") || "Unknown Artist",
+          externalUrl: nextTrack.externalUrl,
+          previewUrl: nextTrack.preview_url,
+          duration: nextTrack.duration_ms,
+          playlistId,
+        },
+      });
+      updateIsLiked(nextTrack.name);
+    }
+  };
+
+  const handleSkipBackward = () => {
+    if (currentIndex > 0) {
+      const previousTrack = playlistTracks[currentIndex - 1];
+      console.log("Skipping to previous track:", previousTrack);
+      dispatch(
+        playSong({
+          songImage: previousTrack.album?.images?.[0]?.url || "",
+          songTitle: previousTrack.name,
+          songArtist: previousTrack.artists?.join(", ") || "Unknown Artist",
+          externalUrl: previousTrack.externalUrl,
+          previewUrl: previousTrack.preview_url,
+          duration: previousTrack.duration_ms,
+        })
+      );
+      router.replace({
+        pathname: "/music/[music]",
+        params: {
+          songImage: previousTrack.album?.images?.[0]?.url || "",
+          songTitle: previousTrack.name,
+          songArtist: previousTrack.artists?.join(", ") || "Unknown Artist",
+          externalUrl: previousTrack.externalUrl,
+          previewUrl: previousTrack.preview_url,
+          duration: previousTrack.duration_ms,
+          playlistId,
+        },
+      });
+      updateIsLiked(previousTrack.name);
+    }
+  };
+
   const handleToggleFavorite = async () => {
     try {
       const jwtToken = await getToken("jwtToken");
@@ -72,32 +143,28 @@ export default function SongPage() {
         Alert.alert("Error", "User is not logged in.");
         return;
       }
-  
-      if (isLiked) {
 
-        const trackToRemove = favoriteTracks[favoritePlaylistId]?.find(
+      if (isLiked) {
+        const trackToRemove = playlistTracks.find(
           (track) => track.name === songTitle
         );
-  
+
         if (!trackToRemove) {
           Alert.alert("Error", "Track not found in the playlist.");
           return;
         }
-  
-        // Call the API to delete the song from the playlist
-        await deleteSongFromPlaylist(jwtToken, favoritePlaylistId, songTitle);
-  
-        // Remove the song from Redux state
-        dispatch(removeTrackFromPlaylist({ playlistId: favoritePlaylistId, trackId: trackToRemove.id }));
-  
-        Alert.alert("Removed", "Song removed from 'My Favorite Songs'.");
+
+        await deleteSongFromPlaylist(jwtToken, playlistId, songTitle);
+
+        dispatch(
+          removeTrackFromPlaylist({
+            playlistId,
+            trackId: trackToRemove.id,
+          })
+        );
+
+        Alert.alert("Removed", "Song removed from the playlist.");
       } else {
-        if (!favoritePlaylistId) {
-          Alert.alert("Error", "Default playlist not set.");
-          return;
-        }
-  
-        // Prepare metadata for adding the song
         const metadata = {
           id: songTitle,
           image: songImage || "https://via.placeholder.com/300",
@@ -108,20 +175,26 @@ export default function SongPage() {
           duration: duration || 0,
           liked: true,
         };
-  
-        // Call the API to add the song to the playlist
-        const response = await addSongToPlaylist(jwtToken, favoritePlaylistId, "local", null, metadata);
-  
-        // Add the song to Redux state
+
+        const response = await addSongToPlaylist(
+          jwtToken,
+          playlistId,
+          "local",
+          null,
+          metadata
+        );
+
         dispatch(
           addTrackToPlaylist({
-            playlistId: favoritePlaylistId,
+            playlistId,
             track: {
               id: response.song.metadata.id || songTitle,
               name: response.song.metadata.title || "Unknown Title",
               artists: [response.song.metadata.artist || "Unknown Artist"],
               album: {
-                images: response.song.metadata.image ? [{ url: response.song.metadata.image }] : [],
+                images: response.song.metadata.image
+                  ? [{ url: response.song.metadata.image }]
+                  : [],
               },
               externalUrl: response.song.metadata.externalUrl || null,
               preview_url: response.song.metadata.previewUrl || null,
@@ -130,17 +203,16 @@ export default function SongPage() {
             },
           })
         );
-  
-        Alert.alert("Added", "Song added to 'My Favorite Songs'.");
+
+        Alert.alert("Added", "Song added to the playlist.");
       }
-  
+
       setIsLiked(!isLiked);
     } catch (error) {
       console.error("Error updating favorites:", error);
-      Alert.alert("Error", "Failed to update 'My Favorite Songs'. Please try again.");
+      Alert.alert("Error", "Failed to update the playlist. Please try again.");
     }
-  };  
-  
+  };
 
   const formatDuration = (ms) => {
     const minutes = Math.floor(ms / 60000);
@@ -171,7 +243,9 @@ export default function SongPage() {
 
       <View style={{ paddingHorizontal: 20, marginBottom: 30 }}>
         <View className="flex-row justify-between items-center">
-          <Text className="text-white text-2xl font-Avenir-Bold">{songTitle || "Unknown Title"}</Text>
+          <Text className="text-white text-2xl font-Avenir-Bold">
+            {songTitle || "Unknown Title"}
+          </Text>
           <TouchableOpacity onPress={handleToggleFavorite}>
             <Ionicons
               name={isLiked ? "heart" : "heart-outline"}
@@ -180,7 +254,9 @@ export default function SongPage() {
             />
           </TouchableOpacity>
         </View>
-        <Text className="text-gray-400 text-lg font-avenir-regular">{songArtist || "Unknown Artist"}</Text>
+        <Text className="text-gray-400 text-lg font-avenir-regular">
+          {songArtist || "Unknown Artist"}
+        </Text>
       </View>
 
       <View style={{ marginBottom: 20, paddingHorizontal: 20 }}>
@@ -199,23 +275,23 @@ export default function SongPage() {
           }}
         />
         <View className="flex-row justify-between px-2">
-          <Text className="text-white text-sm">{formatDuration(progress * duration)}</Text>
+          <Text className="text-white text-sm">
+            {formatDuration(progress * duration)}
+          </Text>
           <Text className="text-white text-sm">{formatDuration(duration)}</Text>
         </View>
       </View>
 
       <View className="flex-row items-center justify-evenly mb-10">
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleSkipBackward}>
           <Ionicons name="play-skip-back" size={36} color="white" />
         </TouchableOpacity>
         <TouchableOpacity onPress={handlePlayPause}>
           <Ionicons
             name={isPlaying ? "pause-circle" : "play-circle"}
-            size={80}
-            color="white"
-          />
+            size={80} color="white" />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleSkipForward}>
           <Ionicons name="play-skip-forward" size={36} color="white" />
         </TouchableOpacity>
       </View>
