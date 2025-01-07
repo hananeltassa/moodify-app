@@ -22,6 +22,7 @@ export default function SongPage() {
     duration,
     progress: initialProgress = 0,
   } = useLocalSearchParams();
+  
 
   const dispatch = useDispatch();
   const router = useRouter();
