@@ -16,6 +16,20 @@ const getAuthHeaders = async () => {
   };
 };
 
+export const updateChallengeStatus = async (id, status) => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await axios.put(`${BACKEND_BASE_URL}/challenges/${id}/status`,
+      { status },
+      headers
+    );
+    return response.data.challenge;
+  } catch (error) {
+    console.error("Error updating challenge status:", error.message || error.response?.data || error);
+    throw error;
+  }
+};
+
 
 export const createChallenge = async (mood, timeOfDay) => {
   try {
