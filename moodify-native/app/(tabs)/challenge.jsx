@@ -4,6 +4,7 @@ import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-
 import ChallengeCard from "../../components/Challenge/ChallengeCard";
 import { getValidChallenges, createChallengeForCurrentTime } from "../../utils/challengeUtils";
 import { useSelector } from "react-redux";
+import { updateChallengeStatus } from "../../api/challengeApi";
 
 export default function ChallengeScreen() {
   const insets = useSafeAreaInsets();
@@ -35,9 +36,21 @@ export default function ChallengeScreen() {
     manageDailyChallenges();
   }, []);
 
-  const handleChallengeAction = async (id) => {
-    console.log(`Challenge ${id} action triggered`);
-    // Additional logic for handling actions on challenges
+  const handleChallengeAction = async (id, isDone) => {
+    try {
+      const newStatus = isDone ? "completed" : "pending";
+      await updateChallengeStatus(id, newStatus);
+
+      setChallenges((prevChallenges) =>
+        prevChallenges.map((challenge) =>
+          challenge.id === id ? { ...challenge, status: newStatus } : challenge
+        )
+      );
+
+      console.log(`Challenge ${id} updated to status: ${newStatus}`);
+    } catch (error) {
+      console.error(`Error updating challenge ${id}:`, error.message || error);
+    }
   };
 
   return (
@@ -73,10 +86,12 @@ export default function ChallengeScreen() {
             challenges.map((challenge) => (
               <ChallengeCard
                 key={challenge.id}
+                id={challenge.id}
                 title={challenge.text.title}
                 description={challenge.text.description}
                 tags={challenge.text.hashtags}
-                onAction={() => handleChallengeAction(challenge.id)}
+                status={challenge.status}
+                onAction={handleChallengeAction}
               />
             ))}
 

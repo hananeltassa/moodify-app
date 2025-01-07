@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
 
-const ChallengeCard = ({ title, description, tags, onAction }) => {
-  const [isDone, setIsDone] = useState(false);
+const ChallengeCard = ({ id, title, description, tags, status, onAction }) => {
+  const [isDone, setIsDone] = useState(status === "completed");
 
   const handlePress = () => {
-    setIsDone(!isDone);
-    if (!isDone) {
-      onAction();
-    }
+    const newIsDone = !isDone;
+    setIsDone(newIsDone);
+    onAction(id, newIsDone);
   };
 
   return (
@@ -35,9 +34,18 @@ const ChallengeCard = ({ title, description, tags, onAction }) => {
       {/* Action Button */}
       <TouchableOpacity
         onPress={handlePress}
-        className={`${
-          isDone ? "bg-green-500" : "bg-orange-500"
-        } rounded-full w-10 h-10 items-center justify-center shadow-md`}
+        style={{
+          backgroundColor: isDone ? "#28a745" : "#FF6100",
+          borderRadius: 50,
+          width: 40,
+          height: 40,
+          justifyContent: "center",
+          alignItems: "center",
+          shadowColor: "#000",
+          shadowOpacity: 0.2,
+          shadowRadius: 5,
+          shadowOffset: { width: 0, height: 2 },
+        }}
       >
         <Icon
           name={isDone ? "check" : "plus"}
