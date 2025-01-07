@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Alert, Linking } from "react-native";
 import { useDispatch } from "react-redux";
-import { playSong, togglePlayPause, updateProgress } from "../redux/slices/playbackSlice";
-import audioPlayerInstance from "../utils/audioUtils";
+import { playSong, togglePlayPause, updateProgress } from "../../redux/slices/playbackSlice";
+import audioPlayerInstance from "../../utils/audioUtils";
 
 export function useSongPlayback({ previewUrl, duration, initialProgress, externalUrl, songData }) {
   const dispatch = useDispatch();

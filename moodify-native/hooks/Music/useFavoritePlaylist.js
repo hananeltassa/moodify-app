@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";
-import { getUserPlaylists } from "../api/playlistService";
-import { getToken } from "../utils/secureStore";
+import { getUserPlaylists } from "../../api/playlistService";
+import { getToken } from "../../utils/secureStore";
 
 export function useFavoritePlaylist() {
   const [favoritePlaylistId, setFavoritePlaylistId] = useState(null);

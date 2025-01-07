@@ -6,13 +6,14 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { addTrackToPlaylist, removeTrackFromPlaylist, selectTracksByPlaylistId,} from "../../redux/slices/playlistTracksSlice";
 import { addSongToPlaylist, deleteSongFromPlaylist } from "../../api/playlistService";
-import { useFavoritePlaylist } from "../../hooks/useFavoritePlaylist";
-import { useSongPlayback } from "../../hooks/useSongPlayback";
 import audioPlayerInstance from "../../utils/audioUtils";
 import { togglePlayPause, playSong } from "../../redux/slices/playbackSlice";
 import { formatDuration } from "../../utils/timeUtils";
-import { useTrackNavigation } from "../../hooks/useTrackNavigation";
 import { getToken } from "../../utils/secureStore";
+
+import { useFavoritePlaylist } from "../../hooks/Music/useFavoritePlaylist";
+import { useTrackNavigation } from "../../hooks/Music/useTrackNavigation";
+import { useSongPlayback } from "../../hooks/Music/useSongPlayback";
 
 export default function SongPage() {
   const { songImage, songTitle, songArtist, externalUrl, previewUrl, duration, progress: initialProgress = 0, playlistId,} = useLocalSearchParams();
