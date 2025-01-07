@@ -19,15 +19,16 @@ export default function ChallengeScreen() {
       try {
         const fetchedChallenges = await fetchChallenges();
 
+        const today = dayjs().startOf("day");
         const validChallenges = fetchedChallenges.filter((challenge) => {
           const createdAt = dayjs(challenge.created_at);
-          return dayjs().diff(createdAt, "hour") < 24;
+          return createdAt.isAfter(today);
         });
 
         setChallenges(validChallenges);
 
         if (validChallenges.length === 0) {
-          await createDailyChallenges();
+          await createChallengesForCurrentTime();
         }
       } catch (error) {
         console.error("Error managing daily challenges:", error);
@@ -39,18 +40,25 @@ export default function ChallengeScreen() {
     manageDailyChallenges();
   }, []);
 
-  const createDailyChallenges = async () => {
-    const timesOfDay = ["morning", "afternoon", "night"];
+  const createChallengesForCurrentTime = async () => {
+    const currentTime = dayjs();
+    let timeOfDay;
+
+    // Determine the current time of day
+    if (currentTime.hour() < 12) {
+      timeOfDay = "morning";
+    } else if (currentTime.hour() < 18) {
+      timeOfDay = "afternoon";
+    } else {
+      timeOfDay = "night";
+    }
 
     try {
-      const newChallenges = [];
-      for (const timeOfDay of timesOfDay) {
-        const challenge = await createChallenge("neutral", timeOfDay);
-        newChallenges.push(challenge);
-      }
-      setChallenges(newChallenges);
+      console.log(`Creating challenge for: ${timeOfDay}`);
+      const challenge = await createChallenge("neutral", timeOfDay); // Adjust mood if needed
+      setChallenges([challenge]); // Replace or merge with existing challenges
     } catch (error) {
-      console.error("Error creating daily challenges:", error);
+      console.error("Error creating challenge:", error);
     }
   };
 
