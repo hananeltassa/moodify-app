@@ -89,65 +89,6 @@ export default function SongPage() {
     }
   };
 
-  const handleSkipForward = () => {
-    if (currentIndex < playlistTracks.length - 1) {
-      const nextTrack = playlistTracks[currentIndex + 1];
-      console.log("Skipping to next track:", nextTrack);
-      dispatch(
-        playSong({
-          songImage: nextTrack.album?.images?.[0]?.url || "",
-          songTitle: nextTrack.name,
-          songArtist: nextTrack.artists?.join(", ") || "Unknown Artist",
-          externalUrl: nextTrack.externalUrl,
-          previewUrl: nextTrack.preview_url,
-          duration: nextTrack.duration_ms,
-        })
-      );
-      router.replace({
-        pathname: "/music/[music]",
-        params: {
-          songImage: nextTrack.album?.images?.[0]?.url || "",
-          songTitle: nextTrack.name,
-          songArtist: nextTrack.artists?.join(", ") || "Unknown Artist",
-          externalUrl: nextTrack.externalUrl,
-          previewUrl: nextTrack.preview_url,
-          duration: nextTrack.duration_ms,
-          playlistId,
-        },
-      });
-      updateIsLiked(nextTrack.name);
-    }
-  };
-
-  const handleSkipBackward = () => {
-    if (currentIndex > 0) {
-      const previousTrack = playlistTracks[currentIndex - 1];
-      console.log("Skipping to previous track:", previousTrack);
-      dispatch(
-        playSong({
-          songImage: previousTrack.album?.images?.[0]?.url || "",
-          songTitle: previousTrack.name,
-          songArtist: previousTrack.artists?.join(", ") || "Unknown Artist",
-          externalUrl: previousTrack.externalUrl,
-          previewUrl: previousTrack.preview_url,
-          duration: previousTrack.duration_ms,
-        })
-      );
-      router.replace({
-        pathname: "/music/[music]",
-        params: {
-          songImage: previousTrack.album?.images?.[0]?.url || "",
-          songTitle: previousTrack.name,
-          songArtist: previousTrack.artists?.join(", ") || "Unknown Artist",
-          externalUrl: previousTrack.externalUrl,
-          previewUrl: previousTrack.preview_url,
-          duration: previousTrack.duration_ms,
-          playlistId,
-        },
-      });
-      updateIsLiked(previousTrack.name);
-    }
-  };
 
   const handleToggleFavorite = async () => {
     try {
