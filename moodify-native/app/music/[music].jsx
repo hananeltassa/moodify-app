@@ -10,6 +10,8 @@ import { useFavoritePlaylist } from "../../hooks/useFavoritePlaylist";
 import { useSongPlayback } from "../../hooks/useSongPlayback";
 import audioPlayerInstance from "../../utils/audioUtils";
 import { togglePlayPause, playSong } from "../../redux/slices/playbackSlice";
+import { formatDuration } from "../../utils/timeUtils";
+
 
 export default function SongPage() {
   const {
@@ -212,12 +214,6 @@ export default function SongPage() {
       console.error("Error updating favorites:", error);
       Alert.alert("Error", "Failed to update the playlist. Please try again.");
     }
-  };
-
-  const formatDuration = (ms) => {
-    const minutes = Math.floor(ms / 60000);
-    const seconds = Math.floor((ms % 60000) / 1000);
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
   return (
