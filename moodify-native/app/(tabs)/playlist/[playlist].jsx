@@ -48,7 +48,7 @@ export default function Playlist() {
                 toggleLike={toggleLike}
               />
             ) : (
-              <MusicItem track={item} />
+              <MusicItem track={item} playlistId={playlistId}/>
             )
           }
         />

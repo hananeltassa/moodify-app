@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import images from "@/constants/images";
 import Music from "./Music";
+import { useState, useEffect } from "react";
 
 export const PlaylistHeader = ({ playlistName, playlistImage, isLiked, toggleLike }) => (
   <View>
@@ -27,8 +28,11 @@ export const PlaylistHeader = ({ playlistName, playlistImage, isLiked, toggleLik
   </View>
 );
 
-export const MusicItem = ({ track }) => {
+export const MusicItem = ({ track, playlistId }) => {
   const router = useRouter();
+  useEffect(() => {
+      console.log("playlistId in component:", playlistId);
+    }, []);
   return (
     <Music
       title={track.name}
@@ -49,6 +53,7 @@ export const MusicItem = ({ track }) => {
             externalUrl: track.externalUrl,
             previewUrl: track.preview_url,
             duration: track.duration_ms,
+            playlistId,
           },
         })
       }

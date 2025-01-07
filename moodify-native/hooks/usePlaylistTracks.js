@@ -14,6 +14,10 @@ export const usePlaylistTracks = (playlistId, playlistName, user) => {
   const isFetched = useSelector((state) => state.playlistTracks.isFetched[playlistId] || false);
 
   const [loading, setLoading] = useState(!isFetched);
+  
+  useEffect(() => {
+    console.log("playlistId in playlist:", playlistId);
+  }, []);
 
   const loadPlaylistTracks = async () => {
     try {
