@@ -16,6 +16,18 @@ const getAuthHeaders = async () => {
   };
 };
 
+
+export const fetchChallenges = async () => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await axios.get(`${BACKEND_BASE_URL}/challenges`, headers);
+    return response.data.challenges;
+  } catch (error) {
+    console.error("Error fetching challenges:", error.message || error.response?.data || error);
+    throw error;
+  }
+};
+
 export const updateChallengeStatus = async (id, status) => {
   try {
     const headers = await getAuthHeaders();
