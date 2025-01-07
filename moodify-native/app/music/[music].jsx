@@ -15,17 +15,7 @@ import { useTrackNavigation } from "../../hooks/useTrackNavigation";
 import { getToken } from "../../utils/secureStore";
 
 export default function SongPage() {
-  const {
-    songImage,
-    songTitle,
-    songArtist,
-    externalUrl,
-    previewUrl,
-    duration,
-    progress: initialProgress = 0,
-    playlistId, // Dynamic playlist id
-  } = useLocalSearchParams();
-
+  const { songImage, songTitle, songArtist, externalUrl, previewUrl, duration, progress: initialProgress = 0, playlistId,} = useLocalSearchParams();
   const dispatch = useDispatch();
   const router = useRouter();
   const { isPlaying, currentSong } = useSelector((state) => state.playback);
@@ -229,6 +219,7 @@ export default function SongPage() {
           <Text className="text-white text-sm">{formatDuration(duration)}</Text>
         </View>
       </View>
+      
 
       <View className="flex-row items-center justify-evenly mb-10">
         <TouchableOpacity onPress={skipBackward}>
