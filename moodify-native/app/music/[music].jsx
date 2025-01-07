@@ -11,6 +11,7 @@ import { useSongPlayback } from "../../hooks/useSongPlayback";
 import audioPlayerInstance from "../../utils/audioUtils";
 import { togglePlayPause, playSong } from "../../redux/slices/playbackSlice";
 import { formatDuration } from "../../utils/timeUtils";
+import { useTrackNavigation } from "../../hooks/useTrackNavigation";
 
 
 export default function SongPage() {
@@ -51,6 +52,16 @@ export default function SongPage() {
     }
   };
 
+  const { skipForward, skipBackward } = useTrackNavigation({
+    playlistTracks,
+    currentSongTitle: songTitle,
+    dispatch,
+    router,
+    playSong,
+    updateIsLiked,
+    playlistId,
+  });
+  
   useEffect(() => {
     console.log("Current playlistId:", playlistId);
     console.log("Current track list:", playlistTracks);
@@ -279,7 +290,7 @@ export default function SongPage() {
       </View>
 
       <View className="flex-row items-center justify-evenly mb-10">
-        <TouchableOpacity onPress={handleSkipBackward}>
+        <TouchableOpacity onPress={skipBackward}>
           <Ionicons name="play-skip-back" size={36} color="white" />
         </TouchableOpacity>
         <TouchableOpacity onPress={handlePlayPause}>
@@ -287,7 +298,7 @@ export default function SongPage() {
             name={isPlaying ? "pause-circle" : "play-circle"}
             size={80} color="white" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleSkipForward}>
+        <TouchableOpacity onPress={skipForward}>
           <Ionicons name="play-skip-forward" size={36} color="white" />
         </TouchableOpacity>
       </View>
