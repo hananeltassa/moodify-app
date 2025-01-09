@@ -16,19 +16,28 @@ export default function RecommendedMusic({ data, title }) {
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id}
-        ItemSeparatorComponent={() => <View className="w-6" />} 
+        ItemSeparatorComponent={() => <View className="w-6" />}
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() =>
               router.push({
                 pathname: "/music/[music]",
-                params: { playlist: "some-playlist", playlistName: "Playlist Name" },
+                params: {
+                  songTitle: item.title,
+                  songImage: item.image.uri || "https://via.placeholder.com/300",
+                  songArtist: item.artist,
+                  externalUrl: item.externalUrl,
+                  previewUrl: item.previewUrl,
+                  album: item.album,
+                  duration: item.duration,
+                  playlistId: "recommended",
+                },
               })
             }
             className="w-40"
           >
             {/* Playlist Image */}
-            <Image source={item.image} className="w-44 h-44" />
+            <Image source={{ uri: item.image.uri || "https://via.placeholder.com/300" }} className="w-44 h-44" />
 
             {/* Playlist Title */}
             <Text
@@ -37,7 +46,7 @@ export default function RecommendedMusic({ data, title }) {
               ellipsizeMode="tail"
               style={{ maxWidth: 150 }}
             >
-              {item.title}
+              {item.title || "Unknown Title"}
             </Text>
 
             {/* Playlist Subtitle */}
@@ -47,7 +56,7 @@ export default function RecommendedMusic({ data, title }) {
               ellipsizeMode="tail"
               style={{ maxWidth: 150 }}
             >
-              {item.subtitle}
+              {item.artist || "Unknown Artist"}
             </Text>
           </TouchableOpacity>
         )}
