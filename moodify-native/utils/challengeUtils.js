@@ -15,8 +15,8 @@ export const getValidChallenges = async () => {
   const validChallenges = fetchedChallenges.filter((challenge) => {
     const createdAt = dayjs(challenge.createdAt);
     console.log(`Challenge ${challenge.id} createdAt:`, createdAt.toISOString());
-    console.log(`Is after 8 hours ago:`, createdAt.isAfter(twelveHoursAgo));
-    return createdAt.isAfter(twelveHoursAgo);
+    console.log(`Is after 8 hours ago:`, createdAt.isAfter(eightHoursAgo));
+    return createdAt.isAfter(eightHoursAgo);
   });
 
   console.log("Valid challenges:", validChallenges);
