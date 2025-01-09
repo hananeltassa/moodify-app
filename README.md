@@ -11,10 +11,20 @@
 > By leveraging AI-driven mood analysis, Moodify creates tailored playlists, offers actionable insights, and provides emotional support through an interactive AI coach. The app aims to empower users to improve their mental well-being with seamless music integration.
 
 ### User Stories
-- As a user, I want to log my mood, so the app can provide personalized music recommendations.
+**Normal User**
+- As a user, I want to log my mood using text, voice, or facial expressions, so the app can provide personalized music recommendations.
 - As a user, I want to access activity-based playlists, so I can find music that matches my current tasks or workouts.
-- As a user, I want to interact with an AI coach, so I can receive tips and challenges to enhance my emotional well-being.
 - As a user, I want the app to track my mood patterns over time, so I can understand and improve my mental health.
+
+**AI Coach User**
+- As a coach, I want to analyze mood data trends, so I can recommend activities and playlists to improve the user's well-being.
+- As a coach, I want to offer mood-enhancing challenges, so users can engage in activities that boost their emotional health.
+- As a coach, I want to curate personalized music playlists based on user data and environmental factors (e.g., time of day, weather), so users have relevant music options.
+
+**Admin User**
+- As an admin, I want to manage and analyze user data, so I can understand app usage trends and ensure data-driven improvements.
+- As an admin, I want to monitor and refine AI-generated challenges and recommendations, so they align with the app’s objectives.
+- As an admin, I want to access analytical dashboards, so I can track user engagement and emotional health patterns across the platform.
 
 <br><br>
 <!-- Tech stack -->
