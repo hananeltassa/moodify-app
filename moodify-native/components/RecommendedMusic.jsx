@@ -6,7 +6,7 @@ export default function RecommendedMusic({ data, title }) {
   const router = useRouter();
 
   return (
-    <View className="p-4 bg-black">
+    <View className="p-2 bg-black">
       {/* Title */}
       {title && <Text className="text-white text-xl font-Avenir-Bold mb-2">{title}</Text>}
 

@@ -9,6 +9,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useSelector } from "react-redux";
 import { router } from "expo-router";
 import useMusicRecommendations from "../../hooks/useMusicRecommendations";
+import usePersonalizedRecommendations from "../../hooks/usePersonalizedRecommendations";
 
 export default function Home() {
   const insets = useSafeAreaInsets();
@@ -20,7 +21,7 @@ export default function Home() {
 
 
   const { musicData, loading } = useMusicRecommendations(mood, isSpotifyUser);
-
+  const { personalizedData, personalizedLoading } = usePersonalizedRecommendations(mood);
   const weeklyData = [
     { day: "Mon", emoji: "😐" },
     { day: "Tues", emoji: "😔" },
@@ -127,6 +128,15 @@ export default function Home() {
             <ActivityIndicator size="large" color="#FF6100" style={{ marginVertical: 20 }} />
           ) : (
             <RecommendedMusic title="Recommended Music" data={musicData} />
+          )}
+        </View>
+
+        {/* Personalized Recommendations Section */}
+        <View className="mt-3">
+          {personalizedLoading ? (
+            <ActivityIndicator size="large" color="#FF6100" style={{ marginVertical: 20 }} />
+          ) : (
+            <RecommendedMusic title={`For You: ${personalizedData.title}`} data={personalizedData.tracks} />
           )}
         </View>
       </ScrollView>
