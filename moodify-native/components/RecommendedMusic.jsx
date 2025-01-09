@@ -16,6 +16,7 @@ export default function RecommendedMusic({ data, title }) {
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id}
+        ItemSeparatorComponent={() => <View className="w-6" />}
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() =>
@@ -24,17 +25,17 @@ export default function RecommendedMusic({ data, title }) {
                 params: { playlist: "some-playlist", playlistName: "Playlist Name" },
               })
             }
-            className="w-32 mr-4"
+            className="w-40"
           >
             {/* Playlist Image */}
-            <Image source={item.image} className="w-36 h-36" />
+            <Image source={item.image} className="w-44 h-44" />
 
             {/* Playlist Title */}
             <Text
               className="text-white text-sm font-bold mt-2 truncate"
               numberOfLines={1}
               ellipsizeMode="tail"
-              style={{ maxWidth: 130 }}
+              style={{ maxWidth: 150 }}
             >
               {item.title}
             </Text>
@@ -44,7 +45,7 @@ export default function RecommendedMusic({ data, title }) {
               className="text-gray-400 text-xs truncate"
               numberOfLines={1}
               ellipsizeMode="tail"
-              style={{ maxWidth: 130 }}
+              style={{ maxWidth: 150 }}
             >
               {item.subtitle}
             </Text>
