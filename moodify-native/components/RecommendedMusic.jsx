@@ -16,7 +16,7 @@ export default function RecommendedMusic({ data, title }) {
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id}
-        ItemSeparatorComponent={() => <View className="w-6" />}
+        ItemSeparatorComponent={() => <View className="w-6" />} 
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() =>
