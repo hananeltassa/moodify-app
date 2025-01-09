@@ -1,5 +1,5 @@
 import { SafeAreaView, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import icons from "../../constants/icons";
 import images from "../../constants/images";
@@ -8,69 +8,18 @@ import RecommendedMusic from "../../components/RecommendedMusic";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSelector } from "react-redux";
 import { router } from "expo-router";
-import { searchSpotifyTracks } from "../../api/spotifyAuth";
-import { searchJamendoMusic } from "../../api/jamendo";
-import { getToken } from "../../utils/secureStore";
+import useMusicRecommendations from "../../hooks/useMusicRecommendations";
 
 export default function Home() {
   const insets = useSafeAreaInsets();
   const user = useSelector((state) => state.user.user);
   const profilePic = user?.profilePic;
 
-  const [musicData, setMusicData] = useState([]);
-  const [loading, setLoading] = useState(false);
-
   const isSpotifyUser = !!user?.spotifyId;
   const mood = "calm"; // Predefined mood
 
-  const fetchMusicRecommendations = async () => {
-    setLoading(true);
-    try {
-      if (isSpotifyUser) {
-        const jwtToken = await getToken("jwtToken");
-        const spotifyResults = await searchSpotifyTracks(mood, jwtToken);
-        console.log("Spotify Results:", spotifyResults);
-        if (spotifyResults) {
-          setMusicData(
-            spotifyResults.map((track, index) => ({
-              id: track.id || `${track.name}-${index}`,
-              title: track.name || "Unknown Title",
-              artist: track.artists?.join(", ") || "Unknown Artist",
-              image: { uri: track.album?.images?.[0]?.url || "https://via.placeholder.com/300" },
-              externalUrl: track.externalUrl,
-              previewUrl: track.preview_url,
-              duration: track.duration_ms || 0,
-              album: track.album?.name || "Unknown Album",
-            }))
-          );
-        }
-      } else {
-        const jamendoResults = await searchJamendoMusic(mood);
-        if (jamendoResults) {
-          setMusicData(
-            jamendoResults.map((track, index) => ({
-              id: track.id || `${track.name}-${index}`,
-              title: track.name || "Unknown Title",
-              artist: track.artist || "Unknown Artist",
-              image: { uri: track.image || "https://via.placeholder.com/300" },
-              externalUrl: track.audio,
-              previewUrl: track.audio,
-              duration: track.duration * 1000,
-              album: track.album || "Unknown Album",
-            }))
-          );
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching music recommendations:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  useEffect(() => {
-    fetchMusicRecommendations();
-  }, []);
+  const { musicData, loading } = useMusicRecommendations(mood, isSpotifyUser);
 
   const weeklyData = [
     { day: "Mon", emoji: "😐" },
