@@ -29,14 +29,14 @@ export default function Home() {
       if (isSpotifyUser) {
         const jwtToken = await getToken("jwtToken");
         const spotifyResults = await searchSpotifyTracks(mood, jwtToken);
-
+        console.log("Spotify Results:", spotifyResults);
         if (spotifyResults) {
           setMusicData(
             spotifyResults.map((track, index) => ({
-              id: track.id || `${track.name}-${index}`, // Fallback for unique keys
+              id: track.id || `${track.name}-${index}`,
               title: track.name || "Unknown Title",
               subtitle: track.artists || "Unknown Artist",
-              image: { uri: track.image || "https://via.placeholder.com/300" },
+              image: { uri: track.album.images[0]?.url || "https://via.placeholder.com/300" },
             }))
           );
         }
