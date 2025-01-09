@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, FlatList, Image, TouchableOpacity} from "react-native";
+import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 
 export default function RecommendedMusic({ data, title }) {
@@ -20,27 +20,31 @@ export default function RecommendedMusic({ data, title }) {
           <TouchableOpacity
             onPress={() =>
               router.push({
-                pathname: "/playlist/[playlist]",
+                pathname: "/music/[music]",
                 params: { playlist: "some-playlist", playlistName: "Playlist Name" },
               })
             }
-            className="w-45 border mr-4"
+            className="w-32 mr-4"
           >
             {/* Playlist Image */}
-            <Image source={item.image} className="w-40 h-40"/>
-              
+            <Image source={item.image} className="w-36 h-36" />
+
             {/* Playlist Title */}
             <Text
-              className="text-white text-base font-Avenir-Bold mt-3"
+              className="text-white text-sm font-bold mt-2 truncate"
               numberOfLines={1}
+              ellipsizeMode="tail"
+              style={{ maxWidth: 130 }}
             >
               {item.title}
             </Text>
 
             {/* Playlist Subtitle */}
             <Text
-              className="text-gray-400 text-sm font-avenir-regular"
+              className="text-gray-400 text-xs truncate"
               numberOfLines={1}
+              ellipsizeMode="tail"
+              style={{ maxWidth: 130 }}
             >
               {item.subtitle}
             </Text>
