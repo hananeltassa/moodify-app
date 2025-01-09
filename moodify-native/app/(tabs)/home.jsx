@@ -1,4 +1,4 @@
-import { SafeAreaView, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator,} from "react-native";
+import { SafeAreaView, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import icons from "../../constants/icons";
@@ -35,21 +35,28 @@ export default function Home() {
             spotifyResults.map((track, index) => ({
               id: track.id || `${track.name}-${index}`,
               title: track.name || "Unknown Title",
-              subtitle: track.artists || "Unknown Artist",
-              image: { uri: track.album.images[0]?.url || "https://via.placeholder.com/300" },
+              artist: track.artists?.join(", ") || "Unknown Artist",
+              image: { uri: track.album?.images?.[0]?.url || "https://via.placeholder.com/300" },
+              externalUrl: track.externalUrl,
+              previewUrl: track.preview_url,
+              duration: track.duration_ms || 0,
+              album: track.album?.name || "Unknown Album",
             }))
           );
         }
       } else {
         const jamendoResults = await searchJamendoMusic(mood);
-
         if (jamendoResults) {
           setMusicData(
             jamendoResults.map((track, index) => ({
-              id: track.id || `${track.name}-${index}`, // Fallback for unique keys
+              id: track.id || `${track.name}-${index}`,
               title: track.name || "Unknown Title",
-              subtitle: track.artists || "Unknown Artist",
+              artist: track.artist || "Unknown Artist",
               image: { uri: track.image || "https://via.placeholder.com/300" },
+              externalUrl: track.audio,
+              previewUrl: track.audio,
+              duration: track.duration * 1000,
+              album: track.album || "Unknown Album",
             }))
           );
         }
