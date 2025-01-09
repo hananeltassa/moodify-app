@@ -8,12 +8,18 @@ import dayjs from "dayjs";
 export const getValidChallenges = async () => {
   const fetchedChallenges = await fetchChallenges();
 
-  const twelveHoursAgo = dayjs().subtract(12, "hours");
+  const eightHoursAgo = dayjs().subtract(8, "hours");
+  console.log("Current time:", dayjs().toISOString());
+  console.log("8 hours ago:", eightHoursAgo.toISOString());
+
   const validChallenges = fetchedChallenges.filter((challenge) => {
-    const createdAt = dayjs(challenge.created_at);
+    const createdAt = dayjs(challenge.createdAt);
+    console.log(`Challenge ${challenge.id} createdAt:`, createdAt.toISOString());
+    console.log(`Is after 8 hours ago:`, createdAt.isAfter(twelveHoursAgo));
     return createdAt.isAfter(twelveHoursAgo);
   });
 
+  console.log("Valid challenges:", validChallenges);
   return validChallenges;
 };
 
