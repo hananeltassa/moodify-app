@@ -1,5 +1,5 @@
-import { SafeAreaView, Text, View, Image, TouchableOpacity, ScrollView } from "react-native";
-import React from "react";
+import { SafeAreaView, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator,} from "react-native";
+import React, { useEffect, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import icons from "../../constants/icons";
 import images from "../../constants/images";
@@ -8,11 +8,62 @@ import RecommendedMusic from "../../components/RecommendedMusic";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSelector } from "react-redux";
 import { router } from "expo-router";
+import { searchSpotifyTracks } from "../../api/spotifyAuth";
+import { searchJamendoMusic } from "../../api/jamendo";
+import { getToken } from "../../utils/secureStore";
 
 export default function Home() {
   const insets = useSafeAreaInsets();
   const user = useSelector((state) => state.user.user);
   const profilePic = user?.profilePic;
+
+  const [musicData, setMusicData] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const isSpotifyUser = !!user?.spotifyId;
+  const mood = "calm"; // Predefined mood
+
+  const fetchMusicRecommendations = async () => {
+    setLoading(true);
+    try {
+      if (isSpotifyUser) {
+        const jwtToken = await getToken("jwtToken");
+        const spotifyResults = await searchSpotifyTracks(mood, jwtToken);
+
+        if (spotifyResults) {
+          setMusicData(
+            spotifyResults.map((track, index) => ({
+              id: track.id || `${track.name}-${index}`, // Fallback for unique keys
+              title: track.name || "Unknown Title",
+              subtitle: track.artists || "Unknown Artist",
+              image: { uri: track.image || "https://via.placeholder.com/300" },
+            }))
+          );
+        }
+      } else {
+        const jamendoResults = await searchJamendoMusic(mood);
+
+        if (jamendoResults) {
+          setMusicData(
+            jamendoResults.map((track, index) => ({
+              id: track.id || `${track.name}-${index}`, // Fallback for unique keys
+              title: track.name || "Unknown Title",
+              subtitle: track.artists || "Unknown Artist",
+              image: { uri: track.image || "https://via.placeholder.com/300" },
+            }))
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching music recommendations:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMusicRecommendations();
+  }, []);
 
   const weeklyData = [
     { day: "Mon", emoji: "😐" },
@@ -22,45 +73,6 @@ export default function Home() {
     { day: "Fri", emoji: "😐" },
     { day: "Sat", emoji: "😄" },
     { day: "Sun", emoji: "😔" },
-  ];
-
-  const musicData = [
-    {
-      id: "1",
-      title: "Belong Together",
-      subtitle: "Mark Ambor",
-      image: images.playlist,
-    },
-    {
-      id: "2",
-      title: "Dandelions",
-      subtitle: "Ruth B.",
-      image: images.playlist2,
-    },
-    {
-      id: "3",
-      title: "Belong Together",
-      subtitle: "Mark Ambor",
-      image: images.playlist,
-    },
-    {
-      id: "4",
-      title: "Dandelions",
-      subtitle: "Ruth B.",
-      image: images.playlist2,
-    },
-    {
-      id: "5",
-      title: "Belong Together",
-      subtitle: "Mark Ambor",
-      image: images.playlist,
-    },
-    {
-      id: "6",
-      title: "Dandelions",
-      subtitle: "Ruth B.",
-      image: images.playlist2,
-    },
   ];
 
   return (
@@ -154,10 +166,13 @@ export default function Home() {
         </TouchableOpacity>
 
         {/* Recommended Music */}
-        <View className="">
-          <RecommendedMusic title="Recommended Music" data={musicData} />
+        <View className="mt-4">
+          {loading ? (
+            <ActivityIndicator size="large" color="#FF6100" style={{ marginVertical: 20 }} />
+          ) : (
+            <RecommendedMusic title="Recommended Music" data={musicData} />
+          )}
         </View>
-
       </ScrollView>
     </SafeAreaView>
   );
