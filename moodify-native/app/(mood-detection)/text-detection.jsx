@@ -1,11 +1,33 @@
 import React, { useState } from "react";
-import { View, TextInput, Text, Alert } from "react-native";
+import { View, TextInput, Text, Modal, TouchableOpacity } from "react-native";
 import CustomButton from "../../components/CustomButton";
 import { getToken } from "../../utils/secureStore";
 import axios from "axios";
+import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 export default function TextDetection() {
   const [text, setText] = useState("");
+  const [mood, setMood] = useState(null);
+  const [confidence, setConfidence] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+
+  const moodEmojis = {
+    joy: "😊",
+    sadness: "🌧️",
+    anger: "🥵",
+    fear: "😟",
+    surprise: "😲",
+    love: "❤️",
+  };
+
+  const moodColors = {
+    joy: "text-yellow-500",
+    sadness: "text-blue-400",
+    anger: "text-red-500",
+    fear: "text-purple-500",
+    surprise: "text-pink-500",
+    love: "text-red-400",
+  };
 
   const handleSubmit = async () => {
     if (!text.trim()) {
@@ -15,15 +37,13 @@ export default function TextDetection() {
 
     try {
       const token = await getToken("jwtToken");
-      console.log("Retrieved Token:", token);
 
       if (!token) {
         Alert.alert("Error", "No token found. Please log in again.");
         return;
       }
 
-      console.log("Making API call to detect mood...");
-      const response = await axios.post(`http://11.11.11.12:8080/api/mood/text-mood`,
+      const response = await axios.post( `http://11.11.11.12:8080/api/mood/text-mood`,
         { text },
         {
           headers: {
@@ -32,21 +52,14 @@ export default function TextDetection() {
         }
       );
 
-      //console.log("API Response:", response.data);
       const { mood, confidence } = response.data;
-      Alert.alert("Mood Detected", `Mood: ${mood}\nConfidence: ${confidence}`);
+
+      setMood(mood);
+      setConfidence(confidence * 100);
+      setShowModal(true);
     } catch (err) {
       console.error("Error detecting mood:", err);
-
-      if (err.response) {
-        console.error("Backend Error Response:", err.response.data);
-        Alert.alert(
-          "Error",
-          `Failed to detect mood: ${err.response.data.error || "Unknown error"}`
-        );
-      } else {
-        Alert.alert("Error", "Failed to detect mood. Please try again.");
-      }
+      Alert.alert("Error", "Failed to detect mood. Please try again.");
     }
   };
 
@@ -62,16 +75,7 @@ export default function TextDetection() {
           placeholderTextColor="#777"
           multiline
           numberOfLines={4}
-          style={{
-            backgroundColor: "#1e1e1e",
-            color: "#fff",
-            borderRadius: 5,
-            padding: 12,
-            height: 100,
-            borderWidth: 1,
-            borderColor: "#333",
-            textAlignVertical: "top",
-          }}
+          className="bg-[#1e1e1e] text-white rounded-lg p-3 h-24 border border-gray-800 text-base"
         />
       </View>
 
@@ -85,6 +89,64 @@ export default function TextDetection() {
         containerStyle="mx-auto"
         onPress={handleSubmit}
       />
+
+      {/* Joyful Modal */}
+      <Modal
+        visible={showModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowModal(false)}
+      >
+        <View className="flex-1 bg-black/50 justify-center items-center">
+          <View className="bg-white rounded-lg p-6 w-4/5 items-center shadow-lg relative">
+            {/* Close Button (X in top-right) */}
+            <TouchableOpacity
+              onPress={() => setShowModal(false)}
+              className="absolute top-4 right-4 bg-gray-200 w-8 h-8 rounded-full flex items-center justify-center"
+            >
+              <Text className="text-black text-lg font-bold">✕</Text>
+            </TouchableOpacity>
+
+            {/* Emoji Header */}
+            <Text className={`text-6xl mb-4 p-2 ${moodColors[mood] || "text-black"}`}>
+              {moodEmojis[mood] || "🌈"}
+            </Text>
+
+            {/* Circular Progress */}
+            <AnimatedCircularProgress
+              size={150}
+              width={12}
+              fill={confidence}
+              tintColor="#FFA500"
+              backgroundColor="#f5f5f5"
+              style={{ marginBottom: 16 }}
+            >
+              {(fill) => (
+                <Text className="text-2xl font-bold text-black">{`${Math.round(fill)}%`}</Text>
+              )}
+            </AnimatedCircularProgress>
+
+            {/* Mood Message */}
+            <Text className="text-gray-700 text-lg mt-4 text-center">
+              Your mood is:{" "}
+              <Text className="font-bold capitalize">{mood || "unique"}</Text>
+            </Text>
+
+            {/* Button for Song Suggestions */}
+            <TouchableOpacity
+              onPress={() => {
+                setShowModal(false);
+                console.log("Navigate to song suggestions!");
+              }}
+              className="mt-4 bg-primary px-4 py-2 rounded-full shadow-sm"
+            >
+              <Text className="text-white font-medium text-center text-sm">
+                Let's see what song suggestions you have
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
