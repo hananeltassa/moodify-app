@@ -25,7 +25,7 @@ export default function CustomButton({
     <TouchableOpacity
       className={`${classes.button} ${borderStyle} ${padding} ${cornerRadius} ${marginTop} ${width} ${containerStyle} flex-row items-center justify-center`}
       onPress={() => {
-        console.log("CustomButton pressed");
+        //console.log("CustomButton pressed");
         if (onPress && !isDisabled) onPress();
       }}
       activeOpacity={0.8}

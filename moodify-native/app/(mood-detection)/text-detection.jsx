@@ -1,13 +1,53 @@
 import React, { useState } from "react";
-import { View, TextInput, Text } from "react-native";
-import FormField from "../../components/FormField";
+import { View, TextInput, Text, Alert } from "react-native";
 import CustomButton from "../../components/CustomButton";
+import { getToken } from "../../utils/secureStore";
+import axios from "axios";
 
 export default function TextDetection() {
   const [text, setText] = useState("");
 
-  const handleSubmit = () => {
-    console.log("Submitted text:", text);
+  const handleSubmit = async () => {
+    if (!text.trim()) {
+      Alert.alert("Error", "Please enter some text.");
+      return;
+    }
+
+    try {
+      const token = await getToken("jwtToken");
+      console.log("Retrieved Token:", token);
+
+      if (!token) {
+        Alert.alert("Error", "No token found. Please log in again.");
+        return;
+      }
+
+      console.log("Making API call to detect mood...");
+      const response = await axios.post(`http://11.11.11.12:8080/api/mood/text-mood`,
+        { text },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      //console.log("API Response:", response.data);
+      const { mood, confidence } = response.data;
+      Alert.alert("Mood Detected", `Mood: ${mood}\nConfidence: ${confidence}`);
+    } catch (err) {
+      console.error("Error detecting mood:", err);
+
+      if (err.response) {
+        console.error("Backend Error Response:", err.response.data);
+        Alert.alert(
+          "Error",
+          `Failed to detect mood: ${err.response.data.error || "Unknown error"}`
+        );
+      } else {
+        Alert.alert("Error", "Failed to detect mood. Please try again.");
+      }
+    }
   };
 
   return (
