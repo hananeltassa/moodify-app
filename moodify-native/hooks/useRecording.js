@@ -83,7 +83,7 @@ export const useRecording = () => {
   const uploadAudioFile = async (fileUri) => {
     if (!fileUri) {
       console.error("No audio file to upload");
-      return;
+      return null;
     }
 
     const formData = new FormData();
@@ -102,8 +102,10 @@ export const useRecording = () => {
       });
 
       console.log("Audio uploaded successfully:", response.data);
+      return response.data; // Return the response data
     } catch (error) {
       console.error("Error uploading audio:", error);
+      return null; // Return null if an error occurs
     }
   };
 

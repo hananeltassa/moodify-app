@@ -3,22 +3,50 @@ import { SafeAreaView, View, Text, TouchableOpacity, Dimensions } from "react-na
 import { Entypo } from "@expo/vector-icons";
 import LottieView from "lottie-react-native";
 import LoadingScreen from "../../components/LoadingScreen";
+import MoodResultModal from "../../components/MoodResultModal";
 import { useRecording } from "../../hooks/useRecording";
 
 const { width } = Dimensions.get("window");
 
 export default function VoiceRecognition() {
-  const { isRecording, startRecording, stopRecording, uploadAudioFile } = useRecording();
+  const { isRecording, startRecording, stopRecording, discardRecording, uploadAudioFile } = useRecording();
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [mood, setMood] = useState(null);
+  const [confidence, setConfidence] = useState(0);
+
+  const moodEmojis = {
+    joy: "😊",
+    sadness: "🌧️",
+    anger: "🥵",
+    fear: "😟",
+    surprise: "😲",
+    love: "❤️",
+  };
+
+  const moodColors = {
+    joy: "text-yellow-500",
+    sadness: "text-blue-400",
+    anger: "text-red-500",
+    fear: "text-purple-500",
+    surprise: "text-pink-500",
+    love: "text-red-400",
+  };
 
   const toggleRecording = async () => {
     if (isRecording) {
       const uri = await stopRecording();
-      console.log("Uploading audio...");
       if (uri) {
         setLoading(true);
         try {
-          await uploadAudioFile(uri);
+          const response = await uploadAudioFile(uri);
+          if (response?.success) {
+            setMood(response.mood);
+            setConfidence(response.confidence * 100);
+            setShowModal(true);
+          } else {
+            console.error("Mood detection failed.");
+          }
         } catch (error) {
           console.error("Error uploading audio:", error);
         } finally {
@@ -29,6 +57,13 @@ export default function VoiceRecognition() {
       }
     } else {
       startRecording();
+    }
+  };
+
+  const handleCancel = async () => {
+    if (isRecording) {
+      await discardRecording();
+      console.log("Recording discarded");
     }
   };
 
@@ -84,12 +119,22 @@ export default function VoiceRecognition() {
       {/* Cancel Button */}
       <View className="justify-center items-center mb-12">
         <TouchableOpacity
-          onPress={() => console.log("Recording discarded")}
+          onPress={handleCancel}
           className="bg-[#FF6100] w-16 h-16 rounded-full justify-center items-center"
         >
           <Entypo name="cross" size={30} color="white" />
         </TouchableOpacity>
       </View>
+
+      {/* Mood Result Modal */}
+      <MoodResultModal
+        visible={showModal}
+        onClose={() => setShowModal(false)}
+        mood={mood}
+        confidence={confidence}
+        moodEmojis={moodEmojis}
+        moodColors={moodColors}
+      />
     </SafeAreaView>
   );
 }
