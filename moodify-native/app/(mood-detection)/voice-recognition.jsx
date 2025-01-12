@@ -7,28 +7,20 @@ import { useRecording } from "../../hooks/useRecording";
 const { width } = Dimensions.get("window");
 
 export default function VoiceRecognition() {
-  const { isRecording, startRecording, stopRecording, discardRecording, audioFile, uploadAudioFile } =
-    useRecording();
+  const { isRecording, startRecording, stopRecording, uploadAudioFile } = useRecording();
 
   const toggleRecording = async () => {
     if (isRecording) {
-      await stopRecording();
+      const uri = await stopRecording();
       console.log("Uploading audio...");
-      if (audioFile) {
-        await uploadAudioFile();
+      if (uri) {
+        await uploadAudioFile(uri);
       } else {
         console.warn("No audio file found after recording stopped.");
       }
     } else {
       startRecording();
     }
-  };
-
-  const handleCancel = async () => {
-    if (isRecording) {
-      await discardRecording();
-    }
-    console.log("Recording discarded");
   };
 
   return (
@@ -79,7 +71,7 @@ export default function VoiceRecognition() {
       {/* Cancel Button */}
       <View className="justify-center items-center mb-12">
         <TouchableOpacity
-          onPress={handleCancel}
+          onPress={() => console.log("Recording discarded")}
           className="bg-[#FF6100] w-16 h-16 rounded-full justify-center items-center"
         >
           <Entypo name="cross" size={30} color="white" />
