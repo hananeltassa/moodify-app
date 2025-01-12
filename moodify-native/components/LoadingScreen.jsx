@@ -5,7 +5,7 @@ import animation from "../assets/loading-animation.json";
 
 export default function LoadingScreen({ message = "Loading..." }) {
   return (
-    <View className="flex-1 justify-center items-center bg-black">
+    <View className="flex-auto justify-center items-center bg-black">
       {/* Lottie Animation */}
       <LottieView
         source={animation}
@@ -15,7 +15,7 @@ export default function LoadingScreen({ message = "Loading..." }) {
       />
 
       {/* Loading Message */}
-      <Text className="text-white mt-4 text-lg font-bold">{message}</Text>
+      <Text className="text-white mt-2 text-lg font-bold">{message}</Text>
 
     </View>
   );

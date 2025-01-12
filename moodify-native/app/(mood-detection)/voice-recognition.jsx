@@ -1,20 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { SafeAreaView, View, Text, TouchableOpacity, Dimensions } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import LottieView from "lottie-react-native";
+import LoadingScreen from "../../components/LoadingScreen";
 import { useRecording } from "../../hooks/useRecording";
 
 const { width } = Dimensions.get("window");
 
 export default function VoiceRecognition() {
   const { isRecording, startRecording, stopRecording, uploadAudioFile } = useRecording();
+  const [loading, setLoading] = useState(false);
 
   const toggleRecording = async () => {
     if (isRecording) {
       const uri = await stopRecording();
       console.log("Uploading audio...");
       if (uri) {
-        await uploadAudioFile(uri);
+        setLoading(true);
+        try {
+          await uploadAudioFile(uri);
+        } catch (error) {
+          console.error("Error uploading audio:", error);
+        } finally {
+          setLoading(false);
+        }
       } else {
         console.warn("No audio file found after recording stopped.");
       }
@@ -22,6 +31,10 @@ export default function VoiceRecognition() {
       startRecording();
     }
   };
+
+  if (loading) {
+    return <LoadingScreen message="Processing your mood..." />;
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-black px-4">
