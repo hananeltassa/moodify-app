@@ -7,10 +7,10 @@ export const updateUserProfile = async(userData) => {
         const token = await getToken("jwtToken");
 
         if (!token) {
-        throw new Error("No token found. Please log in again.");
+            throw new Error("No token found. Please log in again.");
         }
 
-        console.log("Sending request to update profile:", userData);
+        //console.log("Sending request to update profile:", userData);
 
         const response = await axios.put(`${BACKEND_BASE_URL}/api/users/profile`,
             userData,

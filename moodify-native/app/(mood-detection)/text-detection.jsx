@@ -3,6 +3,7 @@ import { View, TextInput, Text, Modal, TouchableOpacity } from "react-native";
 import CustomButton from "../../components/CustomButton";
 import { getToken } from "../../utils/secureStore";
 import axios from "axios";
+import { BACKEND_BASE_URL } from "@env";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 export default function TextDetection() {
@@ -43,7 +44,7 @@ export default function TextDetection() {
         return;
       }
 
-      const response = await axios.post( `http://11.11.11.12:8080/api/mood/text-mood`,
+      const response = await axios.post( `${BACKEND_BASE_URL}/api/mood/text-mood`,
         { text },
         {
           headers: {
@@ -52,11 +53,15 @@ export default function TextDetection() {
         }
       );
 
-      const { mood, confidence } = response.data;
-
-      setMood(mood);
-      setConfidence(confidence * 100);
-      setShowModal(true);
+      if (response.data.success) {
+        const { detected_mood, confidence } = response.data.MoodDetection;
+  
+        setMood(detected_mood);
+        setConfidence(confidence * 100);
+        setShowModal(true);
+      } else {
+        Alert.alert("Error", "Failed to detect mood. Please try again.");
+      }
     } catch (err) {
       console.error("Error detecting mood:", err);
       Alert.alert("Error", "Failed to detect mood. Please try again.");
