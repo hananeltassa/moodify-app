@@ -6,7 +6,7 @@ export const searchJamendoMusic = async (query, type = "tracks") => {
     const response = await axios.get(`${BACKEND_BASE_URL}/api/music/search`, {
       params: { query, type },
     });
-    console.log(response.data.results);
+    //console.log(response.data.results);
     return response.data.results;
   } catch (error) {
     console.error("Error searching Jamendo music:", error);
