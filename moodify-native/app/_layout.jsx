@@ -6,7 +6,6 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import "react-native-reanimated";
-import { Provider as PaperProvider } from "react-native-paper";
 import { RegistrationProvider } from "../context/RegistrationContext";
 import { Provider as ReduxProvider } from "react-redux";
 

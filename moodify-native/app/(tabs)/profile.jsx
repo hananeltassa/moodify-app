@@ -10,7 +10,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { setUser, clearUser } from "../../redux/slices/userSlice";
 import { clearPlaylists } from "../../redux/slices/playlistSlice";
-import { stopPlayback } from "../../redux/slices/playbackSlice";
+import { stopPlayback, resetPlayback  } from "../../redux/slices/playbackSlice";
 import { clearPlaylistTracks } from "../../redux/slices/playlistTracksSlice";
 import { useRouter } from "expo-router";
 import { updateUserProfile } from "../../api/user";
@@ -44,6 +44,7 @@ export default function ProfileScreen() {
       dispatch(clearUser());
       dispatch(clearPlaylists());
       dispatch(stopPlayback());
+      dispatch(resetPlayback());
       dispatch(clearPlaylistTracks());
 
       router.replace("/onboarding");
