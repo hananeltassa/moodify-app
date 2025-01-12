@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { View, TextInput, Text, Modal, TouchableOpacity } from "react-native";
+import { View, TextInput, Text, Modal, TouchableOpacity, Alert } from "react-native";
 import CustomButton from "../../components/CustomButton";
+import LoadingScreen from "../../components/LoadingScreen";
 import { getToken } from "../../utils/secureStore";
 import axios from "axios";
 import { BACKEND_BASE_URL } from "@env";
@@ -11,6 +12,7 @@ export default function TextDetection() {
   const [mood, setMood] = useState(null);
   const [confidence, setConfidence] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const moodEmojis = {
     joy: "😊",
@@ -36,15 +38,19 @@ export default function TextDetection() {
       return;
     }
 
+    setLoading(true);
+
     try {
       const token = await getToken("jwtToken");
 
       if (!token) {
+        setLoading(false);
         Alert.alert("Error", "No token found. Please log in again.");
         return;
       }
 
-      const response = await axios.post( `${BACKEND_BASE_URL}/api/mood/text-mood`,
+      const response = await axios.post(
+        `${BACKEND_BASE_URL}/api/mood/text-mood`,
         { text },
         {
           headers: {
@@ -55,7 +61,7 @@ export default function TextDetection() {
 
       if (response.data.success) {
         const { detected_mood, confidence } = response.data.MoodDetection;
-  
+
         setMood(detected_mood);
         setConfidence(confidence * 100);
         setShowModal(true);
@@ -65,8 +71,14 @@ export default function TextDetection() {
     } catch (err) {
       console.error("Error detecting mood:", err);
       Alert.alert("Error", "Failed to detect mood. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return <LoadingScreen message="Detecting your mood..." />;
+  }
 
   return (
     <View className="flex-1 bg-black px-6 py-8">
