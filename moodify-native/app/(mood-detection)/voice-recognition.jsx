@@ -7,11 +7,18 @@ import { useRecording } from "../../hooks/useRecording";
 const { width } = Dimensions.get("window");
 
 export default function VoiceRecognition() {
-  const { isRecording, startRecording, stopRecording, discardRecording } = useRecording();
+  const { isRecording, startRecording, stopRecording, discardRecording, audioFile, uploadAudioFile } =
+    useRecording();
 
-  const toggleRecording = () => {
+  const toggleRecording = async () => {
     if (isRecording) {
-      stopRecording();
+      await stopRecording();
+      console.log("Uploading audio...");
+      if (audioFile) {
+        await uploadAudioFile();
+      } else {
+        console.warn("No audio file found after recording stopped.");
+      }
     } else {
       startRecording();
     }
