@@ -1,157 +1,83 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Animated, Easing } from "react-native";
-import { MaterialIcons, Entypo } from "@expo/vector-icons";
+import React from "react";
+import { SafeAreaView, View, Text, TouchableOpacity, Dimensions } from "react-native";
+import { Entypo } from "@expo/vector-icons";
+import LottieView from "lottie-react-native";
+import { useRecording } from "../../hooks/useRecording";
+
+const { width } = Dimensions.get("window");
 
 export default function VoiceRecognition() {
-  // State for recording
-  const [isRecording, setIsRecording] = useState(false);
+  const { isRecording, startRecording, stopRecording, discardRecording } = useRecording();
 
-  // Animation states
-  const pulse1 = useState(new Animated.Value(1))[0];
-  const pulse2 = useState(new Animated.Value(1))[0];
-  const opacity1 = useState(new Animated.Value(0.8))[0];
-  const opacity2 = useState(new Animated.Value(0.8))[0];
-
-  // Animation functions
-  const startWaveAnimation = () => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.parallel([
-          Animated.timing(pulse1, {
-            toValue: 2,
-            duration: 1500,
-            easing: Easing.inOut(Easing.ease),
-            useNativeDriver: true,
-          }),
-          Animated.timing(opacity1, {
-            toValue: 0,
-            duration: 1500,
-            useNativeDriver: true,
-          }),
-        ]),
-        Animated.parallel([
-          Animated.timing(pulse2, {
-            toValue: 2,
-            duration: 1500,
-            easing: Easing.inOut(Easing.ease),
-            useNativeDriver: true,
-          }),
-          Animated.timing(opacity2, {
-            toValue: 0,
-            duration: 1500,
-            useNativeDriver: true,
-          }),
-        ]),
-      ])
-    ).start();
-  };
-
-  const stopWaveAnimation = () => {
-    pulse1.setValue(1);
-    pulse2.setValue(1);
-    opacity1.setValue(0.8);
-    opacity2.setValue(0.8);
-  };
-
-  // Toggle recording with animation
   const toggleRecording = () => {
-    if (!isRecording) {
-      startWaveAnimation();
+    if (isRecording) {
+      stopRecording();
     } else {
-      stopWaveAnimation();
+      startRecording();
     }
-    setIsRecording(!isRecording);
+  };
+
+  const handleCancel = async () => {
+    if (isRecording) {
+      await discardRecording();
+    }
+    console.log("Recording discarded");
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "black", paddingHorizontal: 16 }}>
+    <SafeAreaView className="flex-1 bg-black px-4">
       {/* Title */}
-      <View style={{ marginTop: 48 }}>
-        <Text style={{ color: "white", fontSize: 24, fontWeight: "bold", textAlign: "center" }}>
-          🎤 Speak Your Mood! 🎶
-        </Text>
-      </View>
+      <Text className="text-white text-2xl font-bold text-center mt-6">🎤 Speak Your Mood! 🎶</Text>
 
-      {/* Animated Circles */}
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Animated.View
-          style={{
-            position: "absolute",
-            width: 200,
-            height: 200,
-            borderRadius: 100,
-            backgroundColor: "#FF6100",
-            opacity: opacity1,
-            transform: [{ scale: pulse1 }],
-          }}
-        />
-        <Animated.View
-          style={{
-            position: "absolute",
-            width: 200,
-            height: 200,
-            borderRadius: 100,
-            backgroundColor: "#B90039",
-            opacity: opacity2,
-            transform: [{ scale: pulse2 }],
-          }}
-        />
+      {/* Interactive Circle */}
+      <TouchableOpacity
+        onPress={toggleRecording}
+        activeOpacity={0.8}
+        className="flex-1 justify-center items-center relative"
+      >
+        {isRecording ? (
+          <LottieView
+            source={require("../../assets/voice-animation.json")}
+            autoPlay
+            loop
+            style={{
+              width: width * 0.9,
+              height: width * 0.9,
+            }}
+          />
+        ) : (
+          <View
+            style={{
+              width: width * 0.6,
+              height: width * 0.6,
+              borderRadius: width * 0.3,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#1e1e1e",
+              borderWidth: 2,
+              borderColor: "#FF6100",
+              shadowColor: "#FF6100",
+              shadowOffset: { width: 0, height: 0 },
+              shadowOpacity: 0.5,
+              shadowRadius: 15,
+            }}
+          >
+            <Text className="text-white text-lg font-bold text-center">
+              Tap to <Text className="text-[#FF6100]">Start</Text> Speaking!
+            </Text>
+          </View>
+        )}
+      </TouchableOpacity>
 
-        {/* Inner Circle */}
-        <View
-          style={{
-            width: 120,
-            height: 120,
-            borderRadius: 60,
-            backgroundColor: isRecording ? "#FF6100" : "#B90039",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ color: "white", fontSize: 16, fontWeight: "bold" }}>
-            {isRecording ? "Listening..." : "Tap to Start"}
-          </Text>
-        </View>
-      </View>
-
-      {/* Buttons */}
-      <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginBottom: 48, position: "relative" }}>
-        {/* Cancel Button */}
+      {/* Cancel Button */}
+      <View className="justify-center items-center mb-12">
         <TouchableOpacity
-          onPress={() => console.log("Cancelled")}
-          style={{
-            backgroundColor: "#FF6100",
-            width: 64,
-            height: 64,
-            borderRadius: 32,
-            justifyContent: "center",
-            alignItems: "center",
-            position: "absolute",
-            left: 32,
-          }}
+          onPress={handleCancel}
+          className="bg-[#FF6100] w-16 h-16 rounded-full justify-center items-center"
         >
           <Entypo name="cross" size={30} color="white" />
         </TouchableOpacity>
-
-        {/* Record Button */}
-        <TouchableOpacity
-          onPress={toggleRecording}
-          style={{
-            backgroundColor: isRecording ? "#B90039" : "#FF6100",
-            width: 80,
-            height: 80,
-            borderRadius: 40,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <MaterialIcons
-            name={isRecording ? "stop" : "fiber-manual-record"}
-            size={40}
-            color="white"
-          />
-        </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
