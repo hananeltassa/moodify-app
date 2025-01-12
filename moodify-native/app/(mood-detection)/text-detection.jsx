@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { View, TextInput, Text, Modal, TouchableOpacity, Alert } from "react-native";
+import { View, TextInput, Text, Alert } from "react-native";
 import CustomButton from "../../components/CustomButton";
 import LoadingScreen from "../../components/LoadingScreen";
+import MoodResultModal from "../../components/MoodResultModal";
 import { getToken } from "../../utils/secureStore";
 import axios from "axios";
 import { BACKEND_BASE_URL } from "@env";
-import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 export default function TextDetection() {
   const [text, setText] = useState("");
@@ -107,63 +107,15 @@ export default function TextDetection() {
         onPress={handleSubmit}
       />
 
-      {/* Joyful Modal */}
-      <Modal
+      {/* Mood Result Modal */}
+      <MoodResultModal
         visible={showModal}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setShowModal(false)}
-      >
-        <View className="flex-1 bg-black/50 justify-center items-center">
-          <View className="bg-white rounded-lg p-6 w-4/5 items-center shadow-lg relative">
-            {/* Close Button (X in top-right) */}
-            <TouchableOpacity
-              onPress={() => setShowModal(false)}
-              className="absolute top-4 right-4 bg-gray-200 w-8 h-8 rounded-full flex items-center justify-center"
-            >
-              <Text className="text-black text-lg font-bold">✕</Text>
-            </TouchableOpacity>
-
-            {/* Emoji Header */}
-            <Text className={`text-6xl mb-4 p-2 ${moodColors[mood] || "text-black"}`}>
-              {moodEmojis[mood] || "🌈"}
-            </Text>
-
-            {/* Circular Progress */}
-            <AnimatedCircularProgress
-              size={150}
-              width={12}
-              fill={confidence}
-              tintColor="#FFA500"
-              backgroundColor="#f5f5f5"
-              style={{ marginBottom: 16 }}
-            >
-              {(fill) => (
-                <Text className="text-2xl font-bold text-black">{`${Math.round(fill)}%`}</Text>
-              )}
-            </AnimatedCircularProgress>
-
-            {/* Mood Message */}
-            <Text className="text-gray-700 text-lg mt-4 text-center">
-              Your mood is:{" "}
-              <Text className="font-bold capitalize">{mood || "unique"}</Text>
-            </Text>
-
-            {/* Button for Song Suggestions */}
-            <TouchableOpacity
-              onPress={() => {
-                setShowModal(false);
-                console.log("Navigate to song suggestions!");
-              }}
-              className="mt-4 bg-primary px-4 py-2 rounded-full shadow-sm"
-            >
-              <Text className="text-white font-medium text-center text-sm">
-                Let's see what song suggestions you have
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+        onClose={() => setShowModal(false)}
+        mood={mood}
+        confidence={confidence}
+        moodEmojis={moodEmojis}
+        moodColors={moodColors}
+      />
     </View>
   );
 }
