@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Audio } from "expo-av";
-import * as FileSystem from "expo-file-system";
 import axios from "axios";
 import { BACKEND_BASE_URL } from "@env";
 
@@ -8,6 +7,27 @@ export const useRecording = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [recording, setRecording] = useState(null);
   const [audioFile, setAudioFile] = useState(null);
+
+  const recordingOptions = {
+    android: {
+      extension: ".wav",
+      outputFormat: Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_DEFAULT,
+      audioEncoder: Audio.RECORDING_OPTION_ANDROID_AUDIO_ENCODER_DEFAULT,
+      sampleRate: 16000,
+      numberOfChannels: 1,
+      bitRate: 128000,
+    },
+    ios: {
+      extension: ".wav",
+      audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_HIGH,
+      sampleRate: 16000,
+      numberOfChannels: 1,
+      bitRate: 128000,
+      linearPCMBitDepth: 16,
+      linearPCMIsBigEndian: false,
+      linearPCMIsFloat: false,
+    },
+  };
 
   const startRecording = async () => {
     try {
@@ -23,9 +43,10 @@ export const useRecording = () => {
       });
 
       const newRecording = new Audio.Recording();
-      await newRecording.prepareToRecordAsync(Audio.RecordingOptionsPresets.HIGH_QUALITY);
+      await newRecording.prepareToRecordAsync(recordingOptions);
       await newRecording.startAsync();
       setRecording(newRecording);
+      setAudioFile(null); // Clear previous audio file
       setIsRecording(true);
       console.log("Recording started");
     } catch (error) {
@@ -41,58 +62,38 @@ export const useRecording = () => {
         const uri = recording.getURI();
         if (uri) {
           console.log("Recording URI:", uri);
-          setAudioFile(uri);
+          setAudioFile(uri); // Save the .wav file URI
+          return uri;
         } else {
           console.warn("No URI returned from recording.");
+          setAudioFile(null); 
         }
       } else {
         console.warn("No recording instance found.");
       }
     } catch (error) {
       console.error("Error stopping recording:", error);
-    } finally {
-      setRecording(null);
-      setIsRecording(false);
-    }
-  };
-
-  const discardRecording = async () => {
-    try {
-      if (recording) {
-        await recording.stopAndUnloadAsync();
-        console.log("Recording discarded");
-      }
-    } catch (error) {
-      console.error("Error discarding recording:", error);
-    } finally {
-      setRecording(null);
-      setIsRecording(false);
       setAudioFile(null);
+    } finally {
+      setRecording(null);
+      setIsRecording(false);
     }
   };
 
-  const uploadAudioFile = async () => {
-    if (!audioFile) {
+  const uploadAudioFile = async (fileUri) => {
+    if (!fileUri) {
       console.error("No audio file to upload");
       return;
     }
 
+    const formData = new FormData();
+    formData.append("audio", {
+      uri: fileUri,
+      name: `audio_${Date.now()}.wav`,
+      type: "audio/wav",
+    });
+
     try {
-      // Ensure the file exists
-      const fileInfo = await FileSystem.getInfoAsync(audioFile);
-      if (!fileInfo.exists) {
-        console.error("File does not exist at URI:", audioFile);
-        return;
-      }
-
-      // Create FormData for upload
-      const formData = new FormData();
-      formData.append("audio", {
-        uri: audioFile,
-        name: `audio_${Date.now()}.m4a`,
-        type: "audio/m4a",
-      });
-
       console.log("Uploading audio...");
       const response = await axios.post(`${BACKEND_BASE_URL}/api/mood/voice-mood`, formData, {
         headers: {
@@ -103,6 +104,21 @@ export const useRecording = () => {
       console.log("Audio uploaded successfully:", response.data);
     } catch (error) {
       console.error("Error uploading audio:", error);
+    }
+  };
+
+  const discardRecording = async () => {
+    try {
+      if (recording) {
+        await recording.stopAndUnloadAsync();
+        console.log("Recording discarded.");
+      }
+      setRecording(null);
+      setAudioFile(null); // Clear the audio file state
+    } catch (error) {
+      console.error("Error discarding recording:", error);
+    } finally {
+      setIsRecording(false);
     }
   };
 
