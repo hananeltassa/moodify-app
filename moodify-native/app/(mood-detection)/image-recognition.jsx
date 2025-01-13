@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { Ionicons } from "@expo/vector-icons";
+import LottieView from "lottie-react-native";
 import { useCameraMoodDetection } from "../../hooks/useCameraMoodDetection";
 
 export default function CameraScreen() {
@@ -74,7 +75,13 @@ export default function CameraScreen() {
       {/* Loading Overlay */}
       {loading && (
         <View className="absolute inset-0 bg-black bg-opacity-50 justify-center items-center">
-          <Text className="text-white text-lg">Uploading Image...</Text>
+          <LottieView
+            source={require("../../assets/loading-animation.json")}
+            autoPlay
+            loop
+            style={{ width: 150, height: 150 }}
+          />
+          <Text className="text-white text-lg mt-4">Uploading Image...</Text>
         </View>
       )}
     </View>

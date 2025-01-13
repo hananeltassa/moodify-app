@@ -11,7 +11,7 @@ export default function LoadingScreen({ message = "Loading..." }) {
         source={animation}
         autoPlay
         loop
-        style={{ width: 200, height: 200 }}
+        style={{ width: 150, height: 150 }}
       />
 
       {/* Loading Message */}
