@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text, ScrollView, ActivityIndicator } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import ChallengeCard from "@/components/Challenge/ChallengeCard";
+import LoadingScreen from "@/components/LoadingScreen";
 import { useChallenges } from "@/hooks/useChallenges";
 import { useSelector } from "react-redux";
 
@@ -12,8 +13,11 @@ export default function ChallengeScreen() {
 
   const name = user?.name;
 
-  // Use the custom hook
-  const { challenges, loading, handleChallengeAction, } = useChallenges(mood);
+  const { challenges, loading, handleChallengeAction } = useChallenges(mood);
+
+  if (loading) {
+    return <LoadingScreen message="Fetching your challenges..." />;
+  }
 
   return (
     <SafeAreaProvider>
@@ -40,24 +44,20 @@ export default function ChallengeScreen() {
             Today's AI Coach Challenges <Text style={{ color: "#FF6100" }}>🔥</Text>
           </Text>
 
-          {/* Loader */}
-          {loading && <ActivityIndicator size="large" color="#FF6100" style={{ marginVertical: 20 }} />}
-
           {/* Challenge Cards */}
-          {!loading &&
-            challenges.map((challenge) => (
-              <ChallengeCard
-                key={challenge.id}
-                id={challenge.id}
-                title={challenge.text.title}
-                description={challenge.text.description}
-                tags={challenge.text.hashtags}
-                status={challenge.status}
-                onAction={handleChallengeAction}
-              />
-            ))}
+          {challenges.map((challenge) => (
+            <ChallengeCard
+              key={challenge.id}
+              id={challenge.id}
+              title={challenge.text.title}
+              description={challenge.text.description}
+              tags={challenge.text.hashtags}
+              status={challenge.status}
+              onAction={handleChallengeAction}
+            />
+          ))}
 
-          {!loading && challenges.length === 0 && (
+          {challenges.length === 0 && (
             <Text className="font-avenir-regular text-gray-400 text-center">
               No challenges available. Come back later!
             </Text>
