@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { Text, TouchableOpacity, View, Alert } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function CameraScreen() {;
+export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
-  const [cameraType, setCameraType] = useState(CameraType?.back || 'front');
+  const [cameraType, setCameraType] = useState(CameraType?.back || "front");
+  const cameraRef = useRef(null);
 
   if (!permission) {
     return (
@@ -44,14 +45,32 @@ export default function CameraScreen() {;
     );
   };
 
-  const handleCapture = () => {
-    console.log("Capture button pressed");
+  const handleCapture = async () => {
+    if (cameraRef.current) {
+      try {
+        const photo = await cameraRef.current.takePictureAsync({
+          base64: true,
+        });
+
+        // image URI
+        console.log("Photo Captured", `Photo URI: ${photo.uri}`);
+
+      } catch (error) {
+        console.error("Error capturing photo:", error);
+        Alert.alert("Error", "Something went wrong while capturing the photo.");
+      }
+    }
   };
 
   return (
     <View className="flex-1 bg-black relative">
       <View className="flex-1 mt-5">
-        <CameraView className="flex-1" style={{ aspectRatio: 9 / 16 }} facing={cameraType}>
+        <CameraView
+          ref={cameraRef}
+          className="flex-1"
+          style={{ aspectRatio: 9 / 16 }}
+          facing={cameraType}
+        >
           {/* Flip Camera Button */}
           <TouchableOpacity
             className="absolute top-10 right-5 bg-gray-800 bg-opacity-70 rounded-full p-3"
@@ -65,7 +84,6 @@ export default function CameraScreen() {;
             className="absolute bottom-10 self-center w-20 h-20 bg-white rounded-full border-4 border-gray-800 shadow-lg"
             onPress={handleCapture}
           />
-
         </CameraView>
       </View>
     </View>
