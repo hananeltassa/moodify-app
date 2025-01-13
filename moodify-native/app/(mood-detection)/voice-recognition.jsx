@@ -15,24 +15,6 @@ export default function VoiceRecognition() {
   const [mood, setMood] = useState(null);
   const [confidence, setConfidence] = useState(0);
 
-  const moodEmojis = {
-    happy: "😊",
-    sad: "🌧️",
-    angry: "🥵",
-    fear: "😟",
-    surprise: "😲",
-    love: "❤️",
-  };
-
-  const moodColors = {
-    happy: "text-yellow-500",
-    sad: "text-blue-400",
-    angry: "text-red-500",
-    fear: "text-purple-500",
-    surprise: "text-pink-500",
-    love: "text-red-400",
-  };
-
   const toggleRecording = async () => {
     if (isRecording) {
       const uri = await stopRecording();
@@ -132,8 +114,6 @@ export default function VoiceRecognition() {
         onClose={() => setShowModal(false)}
         mood={mood}
         confidence={confidence}
-        moodEmojis={moodEmojis}
-        moodColors={moodColors}
       />
     </SafeAreaView>
   );

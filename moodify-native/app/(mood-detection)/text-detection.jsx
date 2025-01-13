@@ -14,23 +14,6 @@ export default function TextDetection() {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const moodEmojis = {
-    happy: "😊",
-    sad: "🌧️",
-    angry: "🥵",
-    fear: "😟",
-    surprise: "😲",
-    love: "❤️",
-  };
-
-  const moodColors = {
-    happy: "text-yellow-500",
-    sad: "text-blue-400",
-    angry: "text-red-500",
-    fear: "text-purple-500",
-    surprise: "text-pink-500",
-    love: "text-red-400",
-  };
 
   const handleSubmit = async () => {
     if (!text.trim()) {
@@ -113,8 +96,6 @@ export default function TextDetection() {
         onClose={() => setShowModal(false)}
         mood={mood}
         confidence={confidence}
-        moodEmojis={moodEmojis}
-        moodColors={moodColors}
       />
     </View>
   );
