@@ -54,6 +54,13 @@ export default function MoodDetectionLayout() {
           ...commonScreenOptions,
         }}
       />
+      <Stack.Screen
+        name="recommendedPlaylist"
+        options={{
+          title: "Your Mood, Your Melody",
+          ...commonScreenOptions,
+        }}
+      />
     </Stack>
   );
 }
