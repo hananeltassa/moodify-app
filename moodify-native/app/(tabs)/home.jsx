@@ -14,14 +14,26 @@ import usePersonalizedRecommendations from "../../hooks/usePersonalizedRecommend
 export default function Home() {
   const insets = useSafeAreaInsets();
   const user = useSelector((state) => state.user.user);
+  const mood = useSelector((state) => state.mood.mood);
   const profilePic = user?.profilePic;
 
   const isSpotifyUser = !!user?.spotifyId;
-  const mood = "calm"; // Predefined mood
 
+  const moodToMusicQuery = {
+    happy: "feel-good anthems",
+    sad: "comforting acoustic ballads",
+    disgust: "calming ambient sounds",
+    neutral: "chill background music",
+    angry: "relaxing lo-fi beats",
+    fear: "peaceful piano instrumentals",
+    surprise: "energetic pop hits",
+    love: "romantic love songs",
+  };
 
-  const { musicData, loading } = useMusicRecommendations(mood, isSpotifyUser);
-  const { personalizedData, personalizedLoading } = usePersonalizedRecommendations(mood);
+  const moodQuery = moodToMusicQuery[mood] || 'music';
+  
+  const { musicData, loading } = useMusicRecommendations(moodQuery, isSpotifyUser);
+  const { personalizedData, personalizedLoading } = usePersonalizedRecommendations(moodQuery);
   const weeklyData = [
     { day: "Mon", emoji: "😐" },
     { day: "Tues", emoji: "😔" },
@@ -136,7 +148,7 @@ export default function Home() {
           {personalizedLoading ? (
             <ActivityIndicator size="large" color="#FF6100" style={{ marginVertical: 20 }} />
           ) : (
-            <RecommendedMusic title={`For You: ${personalizedData.title}`} data={personalizedData.tracks} />
+            <RecommendedMusic title={`For You`} data={personalizedData.tracks} />
           )}
         </View>
       </ScrollView>
