@@ -81,9 +81,7 @@ export const useSearch = () => {
     }
 
     try {
-      const fetchedResults = isSpotifyUser
-        ? await fetchSpotifyResults(text)
-        : await fetchJamendoResults(text);
+      const fetchedResults = isSpotifyUser ? await fetchSpotifyResults(text): await fetchJamendoResults(text);
 
       setResults(fetchedResults);
     } catch (error) {

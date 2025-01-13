@@ -31,7 +31,7 @@ export default function Home() {
     love: "romantic love songs",
   };
 
-  const moodQuery = moodToMusicQuery[mood] || 'music';
+  const moodQuery = moodToMusicQuery[mood] || 'music trend';
   
   const { musicData, loading } = useMusicRecommendations(moodQuery, isSpotifyUser);
   const { personalizedData, personalizedLoading } = usePersonalizedRecommendations(moodQuery);

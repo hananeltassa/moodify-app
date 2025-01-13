@@ -1,25 +1,17 @@
 import React from "react";
 import { Text, View, ActivityIndicator } from "react-native";
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import TextField from "../../components/TextField";
-import SearchFilters from "../../components/Search/SearchFilters";
-import SearchResults from "../../components/Search/SearchResults";
-import { useSearch } from "../../hooks/useSearch";
 import { useRouter } from "expo-router";
-import LoadingScreen from "../../components/LoadingScreen";
+import TextField from "@/components/TextField";
+import SearchFilters from "@/components/Search/SearchFilters";
+import SearchResults from "@/components/Search/SearchResults";
+import LoadingScreen from "@/components/LoadingScreen";
+import { useSearch } from "@/hooks/useSearch";
 
 export default function Search() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const {
-    searchValue,
-    results,
-    searchType,
-    loading,
-    handleSearchChange,
-    handleSearchTypeChange,
-    isSpotifyUser,
-  } = useSearch();
+  const { searchValue, results, searchType, loading, handleSearchChange, handleSearchTypeChange, isSpotifyUser, } = useSearch();
 
   const handleItemPress = (type, item) => {
     const route = type === "track" ? "/music/[music]" : "/(tabs)/playlist/[playlist]";

@@ -64,7 +64,7 @@ export default function MiniPlayer() {
       <TouchableOpacity onPress={navigateToSongPage}>
         <Image
           source={{ uri: currentSong.songImage || "https://via.placeholder.com/50" }}
-          style={{ width: 50, height: 50, borderRadius: 5, marginRight: 10 }}
+          style={{ width: 50, height: 50, borderRadius: 2, marginRight: 10 }}
         />
       </TouchableOpacity>
       <View style={{ flex: 1 }}>
