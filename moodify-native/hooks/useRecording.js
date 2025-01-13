@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Audio } from "expo-av";
 import axios from "axios";
 import { BACKEND_BASE_URL } from "@env";
+import { getToken } from "../utils/secureStore";
 
 export const useRecording = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -94,10 +95,13 @@ export const useRecording = () => {
     });
 
     try {
+      const token = await getToken("jwtToken");
+
       console.log("Uploading audio...");
       const response = await axios.post(`${BACKEND_BASE_URL}/api/mood/voice-mood`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          "Authorization": `Bearer ${token}`,
         },
       });
 

@@ -16,18 +16,18 @@ export default function VoiceRecognition() {
   const [confidence, setConfidence] = useState(0);
 
   const moodEmojis = {
-    joy: "😊",
-    sadness: "🌧️",
-    anger: "🥵",
+    happy: "😊",
+    sad: "🌧️",
+    angry: "🥵",
     fear: "😟",
     surprise: "😲",
     love: "❤️",
   };
 
   const moodColors = {
-    joy: "text-yellow-500",
-    sadness: "text-blue-400",
-    anger: "text-red-500",
+    happy: "text-yellow-500",
+    sad: "text-blue-400",
+    angry: "text-red-500",
     fear: "text-purple-500",
     surprise: "text-pink-500",
     love: "text-red-400",
@@ -41,8 +41,8 @@ export default function VoiceRecognition() {
         try {
           const response = await uploadAudioFile(uri);
           if (response?.success) {
-            setMood(response.mood);
-            setConfidence(response.confidence * 100);
+            setMood(response.MoodDetection.detected_mood);
+            setConfidence(response.MoodDetection.confidence * 100);
             setShowModal(true);
           } else {
             console.error("Mood detection failed.");
