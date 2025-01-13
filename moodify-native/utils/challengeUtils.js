@@ -7,7 +7,6 @@ import dayjs from "dayjs";
  */
 export const getValidChallenges = async () => {
   const fetchedChallenges = await fetchChallenges();
-
   const eightHoursAgo = dayjs().subtract(8, "hours");
   //console.log("Current time:", dayjs().toISOString());
   //console.log("8 hours ago:", eightHoursAgo.toISOString());

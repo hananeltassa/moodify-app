@@ -1,56 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { View, Text, ScrollView, ActivityIndicator } from "react-native";
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import ChallengeCard from "@/components/Challenge/ChallengeCard";
-import { getValidChallenges, createChallengeForCurrentTime } from "@/utils/challengeUtils";
+import { useChallenges } from "@/hooks/useChallenges";
 import { useSelector } from "react-redux";
-import { updateChallengeStatus } from "@/api/challengeApi";
 
 export default function ChallengeScreen() {
   const insets = useSafeAreaInsets();
-  const [challenges, setChallenges] = useState([]);
-  const [loading, setLoading] = useState(true);
   const user = useSelector((state) => state.user.user);
   const mood = useSelector((state) => state.mood.mood);
 
   const name = user?.name;
 
-  useEffect(() => {
-    const manageDailyChallenges = async () => {
-      try {
-        const validChallenges = await getValidChallenges();
-        setChallenges(validChallenges);
-
-        if (validChallenges.length === 0) {
-          const newChallenges = await createChallengeForCurrentTime(mood);
-          setChallenges(newChallenges);
-        }
-      } catch (error) {
-        console.error("Error managing daily challenges:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    manageDailyChallenges();
-  }, []);
-
-  const handleChallengeAction = async (id, isDone) => {
-    try {
-      const newStatus = isDone ? "completed" : "pending";
-      await updateChallengeStatus(id, newStatus);
-
-      setChallenges((prevChallenges) =>
-        prevChallenges.map((challenge) =>
-          challenge.id === id ? { ...challenge, status: newStatus } : challenge
-        )
-      );
-
-      console.log(`Challenge ${id} updated to status: ${newStatus}`);
-    } catch (error) {
-      console.error(`Error updating challenge ${id}:`, error.message || error);
-    }
-  };
+  // Use the custom hook
+  const { challenges, loading, handleChallengeAction, } = useChallenges(mood);
 
   return (
     <SafeAreaProvider>
