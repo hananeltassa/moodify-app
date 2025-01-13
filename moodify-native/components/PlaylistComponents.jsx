@@ -17,13 +17,13 @@ export const PlaylistHeader = ({ playlistName, playlistImage, isLiked, toggleLik
     </View>
     <View className="flex-row items-center justify-between p-4 mb-2">
       <Text className="text-white text-2xl font-Avenir-Bold">{playlistName || "Playlist"}</Text>
-      <TouchableOpacity onPress={toggleLike}>
+      {/* <TouchableOpacity onPress={toggleLike}>
         <Ionicons
           name={isLiked ? "heart" : "heart-outline"}
           size={28}
           color={isLiked ? "#FF6100" : "#FFF"}
         />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   </View>
 );
@@ -31,7 +31,7 @@ export const PlaylistHeader = ({ playlistName, playlistImage, isLiked, toggleLik
 export const MusicItem = ({ track, playlistId }) => {
   const router = useRouter();
   useEffect(() => {
-      console.log("playlistId in component:", playlistId);
+      //console.log("playlistId in component:", playlistId);
     }, []);
   return (
     <Music
