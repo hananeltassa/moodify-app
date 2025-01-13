@@ -1,15 +1,16 @@
-import { SafeAreaView, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import React from "react";
+import { SafeAreaView, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator,} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import icons from "../../constants/icons";
-import images from "../../constants/images";
-import WeeklyProgress from "../../components/WeeklyProgress";
-import RecommendedMusic from "../../components/RecommendedMusic";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSelector } from "react-redux";
 import { router } from "expo-router";
-import useMusicRecommendations from "../../hooks/useMusicRecommendations";
-import usePersonalizedRecommendations from "../../hooks/usePersonalizedRecommendations";
+import icons from "@/constants/icons";
+import images from "@/constants/images";
+import WeeklyProgress from "@/components/WeeklyProgress";
+import RecommendedMusic from "@/components/RecommendedMusic";
+import useMusicRecommendations from "@/hooks/useMusicRecommendations";
+import usePersonalizedRecommendations from "@/hooks/usePersonalizedRecommendations";
+
 
 export default function Home() {
   const insets = useSafeAreaInsets();
