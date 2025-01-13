@@ -1,12 +1,13 @@
-import React, { useState, useRef } from 'react';
-import { Text, TouchableOpacity, View, Alert } from 'react-native';
-import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { Text, TouchableOpacity, View } from "react-native";
+import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
+import { Ionicons } from "@expo/vector-icons";
+import { useCameraMoodDetection } from "../../hooks/useCameraMoodDetection";
 
 export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [cameraType, setCameraType] = useState(CameraType?.back || "front");
-  const cameraRef = useRef(null);
+  const { cameraRef, loading, handleCapture } = useCameraMoodDetection();
 
   if (!permission) {
     return (
@@ -45,23 +46,6 @@ export default function CameraScreen() {
     );
   };
 
-  const handleCapture = async () => {
-    if (cameraRef.current) {
-      try {
-        const photo = await cameraRef.current.takePictureAsync({
-          base64: true,
-        });
-
-        // image URI
-        console.log("Photo Captured", `Photo URI: ${photo.uri}`);
-
-      } catch (error) {
-        console.error("Error capturing photo:", error);
-        Alert.alert("Error", "Something went wrong while capturing the photo.");
-      }
-    }
-  };
-
   return (
     <View className="flex-1 bg-black relative">
       <View className="flex-1 mt-5">
@@ -86,6 +70,13 @@ export default function CameraScreen() {
           />
         </CameraView>
       </View>
+
+      {/* Loading Overlay */}
+      {loading && (
+        <View className="absolute inset-0 bg-black bg-opacity-50 justify-center items-center">
+          <Text className="text-white text-lg">Uploading Image...</Text>
+        </View>
+      )}
     </View>
   );
 }
