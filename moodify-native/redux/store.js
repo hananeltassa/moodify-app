@@ -3,6 +3,7 @@ import userReducer from './slices/userSlice';
 import playlistReducer from './slices/playlistSlice';
 import playlistTracksReducer from "./slices/playlistTracksSlice";
 import playbackReducer from "./slices/playbackSlice";
+import moodReducer from './slices/moodSlice';
 
 const store = configureStore({
     reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
       playlists: playlistReducer,
       playlistTracks: playlistTracksReducer,
       playback: playbackReducer,
+      mood: moodReducer,
     },
 });
   
