@@ -4,11 +4,46 @@ import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { Ionicons } from "@expo/vector-icons";
 import LottieView from "lottie-react-native";
 import { useCameraMoodDetection } from "../../hooks/useCameraMoodDetection";
+import MoodResultModal from "../../components/MoodResultModal";
 
 export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [cameraType, setCameraType] = useState(CameraType?.back || "front");
   const { cameraRef, loading, handleCapture } = useCameraMoodDetection();
+  const [moodData, setMoodData] = useState({
+    visible: false,
+    mood: null,
+    confidence: 0,
+  });
+
+  const moodEmojis = {
+    happy: "😊",
+    sad: "🌧️",
+    angry: "🥵",
+    fear: "😟",
+    surprise: "😲",
+    love: "❤️",
+  };
+
+  const moodColors = {
+    happy: "text-yellow-500",
+    sad: "text-blue-400",
+    angry: "text-red-500",
+    fear: "text-purple-500",
+    surprise: "text-pink-500",
+    love: "text-red-400",
+  };
+
+  const onImageCaptured = async () => {
+    const result = await handleCapture();
+    if (result?.success) {
+      setMoodData({
+        visible: true,
+        mood: result.mood,
+        confidence: result.confidence * 100, // Convert to percentage
+      });
+    }
+  };
 
   if (!permission) {
     return (
@@ -67,7 +102,7 @@ export default function CameraScreen() {
           {/* Capture Button */}
           <TouchableOpacity
             className="absolute bottom-10 self-center w-20 h-20 bg-white rounded-full border-4 border-gray-800 shadow-lg"
-            onPress={handleCapture}
+            onPress={onImageCaptured}
           />
         </CameraView>
       </View>
@@ -84,6 +119,16 @@ export default function CameraScreen() {
           <Text className="text-white text-lg mt-4">Uploading Image...</Text>
         </View>
       )}
+
+      {/* Mood Result Modal */}
+      <MoodResultModal
+        visible={moodData.visible}
+        onClose={() => setMoodData((prev) => ({ ...prev, visible: false }))}
+        mood={moodData.mood}
+        confidence={moodData.confidence}
+        moodEmojis={moodEmojis}
+        moodColors={moodColors}
+      />
     </View>
   );
 }

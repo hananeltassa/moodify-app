@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import axios from "axios";
 import { BACKEND_BASE_URL } from "@env";
 import { Alert } from "react-native";
+import { getToken } from "../utils/secureStore";
 
 export const useCameraMoodDetection = () => {
   const cameraRef = useRef(null);
@@ -15,11 +16,12 @@ export const useCameraMoodDetection = () => {
         });
 
         console.log("Photo Captured", `Photo URI: ${photo.uri}`);
-        await uploadImageToBackend(photo.uri);
+        return await uploadImageToBackend(photo.uri);
 
       } catch (error) {
         console.error("Error capturing photo:", error);
         Alert.alert("Error", "Something went wrong while capturing the photo.");
+        return { success: false };
       }
     }
   };
@@ -27,6 +29,7 @@ export const useCameraMoodDetection = () => {
   const uploadImageToBackend = async (uri) => {
     try {
       setLoading(true);
+      const token = await getToken("jwtToken");
 
       const formData = new FormData();
       formData.append("image", {
@@ -38,23 +41,30 @@ export const useCameraMoodDetection = () => {
       const response = await axios.post(`${BACKEND_BASE_URL}/api/mood/image-mood`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
       setLoading(false);
+      console.log("Image uploaded successfully:", response.data);
 
       if (response.data.success) {
-        Alert.alert(
-          "Mood Detected",
-          `Mood: ${response.data.mood}, Confidence: ${response.data.confidence}`
-        );
+        const { detected_mood, confidence } = response.data.MoodDetection;
+  
+        return {
+          success: true,
+          mood: detected_mood,
+          confidence,
+        };
       } else {
         Alert.alert("Error", "Failed to detect mood. Please try again.");
+        return { success: false };
       }
     } catch (error) {
       setLoading(false);
       console.error("Error uploading photo:", error);
       Alert.alert("Error", "Failed to upload photo. Please try again.");
+      return { success: false };
     }
   };
 
