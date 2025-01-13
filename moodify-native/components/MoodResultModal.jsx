@@ -1,15 +1,37 @@
 import React from "react";
 import { View, Text, Modal, TouchableOpacity } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
+import { useRouter } from "expo-router";
+import { useDispatch } from 'react-redux';
+import { setMood } from '../redux/slices/moodSlice';
 
-export default function MoodResultModal({
-  visible,
-  onClose,
-  mood,
-  confidence,
-  moodEmojis,
-  moodColors,
-}) {
+
+export default function MoodResultModal({ visible, onClose, mood, confidence,}) {
+  const router = useRouter();
+  const dispatch = useDispatch(); 
+
+  const moodEmojis = {
+    happy: "😊",
+    sad: "🌧️",
+    disgust: "😣", 
+    neutral: "😄",
+    angry: "🥵",
+    fear: "😟",
+    surprise: "😲",
+    love: "❤️",
+  };
+  
+  const moodColors = {
+    happy: "text-yellow-500",
+    sad: "text-blue-400",
+    disgust: "text-pink-500", 
+    neutral: "text-pink-500",
+    angry: "text-red-500",
+    fear: "text-purple-500",
+    surprise: "text-pink-500",
+    love: "text-red-400",
+  };
+
   return (
     <Modal
       visible={visible}
@@ -54,9 +76,11 @@ export default function MoodResultModal({
 
           {/* Button for Song Suggestions */}
           <TouchableOpacity
-            onPress={() => {
-              onClose();
-              console.log("Navigate to song suggestions!");
+            onPress={() =>{
+              dispatch(setMood(mood));
+              router.push({
+                pathname: "/(mood-detection)/recommendedPlaylist",
+              })
             }}
             className="mt-4 bg-primary px-4 py-2 rounded-full shadow-sm"
           >
