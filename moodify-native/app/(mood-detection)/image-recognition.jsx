@@ -19,6 +19,8 @@ export default function CameraScreen() {
   const moodEmojis = {
     happy: "😊",
     sad: "🌧️",
+    disgust: "😣", 
+    neutral: "😄",
     angry: "🥵",
     fear: "😟",
     surprise: "😲",
@@ -28,6 +30,8 @@ export default function CameraScreen() {
   const moodColors = {
     happy: "text-yellow-500",
     sad: "text-blue-400",
+    disgust: "text-pink-500", 
+    neutral: "text-pink-500",
     angry: "text-red-500",
     fear: "text-purple-500",
     surprise: "text-pink-500",
@@ -40,7 +44,7 @@ export default function CameraScreen() {
       setMoodData({
         visible: true,
         mood: result.mood,
-        confidence: result.confidence * 100, // Convert to percentage
+        confidence: result.confidence * 100,
       });
     }
   };
