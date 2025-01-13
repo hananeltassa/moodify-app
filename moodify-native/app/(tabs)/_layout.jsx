@@ -13,7 +13,6 @@ export default function TabLayout() {
   const themeColors = Colors[colorScheme ?? "light"];
   const router = useRouter();
 
-  // Redux state for playback
   const { currentSong } = useSelector((state) => state.playback);
   const user = useSelector((state) => state.user.user);
 
@@ -25,7 +24,6 @@ export default function TabLayout() {
     }
   };
 
-  // Redirect to onboarding if the user is not logged in
   useEffect(() => {
     const checkAuth = async () => {
       const jwtToken = await getToken("jwtToken");
