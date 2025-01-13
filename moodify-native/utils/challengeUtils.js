@@ -1,5 +1,6 @@
 import { createChallenge, fetchChallenges } from "../api/challengeApi";
 import dayjs from "dayjs";
+import { useSelector } from "react-redux";
 
 /**
  * Fetch challenges and filter valid ones created within the last 12 hours.
@@ -28,6 +29,7 @@ export const getValidChallenges = async () => {
  * @returns {Array} The created challenges.
  */
 export const createChallengeForCurrentTime = async () => {
+  const mood = useSelector((state) => state.mood.mood);
   const currentTime = dayjs();
   let timeOfDay;
 
@@ -41,7 +43,7 @@ export const createChallengeForCurrentTime = async () => {
 
   console.log(`Creating challenges for: ${timeOfDay}`);
   try {
-    const challenge1 = await createChallenge("neutral", timeOfDay);
+    const challenge1 = await createChallenge(mood || "neutral", timeOfDay);
     const challenge2 = await createChallenge("motivated", timeOfDay);
     return [challenge1, challenge2];
   } catch (error) {
