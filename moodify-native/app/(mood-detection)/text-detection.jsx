@@ -15,18 +15,18 @@ export default function TextDetection() {
   const [loading, setLoading] = useState(false);
 
   const moodEmojis = {
-    joy: "😊",
-    sadness: "🌧️",
-    anger: "🥵",
+    happy: "😊",
+    sad: "🌧️",
+    angry: "🥵",
     fear: "😟",
     surprise: "😲",
     love: "❤️",
   };
 
   const moodColors = {
-    joy: "text-yellow-500",
-    sadness: "text-blue-400",
-    anger: "text-red-500",
+    happy: "text-yellow-500",
+    sad: "text-blue-400",
+    angry: "text-red-500",
     fear: "text-purple-500",
     surprise: "text-pink-500",
     love: "text-red-400",
