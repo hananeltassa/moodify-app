@@ -1,29 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView, ActivityIndicator } from "react-native";
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import ChallengeCard from "../../components/Challenge/ChallengeCard";
-import { getValidChallenges, createChallengeForCurrentTime } from "../../utils/challengeUtils";
+import ChallengeCard from "@/components/Challenge/ChallengeCard";
+import { getValidChallenges, createChallengeForCurrentTime } from "@/utils/challengeUtils";
 import { useSelector } from "react-redux";
-import { updateChallengeStatus } from "../../api/challengeApi";
+import { updateChallengeStatus } from "@/api/challengeApi";
 
 export default function ChallengeScreen() {
   const insets = useSafeAreaInsets();
   const [challenges, setChallenges] = useState([]);
   const [loading, setLoading] = useState(true);
   const user = useSelector((state) => state.user.user);
+  const mood = useSelector((state) => state.mood.mood);
 
   const name = user?.name;
 
   useEffect(() => {
     const manageDailyChallenges = async () => {
       try {
-        // Fetch and filter valid challenges
         const validChallenges = await getValidChallenges();
         setChallenges(validChallenges);
 
-        // If no valid challenges exist, create two new challenges
         if (validChallenges.length === 0) {
-          const newChallenges = await createChallengeForCurrentTime();
+          const newChallenges = await createChallengeForCurrentTime(mood);
           setChallenges(newChallenges);
         }
       } catch (error) {

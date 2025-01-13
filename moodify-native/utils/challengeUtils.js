@@ -1,6 +1,5 @@
 import { createChallenge, fetchChallenges } from "../api/challengeApi";
 import dayjs from "dayjs";
-import { useSelector } from "react-redux";
 
 /**
  * Fetch challenges and filter valid ones created within the last 12 hours.
@@ -10,17 +9,17 @@ export const getValidChallenges = async () => {
   const fetchedChallenges = await fetchChallenges();
 
   const eightHoursAgo = dayjs().subtract(8, "hours");
-  console.log("Current time:", dayjs().toISOString());
-  console.log("8 hours ago:", eightHoursAgo.toISOString());
+  //console.log("Current time:", dayjs().toISOString());
+  //console.log("8 hours ago:", eightHoursAgo.toISOString());
 
   const validChallenges = fetchedChallenges.filter((challenge) => {
     const createdAt = dayjs(challenge.createdAt);
-    console.log(`Challenge ${challenge.id} createdAt:`, createdAt.toISOString());
-    console.log(`Is after 8 hours ago:`, createdAt.isAfter(eightHoursAgo));
+    //console.log(`Challenge ${challenge.id} createdAt:`, createdAt.toISOString());
+    //console.log(`Is after 8 hours ago:`, createdAt.isAfter(eightHoursAgo));
     return createdAt.isAfter(eightHoursAgo);
   });
 
-  console.log("Valid challenges:", validChallenges);
+  //console.log("Valid challenges:", validChallenges);
   return validChallenges;
 };
 
@@ -28,8 +27,8 @@ export const getValidChallenges = async () => {
  * Create two challenges based on the current time of day.
  * @returns {Array} The created challenges.
  */
-export const createChallengeForCurrentTime = async () => {
-  const mood = useSelector((state) => state.mood.mood);
+export const createChallengeForCurrentTime = async (mood) => {
+  const fallbackMood = mood || "neutral";
   const currentTime = dayjs();
   let timeOfDay;
 
@@ -43,7 +42,7 @@ export const createChallengeForCurrentTime = async () => {
 
   console.log(`Creating challenges for: ${timeOfDay}`);
   try {
-    const challenge1 = await createChallenge(mood || "neutral", timeOfDay);
+    const challenge1 = await createChallenge(fallbackMood, timeOfDay);
     const challenge2 = await createChallenge("motivated", timeOfDay);
     return [challenge1, challenge2];
   } catch (error) {
