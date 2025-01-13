@@ -16,28 +16,6 @@ export default function CameraScreen() {
     confidence: 0,
   });
 
-  const moodEmojis = {
-    happy: "😊",
-    sad: "🌧️",
-    disgust: "😣", 
-    neutral: "😄",
-    angry: "🥵",
-    fear: "😟",
-    surprise: "😲",
-    love: "❤️",
-  };
-
-  const moodColors = {
-    happy: "text-yellow-500",
-    sad: "text-blue-400",
-    disgust: "text-pink-500", 
-    neutral: "text-pink-500",
-    angry: "text-red-500",
-    fear: "text-purple-500",
-    surprise: "text-pink-500",
-    love: "text-red-400",
-  };
-
   const onImageCaptured = async () => {
     const result = await handleCapture();
     if (result?.success) {
@@ -130,8 +108,6 @@ export default function CameraScreen() {
         onClose={() => setMoodData((prev) => ({ ...prev, visible: false }))}
         mood={moodData.mood}
         confidence={moodData.confidence}
-        moodEmojis={moodEmojis}
-        moodColors={moodColors}
       />
     </View>
   );
