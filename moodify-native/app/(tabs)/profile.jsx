@@ -16,6 +16,7 @@ import { useRouter } from "expo-router";
 import { updateUserProfile } from "../../api/user";
 import Icon from "react-native-vector-icons/Feather";
 import images from "../../constants/images";
+import { clearMood } from "@/redux/slices/moodSlice";
 
 export default function ProfileScreen() {
   const [loading, setLoading] = useState(false);
@@ -46,6 +47,7 @@ export default function ProfileScreen() {
       dispatch(stopPlayback());
       dispatch(resetPlayback());
       dispatch(clearPlaylistTracks());
+      dispatch(clearMood());
 
       router.replace("/onboarding");
 
