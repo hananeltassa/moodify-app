@@ -28,7 +28,7 @@ export default function useMusicRecommendations(mood, isSpotifyUser) {
           );
         }
       } else {
-        const jamendoResults = await searchJamendoMusic(mood);
+        const jamendoResults = await searchJamendoMusic(`${mood}, winter`);
         if (jamendoResults) {
           setMusicData(
             jamendoResults.map((track, index) => ({
