@@ -30,14 +30,13 @@ export const usePlaylistTracks = (playlistId, playlistName, user) => {
   
       if (playlistName !== "My Favorite Songs" && favoritePlaylistId) {
         const favoriteSongs = await getPlaylistSongs(jwtToken, favoritePlaylistId);
-        console.log("Favorite Songs Response:", favoriteSongs);
+        //console.log("Favorite Songs Response:", favoriteSongs);
   
         favoriteSongsNames = favoriteSongs?.songs?.map((song) => song.metadata?.title || "") || [];
-        console.log("Favorite Songs Names:", favoriteSongsNames);
+        //console.log("Favorite Songs Names:", favoriteSongsNames);
       }
   
       if (playlistName === "My Favorite Songs") {
-        console.log("Fetching My Favorite Songs...");
         const favoriteSongs = await getPlaylistSongs(jwtToken, playlistId);
         fetchedTracks = favoriteSongs?.songs?.map((song) => ({
           id: song.id,
@@ -52,18 +51,16 @@ export const usePlaylistTracks = (playlistId, playlistName, user) => {
           liked: true,
         }));
       } else if (user?.spotifyId) {
-        console.log("Fetching tracks from Spotify...");
         fetchedTracks = await fetchSpotifyPlaylistTracks(playlistId, jwtToken);
-        console.log("Spotify Tracks Response:", fetchedTracks);
+        //console.log("Spotify Tracks Response:", fetchedTracks);
   
         fetchedTracks = fetchedTracks.map((track) => ({
           ...track,
           liked: favoriteSongsNames.includes(track.name),
         }));
       } else {
-        console.log("Fetching local playlist tracks...");
         const localTracks = await getPlaylistSongs(jwtToken, playlistId);
-        console.log("Local Tracks Response:", localTracks);
+        //console.log("Local Tracks Response:", localTracks);
   
         fetchedTracks = localTracks?.songs?.map((track) => ({
           ...track,
@@ -71,7 +68,7 @@ export const usePlaylistTracks = (playlistId, playlistName, user) => {
         }));
       }
   
-      console.log("Fetched Tracks:", fetchedTracks);
+      //console.log("Fetched Tracks:", fetchedTracks);
   
       dispatch(setPlaylistTracks({ playlistId, tracks: fetchedTracks || [] }));
     } catch (error) {
