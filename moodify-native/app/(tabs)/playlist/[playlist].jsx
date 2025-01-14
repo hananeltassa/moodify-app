@@ -44,8 +44,8 @@ export default function Playlist() {
               <PlaylistHeader
                 playlistName={playlistName}
                 playlistImage={playlistImage}
-                isLiked={isLiked}
-                toggleLike={toggleLike}
+                //isLiked={isLiked}
+                //toggleLike={toggleLike}
               />
             ) : (
               <MusicItem track={item} playlistId={playlistId}/>
