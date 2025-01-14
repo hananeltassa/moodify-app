@@ -1,18 +1,12 @@
 import React, { useState } from "react";
-import {
-  TextInput,
-  View,
-  Keyboard,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
-} from "react-native";
+import { TextInput, View, Keyboard, TouchableWithoutFeedback, TouchableOpacity,} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 const TextField = ({
   value,
   placeholder,
   handleChangeText,
-  inputSize,
+  inputSize = 16,
   title,
   iconName,
   iconColor = "#7B7B8B",
@@ -64,8 +58,9 @@ const TextField = ({
             fontSize: inputSize,
             fontFamily: "AvenirNextLTPro",
             color: "#fff",
-            // paddingBottom:4,
-            // paddingTop:4,
+            height: "100%",
+            lineHeight: inputSize * 1.1,
+            paddingVertical: 4,
           }}
           secureTextEntry={isSecure}
           {...props}
