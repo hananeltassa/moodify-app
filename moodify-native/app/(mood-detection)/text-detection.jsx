@@ -11,6 +11,7 @@ export default function TextDetection() {
   const [text, setText] = useState("");
   const [mood, setMood] = useState(null);
   const [confidence, setConfidence] = useState(0);
+  const [AIdescription, setAIdescription] = useState(""); 
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -43,10 +44,17 @@ export default function TextDetection() {
       );
 
       if (response.data.success) {
-        const { detected_mood, confidence } = response.data.MoodDetection;
-
-        setMood(detected_mood);
-        setConfidence(confidence * 100);
+        const { MoodDetection, AIdescription } = response.data;
+  
+        const parsedDescription = AIdescription? JSON.parse(AIdescription): "No description available";
+  
+        console.log("Detected mood:", MoodDetection.detected_mood);
+        console.log("Confidence:", MoodDetection.confidence);
+        console.log("AI description:", parsedDescription);
+  
+        setMood(MoodDetection.detected_mood);
+        setConfidence(MoodDetection.confidence * 100);
+        setAIdescription(parsedDescription); 
         setShowModal(true);
       } else {
         Alert.alert("Error", "Failed to detect mood. Please try again.");
@@ -96,6 +104,7 @@ export default function TextDetection() {
         onClose={() => setShowModal(false)}
         mood={mood}
         confidence={confidence}
+        AIdescription = {AIdescription}
       />
     </View>
   );

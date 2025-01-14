@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text, FlatList, ActivityIndicator } from "react-native";
 import { searchJamendoMusic } from "@/api/jamendo";
-import { PlaylistHeader, MusicItem } from "@/components/PlaylistComponents";
-import { useSelector } from 'react-redux';
+import { MusicItem } from "@/components/PlaylistComponents";
+import { useSelector } from "react-redux";
 
 export default function Playlist() {
-  const mood = useSelector((state) => state.mood.mood);
+  const { mood, AIdescription } = useSelector((state) => state.mood);
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchTracks();
-  }, []);
 
   const moodToMusicQuery = {
     happy: "feel-good anthems",
@@ -23,11 +19,15 @@ export default function Playlist() {
     surprise: "energetic pop hits",
     love: "romantic love songs",
   };
-  
 
   const fetchTracks = async () => {
+    const moodQuery = AIdescription?.trim() || moodToMusicQuery[mood] || "calm";
+
+    console.log("AIdescription:", AIdescription);
+    console.log("Mood:", mood);
+    console.log("Query for Jamendo API:", moodQuery);
+
     try {
-      const moodQuery = moodToMusicQuery[mood] || 'calm';
       const results = await searchJamendoMusic(moodQuery);
       setTracks(results);
     } catch (error) {
@@ -36,6 +36,13 @@ export default function Playlist() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (AIdescription || mood) {
+      setLoading(true);
+      fetchTracks();
+    }
+  }, [AIdescription, mood]);
 
   const renderTrackItem = ({ item }) => (
     <MusicItem
@@ -57,12 +64,18 @@ export default function Playlist() {
         <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" color="#FFA500" />
         </View>
-      ) : (
+      ) : tracks.length > 0 ? (
         <FlatList
           data={tracks}
           keyExtractor={(item) => item.id}
           renderItem={renderTrackItem}
         />
+      ) : (
+        <View className="flex-1 justify-center items-center">
+          <Text className="text-gray-300 text-lg">
+            No tracks found. Try again later!
+          </Text>
+        </View>
       )}
     </View>
   );

@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { setMood } from '../redux/slices/moodSlice';
 
 
-export default function MoodResultModal({ visible, onClose, mood, confidence,}) {
+export default function MoodResultModal({ visible, onClose, mood, confidence, AIdescription}) {
   const router = useRouter();
   const dispatch = useDispatch(); 
 
@@ -31,6 +31,7 @@ export default function MoodResultModal({ visible, onClose, mood, confidence,}) 
     surprise: "text-pink-500",
     love: "text-red-400",
   };
+  console.log("Mood:", mood, "AI Description:", AIdescription);
 
   return (
     <Modal
@@ -77,7 +78,7 @@ export default function MoodResultModal({ visible, onClose, mood, confidence,}) 
           {/* Button for Song Suggestions */}
           <TouchableOpacity
             onPress={() =>{
-              dispatch(setMood(mood));
+              dispatch(setMood({ mood, AIdescription }));
               router.push({
                 pathname: "/(mood-detection)/recommendedPlaylist",
               })

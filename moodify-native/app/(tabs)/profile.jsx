@@ -2,21 +2,21 @@ import React, { useState } from "react";
 import { View, Text, SafeAreaView, Alert, Image, TouchableOpacity } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
-import { deleteToken } from "../../utils/secureStore";
-import FormField from "../../components/FormField";
-import CustomButton from "../../components/CustomButton";
-import RadioButton from "../../components/RadioButton";
+import { deleteToken } from "@/utils/secureStore";
+import FormField from "@/components/FormField";
+import CustomButton from "@/components/CustomButton";
+import RadioButton from "@/components/RadioButton";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import { setUser, clearUser } from "../../redux/slices/userSlice";
-import { clearPlaylists } from "../../redux/slices/playlistSlice";
-import { stopPlayback, resetPlayback  } from "../../redux/slices/playbackSlice";
-import { clearPlaylistTracks } from "../../redux/slices/playlistTracksSlice";
-import { useRouter } from "expo-router";
-import { updateUserProfile } from "../../api/user";
-import Icon from "react-native-vector-icons/Feather";
-import images from "../../constants/images";
+import { setUser, clearUser } from "@/redux/slices/userSlice";
+import { clearPlaylists } from "@/redux/slices/playlistSlice";
+import { stopPlayback, resetPlayback } from "@/redux/slices/playbackSlice";
+import { clearPlaylistTracks } from "@/redux/slices/playlistTracksSlice";
 import { clearMood } from "@/redux/slices/moodSlice";
+import { useRouter } from "expo-router";
+import { updateUserProfile } from "@/api/user";
+import Icon from "react-native-vector-icons/Feather";
+import images from "@/constants/images";
 
 export default function ProfileScreen() {
   const [loading, setLoading] = useState(false);
@@ -51,7 +51,7 @@ export default function ProfileScreen() {
 
       router.replace("/onboarding");
 
-      Alert.alert("Logged Out", "You have been successfully logged out.");
+      //Alert.alert("Logged Out", "You have been successfully logged out.");
     } catch (error) {
       console.error("Error during logout:", error);
       Alert.alert("Error", "Something went wrong while logging out.");
