@@ -1,12 +1,12 @@
 import React from "react";
 import { FlatList, View, Text } from "react-native";
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import Playlist from "../../components/Playlist";
 import { useRouter } from "expo-router";
-import LoadingScreen from "../../components/LoadingScreen";
+import Playlist from "@/components/Playlist";
+import LoadingScreen from "@/components/LoadingScreen";
 import images from "@/constants/images";
 import { useSelector } from "react-redux";
-import { usePlaylists } from "../../hooks/usePlaylists";
+import { usePlaylists } from "@/hooks/usePlaylists";
 
 export default function Library() {
   const router = useRouter();

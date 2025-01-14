@@ -4,9 +4,9 @@ import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-cont
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
-import LoadingScreen from "../../../components/LoadingScreen";
-import { usePlaylistTracks } from "../../../hooks/usePlaylistTracks";
-import { PlaylistHeader, MusicItem } from "../../../components/PlaylistComponents";
+import LoadingScreen from "@/components/LoadingScreen";
+import { usePlaylistTracks } from "@/hooks/usePlaylistTracks";
+import { PlaylistHeader, MusicItem } from "@/components/PlaylistComponents";
 
 export default function Playlist() {
   const { from, playlist: playlistId, playlistName, playlistImage } = useLocalSearchParams();
