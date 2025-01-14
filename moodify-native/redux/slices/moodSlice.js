@@ -10,9 +10,11 @@ const moodSlice = createSlice({
   reducers: {
     setMood: (state, action) => {
       state.mood = action.payload;
+      state.AIdescription = action.payload.AIdescription || '';
     },
     clearMood: (state) => {
       state.mood = null;
+      state.AIdescription = '';
     },
   },
 });
