@@ -9,26 +9,35 @@ import { setPlaylistTracks } from "../redux/slices/playlistTracksSlice";
 export const usePlaylistTracks = (playlistId, playlistName, user) => {
   const dispatch = useDispatch();
 
-  // Get cached tracks and fetch status from Redux
   const cachedTracks = useSelector((state) => state.playlistTracks.tracks[playlistId] || []);
   const isFetched = useSelector((state) => state.playlistTracks.isFetched[playlistId] || false);
 
+  const favoritePlaylistId = useSelector((state) =>
+    state.playlists.items.find((playlist) => playlist.is_default)?.id
+  );
+
   const [loading, setLoading] = useState(!isFetched);
-  
-  useEffect(() => {
-    console.log("playlistId in playlist:", playlistId);
-  }, []);
 
   const loadPlaylistTracks = async () => {
     try {
       setLoading(true);
-
+  
       const jwtToken = await getToken("jwtToken");
       if (!jwtToken) throw new Error("User is not logged in.");
-
+  
       let fetchedTracks = [];
+      let favoriteSongsNames = [];
+  
+      if (playlistName !== "My Favorite Songs" && favoritePlaylistId) {
+        const favoriteSongs = await getPlaylistSongs(jwtToken, favoritePlaylistId);
+        console.log("Favorite Songs Response:", favoriteSongs);
+  
+        favoriteSongsNames = favoriteSongs?.songs?.map((song) => song.metadata?.title || "") || [];
+        console.log("Favorite Songs Names:", favoriteSongsNames);
+      }
+  
       if (playlistName === "My Favorite Songs") {
-        // Fetch favorite songs from your API
+        console.log("Fetching My Favorite Songs...");
         const favoriteSongs = await getPlaylistSongs(jwtToken, playlistId);
         fetchedTracks = favoriteSongs?.songs?.map((song) => ({
           id: song.id,
@@ -43,30 +52,37 @@ export const usePlaylistTracks = (playlistId, playlistName, user) => {
           liked: true,
         }));
       } else if (user?.spotifyId) {
-        // Fetch tracks from Spotify
+        console.log("Fetching tracks from Spotify...");
         fetchedTracks = await fetchSpotifyPlaylistTracks(playlistId, jwtToken);
+        console.log("Spotify Tracks Response:", fetchedTracks);
+  
         fetchedTracks = fetchedTracks.map((track) => ({
           ...track,
-          liked: false, // Default to not liked
+          liked: favoriteSongsNames.includes(track.name),
         }));
       } else {
-        // Fetch tracks from local playlist
+        console.log("Fetching local playlist tracks...");
         const localTracks = await getPlaylistSongs(jwtToken, playlistId);
+        console.log("Local Tracks Response:", localTracks);
+  
         fetchedTracks = localTracks?.songs?.map((track) => ({
           ...track,
-          liked: false, // Default to not liked
+          liked: favoriteSongsNames.includes(track.metadata?.title || ""),
         }));
       }
-
-      // Update Redux state with fetched tracks
+  
+      console.log("Fetched Tracks:", fetchedTracks);
+  
       dispatch(setPlaylistTracks({ playlistId, tracks: fetchedTracks || [] }));
     } catch (error) {
       console.error("Error loading playlist tracks:", error.message || error);
       Alert.alert("Error", "Failed to load playlist tracks. Please try again.");
     } finally {
       setLoading(false);
+      console.log("Finished loading playlist tracks.");
     }
   };
+  
 
   const toggleLike = (trackId) => {
     const updatedTracks = cachedTracks.map((track) =>
