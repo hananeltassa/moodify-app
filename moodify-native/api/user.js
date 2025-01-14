@@ -46,7 +46,6 @@ export const fetchWeeklyProgress = async () => {
     return response.data;
   } catch (error) {
     if (error.response && error.response.status === 404) {
-      console.warn("No weekly progress data available.");
       return [];
     }
     console.error("Error fetching weekly progress:", error.response?.data || error.message);

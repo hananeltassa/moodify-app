@@ -35,15 +35,6 @@ export default function Home() {
   
   const { musicData, loading } = useMusicRecommendations(moodQuery, isSpotifyUser);
   const { personalizedData, personalizedLoading } = usePersonalizedRecommendations(moodQuery);
-  const weeklyData = [
-    { day: "Mon", emoji: "😐" },
-    { day: "Tues", emoji: "😔" },
-    { day: "Wed", emoji: "🙂" },
-    { day: "Thur", emoji: "😄" },
-    { day: "Fri", emoji: "😐" },
-    { day: "Sat", emoji: "😄" },
-    { day: "Sun", emoji: "😔" },
-  ];
 
   return (
     <SafeAreaView
@@ -78,7 +69,7 @@ export default function Home() {
 
         {/* Weekly Progress */}
         <View className="mt-2">
-          <WeeklyProgress data={weeklyData} />
+          <WeeklyProgress />
         </View>
 
         {/* Discover Your Mood Today */}
