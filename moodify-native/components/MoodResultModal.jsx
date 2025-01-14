@@ -31,7 +31,7 @@ export default function MoodResultModal({ visible, onClose, mood, confidence, AI
     surprise: "text-pink-500",
     love: "text-red-400",
   };
-  console.log("Mood:", mood, "AI Description:", AIdescription);
+  //console.log("Mood:", mood, "AI Description:", AIdescription);
 
   return (
     <Modal

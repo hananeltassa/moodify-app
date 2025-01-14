@@ -3,9 +3,18 @@ import { View, Text, FlatList, ActivityIndicator } from "react-native";
 import { searchJamendoMusic } from "@/api/jamendo";
 import { MusicItem } from "@/components/PlaylistComponents";
 import { useSelector } from "react-redux";
+import { createSelector } from "reselect";
+
+const selectMoodState = createSelector(
+  (state) => state.mood,
+  (mood) => ({
+    AIdescription: mood?.AIdescription || "No description available",
+  })
+);
 
 export default function Playlist() {
-  const { mood, AIdescription } = useSelector((state) => state.mood);
+  const { AIdescription } = useSelector(selectMoodState);
+  const { mood } = useSelector((state) => state.mood.mood);
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,14 +30,23 @@ export default function Playlist() {
   };
 
   const fetchTracks = async () => {
+    // Determine the query to use
     const moodQuery =
-    AIdescription?.trim() && AIdescription.trim() !== "No description available."
-      ? AIdescription.trim()
-      : moodToMusicQuery[mood] || "calm";
-      
+      AIdescription?.trim() !== "No description available." && AIdescription?.trim()
+        ? AIdescription.trim()
+        : moodToMusicQuery[mood] || null;
+
+    // console.log("moodToMusicQuery:", moodToMusicQuery[mood]);
+    // console.log("Mood:", mood);
     console.log("AIdescription:", AIdescription);
-    console.log("Mood:", mood);
-    console.log("Query for Jamendo API:", moodQuery);
+    // console.log("Query for Jamendo API:", moodQuery);
+
+    if (!moodQuery) {
+      console.warn("No valid mood query available");
+      setTracks([]);
+      setLoading(false);
+      return;
+    }
 
     try {
       const results = await searchJamendoMusic(moodQuery);

@@ -46,15 +46,13 @@ export default function TextDetection() {
       if (response.data.success) {
         const { MoodDetection, AIdescription } = response.data;
   
-        const parsedDescription = AIdescription? JSON.parse(AIdescription): "No description available";
-  
         console.log("Detected mood:", MoodDetection.detected_mood);
         console.log("Confidence:", MoodDetection.confidence);
-        console.log("AI description:", parsedDescription);
+        console.log("AI description:", AIdescription);
   
         setMood(MoodDetection.detected_mood);
         setConfidence(MoodDetection.confidence * 100);
-        setAIdescription(parsedDescription); 
+        setAIdescription(AIdescription); 
         setShowModal(true);
       } else {
         Alert.alert("Error", "Failed to detect mood. Please try again.");

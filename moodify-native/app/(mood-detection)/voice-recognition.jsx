@@ -25,18 +25,11 @@ export default function VoiceRecognition() {
           const response = await uploadAudioFile(uri);
           if (response?.success) {
             console.log("Response from server:", response);
-            // Parse AIdescription to remove extra quotes
-          let cleanDescription = response.AIdescription;
-          try {
-            cleanDescription = JSON.parse(response.AIdescription);
-          } catch (err) {
-            console.warn("AIdescription is not JSON-parsable, using raw value.");
-          }
 
-          setMood(response.MoodDetection.detected_mood);
-          setConfidence(response.MoodDetection.confidence * 100);
-          setAIdescription(cleanDescription || "No description available.");
-          setShowModal(true);
+            setMood(response.MoodDetection.detected_mood);
+            setConfidence(response.MoodDetection.confidence * 100);
+            setAIdescription(response.AIdescription || "No description available.");
+            setShowModal(true);
           } else {
             console.error("Mood detection failed.");
           }

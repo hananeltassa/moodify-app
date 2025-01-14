@@ -10,22 +10,30 @@ export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [cameraType, setCameraType] = useState(CameraType?.back || "front");
   const { cameraRef, loading, handleCapture } = useCameraMoodDetection();
-  const [moodData, setMoodData] = useState({
-    visible: false,
-    mood: null,
-    confidence: 0,
-  });
+  const [mood, setMood] = useState(null);
+  const [confidence, setConfidence] = useState(0);
+  const [AIdescription, setAIdescription] = useState("No description available.");
+  const [showModal, setShowModal] = useState(false);
 
   const onImageCaptured = async () => {
     const result = await handleCapture();
+  
     if (result?.success) {
-      setMoodData({
-        visible: true,
-        mood: result.mood,
-        confidence: result.confidence * 100,
-      });
+      const { mood, confidence } = result;
+  
+      // console.log("Detected Mood:", mood);
+      // console.log("Confidence:", confidence);
+  
+      // Update states with response data
+      setMood(mood || "Unknown");
+      setConfidence((confidence || 0) * 100);
+      setAIdescription(result?.AIdescription || "No description available.");
+      setShowModal(true);
+    } else {
+      console.error("Capture failed or invalid result:", result);
     }
   };
+  
 
   if (!permission) {
     return (
@@ -104,10 +112,11 @@ export default function CameraScreen() {
 
       {/* Mood Result Modal */}
       <MoodResultModal
-        visible={moodData.visible}
-        onClose={() => setMoodData((prev) => ({ ...prev, visible: false }))}
-        mood={moodData.mood}
-        confidence={moodData.confidence}
+        visible={showModal}
+        onClose={() => setShowModal(false)}
+        mood={mood}
+        confidence={confidence}
+        AIdescription={AIdescription}
       />
     </View>
   );
