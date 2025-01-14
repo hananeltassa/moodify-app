@@ -46,18 +46,15 @@ export const useTrackNavigation = ({
           })
         );
 
-        // Update the router for new track
-        router.replace({
-          pathname: "/music/[music]",
-          params: {
-            songImage: track.album?.images?.[0]?.url || "",
-            songTitle: track.name,
-            songArtist: track.artists?.join(", ") || "Unknown Artist",
-            externalUrl: track.externalUrl,
-            previewUrl: track.preview_url,
-            duration: track.duration_ms,
-            playlistId,
-          },
+        // Update the URL parameters without triggering a full rerender
+        router.setParams({
+          songImage: track.album?.images?.[0]?.url || "",
+          songTitle: track.name,
+          songArtist: track.artists?.join(", ") || "Unknown Artist",
+          externalUrl: track.externalUrl,
+          previewUrl: track.preview_url,
+          duration: track.duration_ms,
+          playlistId,
         });
 
         // Update the "liked" state

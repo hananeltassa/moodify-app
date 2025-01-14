@@ -7,77 +7,101 @@ import audioPlayerInstance from "../../utils/audioUtils";
 export function useSongPlayback({ previewUrl, duration, initialProgress, externalUrl, songData }) {
   const dispatch = useDispatch();
   const [progress, setProgress] = useState(initialProgress / duration);
-  const [hasLoaded, setHasLoaded] = useState(false); // Prevent double execution
+  const [currentPreview, setCurrentPreview] = useState(null);
+  
 
-  useEffect(() => {
-    if (hasLoaded) return; // Skip if already executed
-    setHasLoaded(true);
+useEffect(() => {
+  console.log("useSongPlayback triggered");
+  console.log("Parameters:", { previewUrl, duration, initialProgress, externalUrl, songData });
 
-    const loadSong = async () => {
-      console.log("loadSong triggered");
+  if (!previewUrl && !externalUrl) {
+    console.error("Error: Both previewUrl and externalUrl are missing.");
+    Alert.alert("Error", "No preview or external link available for this song.");
+    return;
+  }
 
-      if (!previewUrl) {
-        if (!externalUrl) {
-          Alert.alert("Error", "No Spotify link available.");
-          return;
-        }
+  if (currentPreview === previewUrl) {
+    return;
+  }
 
-        Alert.alert(
-          "No Preview Available",
-          "This song does not have a preview. Would you like to open it on Spotify?",
-          [
-            { text: "Cancel", style: "cancel" },
-            {
-              text: "Open Spotify",
-              onPress: async () => {
-                try {
-                  await Linking.openURL(externalUrl);
-                } catch {
-                  Alert.alert("Error", "Unable to open Spotify.");
-                }
-              },
-            },
-          ]
-        );
-        return;
-      }
+  setCurrentPreview(previewUrl);
 
-      try {
-        if (audioPlayerInstance.currentUri !== previewUrl) {
-          await audioPlayerInstance.loadAndPlay(previewUrl, (status) => {
-            if (status.isLoaded) {
-              setProgress(status.positionMillis / (duration || status.durationMillis));
-              dispatch(updateProgress(status.positionMillis));
-              if (status.didJustFinish) {
-                dispatch(togglePlayPause());
+  const loadSong = async () => {
+    console.log("loadSong triggered for:", songData?.songTitle);
+
+    if (!previewUrl) {
+      console.warn("Preview URL is missing. Redirecting to external URL.");
+      Alert.alert(
+        "No Preview Available",
+        "This song does not have a preview. Would you like to open it on Spotify?",
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Open Spotify",
+            onPress: async () => {
+              try {
+                await Linking.openURL(externalUrl);
+                console.log("Spotify link opened:", externalUrl);
+              } catch (error) {
+                console.error("Error opening Spotify link:", error);
+                Alert.alert("Error", "Unable to open Spotify.");
               }
+            },
+          },
+        ]
+      );
+      return;
+    }
+
+    try {
+      if (audioPlayerInstance.currentUri !== previewUrl) {
+        console.log("Loading and playing preview URL:", previewUrl);
+        await audioPlayerInstance.loadAndPlay(previewUrl, (status) => {
+          if (status.isLoaded) {
+            console.log("Audio loaded successfully.");
+            setProgress(status.positionMillis / (duration || status.durationMillis));
+            dispatch(updateProgress(status.positionMillis));
+            if (status.didJustFinish) {
+              console.log("Playback finished.");
+              dispatch(togglePlayPause());
             }
-          });
-
-          if (initialProgress > 0) {
-            await audioPlayerInstance.setPosition(initialProgress);
           }
+        });
 
-          dispatch(playSong(songData));
+        if (initialProgress > 0) {
+          console.log("Setting initial playback position:", initialProgress);
+          await audioPlayerInstance.setPosition(initialProgress);
         }
-      } catch (error) {
-        Alert.alert("Error", "Unable to load the song.");
+
+        dispatch(playSong(songData));
       }
-    };
+    } catch (error) {
+      console.error("Error loading song:", error);
+      Alert.alert("Error", "Unable to load the song.");
+    }
+  };
 
-    loadSong();
+  loadSong();
 
-    const interval = setInterval(async () => {
+  const interval = setInterval(async () => {
+    try {
       const status = await audioPlayerInstance.soundRef?.getStatusAsync();
       if (status?.isLoaded) {
         const currentProgress = status.positionMillis / status.durationMillis;
         setProgress(currentProgress);
         dispatch(updateProgress(status.positionMillis));
       }
-    }, 500);
+    } catch (error) {
+      console.error("Error updating playback progress:", error);
+    }
+  }, 500);
 
-    return () => clearInterval(interval);
-  }, [dispatch, previewUrl, externalUrl, duration, initialProgress, songData, hasLoaded]);
+  return () => {
+    console.log("Clearing playback interval.");
+    clearInterval(interval);
+  };
+}, [dispatch, previewUrl, externalUrl, duration, initialProgress, songData, currentPreview]);
+
 
   return { progress, setProgress };
 }

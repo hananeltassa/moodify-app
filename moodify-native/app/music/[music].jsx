@@ -19,7 +19,10 @@ export default function SongPage() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { isPlaying, currentSong } = useSelector((state) => state.playback);
-  const favoritePlaylistId = useFavoritePlaylist();
+  //const favoritePlaylistId = useFavoritePlaylist();
+  const favoritePlaylistId = useSelector((state) =>
+    state.playlists.items.find((playlist) => playlist.is_default)?.id
+  );
   const favoriteTracks = useSelector((state) => state.playlistTracks.tracks);
   const playlistTracks = useSelector((state) =>
     selectTracksByPlaylistId(state, playlistId)
@@ -27,13 +30,13 @@ export default function SongPage() {
 
   const [loading, setLoading] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
-  const { progress, setProgress } = useSongPlayback({
-    previewUrl,
-    duration,
-    initialProgress,
-    externalUrl,
+  const { progress, setProgress } = useSongPlayback({ previewUrl, duration, initialProgress, externalUrl,
     songData: { songImage, songTitle, songArtist, externalUrl, previewUrl, duration },
   });
+
+  useEffect(() => {
+    console.log("Params changed. Updating playback...");
+  }, [songTitle, previewUrl, duration, externalUrl]);
 
   const updateIsLiked = (title) => {
     if (playlistTracks) {
