@@ -27,3 +27,29 @@ export const updateUserProfile = async(userData) => {
         throw error.response?.data || error.message;
     }
 }
+
+
+export const fetchWeeklyProgress = async () => {
+  try {
+    const token = await getToken("jwtToken");
+
+    if (!token) {
+      throw new Error("No token found. Please log in again.");
+    }
+
+    const response = await axios.get(`${BACKEND_BASE_URL}/api/mood/average-mood`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      console.warn("No weekly progress data available.");
+      return [];
+    }
+    console.error("Error fetching weekly progress:", error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
