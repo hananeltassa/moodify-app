@@ -14,6 +14,7 @@ export default function VoiceRecognition() {
   const [showModal, setShowModal] = useState(false);
   const [mood, setMood] = useState(null);
   const [confidence, setConfidence] = useState(0);
+  const [AIdescription, setAIdescription] = useState(""); 
 
   const toggleRecording = async () => {
     if (isRecording) {
@@ -23,9 +24,19 @@ export default function VoiceRecognition() {
         try {
           const response = await uploadAudioFile(uri);
           if (response?.success) {
-            setMood(response.MoodDetection.detected_mood);
-            setConfidence(response.MoodDetection.confidence * 100);
-            setShowModal(true);
+            console.log("Response from server:", response);
+            // Parse AIdescription to remove extra quotes
+          let cleanDescription = response.AIdescription;
+          try {
+            cleanDescription = JSON.parse(response.AIdescription);
+          } catch (err) {
+            console.warn("AIdescription is not JSON-parsable, using raw value.");
+          }
+
+          setMood(response.MoodDetection.detected_mood);
+          setConfidence(response.MoodDetection.confidence * 100);
+          setAIdescription(cleanDescription || "No description available.");
+          setShowModal(true);
           } else {
             console.error("Mood detection failed.");
           }
@@ -114,6 +125,7 @@ export default function VoiceRecognition() {
         onClose={() => setShowModal(false)}
         mood={mood}
         confidence={confidence}
+        AIdescription={AIdescription}
       />
     </SafeAreaView>
   );

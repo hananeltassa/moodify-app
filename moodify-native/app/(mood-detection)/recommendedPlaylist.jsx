@@ -21,8 +21,11 @@ export default function Playlist() {
   };
 
   const fetchTracks = async () => {
-    const moodQuery = AIdescription?.trim() || moodToMusicQuery[mood] || "calm";
-
+    const moodQuery =
+    AIdescription?.trim() && AIdescription.trim() !== "No description available."
+      ? AIdescription.trim()
+      : moodToMusicQuery[mood] || "calm";
+      
     console.log("AIdescription:", AIdescription);
     console.log("Mood:", mood);
     console.log("Query for Jamendo API:", moodQuery);
