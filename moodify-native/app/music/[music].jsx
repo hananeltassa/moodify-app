@@ -39,12 +39,14 @@ export default function SongPage() {
   }, [songTitle, previewUrl, duration, externalUrl]);
 
   const updateIsLiked = (title) => {
-    if (playlistTracks) {
-      const isFavorite = playlistTracks.some(
-        (track) => track.name === title && track.liked
-      );
-      setIsLiked(isFavorite);
-    }
+    const allTracks = [
+      ...(playlistTracks || []),
+      ...(favoriteTracks[favoritePlaylistId] || []),
+    ];
+    const isFavorite = allTracks.some(
+      (track) => track.name === title && track.liked
+    );
+    setIsLiked(isFavorite);
   };
 
   const { skipForward, skipBackward } = useTrackNavigation({
@@ -100,7 +102,7 @@ export default function SongPage() {
         );
   
         if (!trackToRemove) {
-          Alert.alert("Error", "Track not found in the playlist.");
+          //Alert.alert("Error", "Track not found in the playlist.");
           return;
         }
   
@@ -110,10 +112,10 @@ export default function SongPage() {
         // Remove the song from Redux state
         dispatch(removeTrackFromPlaylist({ playlistId: favoritePlaylistId, trackId: trackToRemove.id }));
   
-        Alert.alert("Removed", "Song removed from 'My Favorite Songs'.");
+        //Alert.alert("Removed", "Song removed from 'My Favorite Songs'.");
       } else {
         if (!favoritePlaylistId) {
-          Alert.alert("Error", "Default playlist not set.");
+          //Alert.alert("Error", "Default playlist not set.");
           return;
         }
   
@@ -151,13 +153,14 @@ export default function SongPage() {
           })
         );
   
-        Alert.alert("Added", "Song added to 'My Favorite Songs'.");
+        //Alert.alert("Added", "Song added to 'My Favorite Songs'.");
+        setIsLiked(isLiked);
       }
   
-      setIsLiked(!isLiked);
+      setIsLiked(isLiked);
     } catch (error) {
       console.error("Error updating favorites:", error);
-      Alert.alert("Error", "Failed to update 'My Favorite Songs'. Please try again.");
+      //Alert.alert("Error", "Failed to update 'My Favorite Songs'. Please try again.");
     }
   };
 
