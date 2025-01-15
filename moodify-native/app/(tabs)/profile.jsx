@@ -84,7 +84,7 @@ export default function ProfileScreen() {
     }
 
     // Debugging the updated profile before API call
-    console.log("Updated profile payload:", updatedProfile);
+    //console.log("Updated profile payload:", updatedProfile);
 
     if (Object.keys(updatedProfile).length === 0) {
       Alert.alert("No changes detected", "Please make changes before saving.");
@@ -94,7 +94,7 @@ export default function ProfileScreen() {
     try {
       setLoading(true);
       const updatedUser = await updateUserProfile(updatedProfile);
-      console.log("API response - updated user:", updatedUser);
+      //console.log("API response - updated user:", updatedUser);
 
       dispatch(setUser(updatedUser));
       setIsModified(false);
@@ -129,7 +129,7 @@ export default function ProfileScreen() {
         setIsModified(true);
       }
     } catch (error) {
-      console.error("Error picking image:", error);
+      //console.error("Error picking image:", error);
       Alert.alert("Error", "Something went wrong while picking the image.");
     }
   };

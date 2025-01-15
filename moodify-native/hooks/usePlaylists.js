@@ -56,7 +56,7 @@ export const usePlaylists = (user) => {
         dispatch(setPlaylists(combinedPlaylists));
       }
     } catch (err) {
-      console.error("Error fetching playlists:", err);
+      //console.error("Error fetching playlists:", err);
       setError(err.message || "Failed to load playlists.");
     } finally {
       setLoading(false);

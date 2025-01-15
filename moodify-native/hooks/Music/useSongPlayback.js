@@ -17,11 +17,11 @@ export function useSongPlayback({ previewUrl, duration, initialProgress, externa
      */
     const stopAndUnloadPrevious = async () => {
       if (audioPlayerInstance.soundRef) {
-        console.log("Stopping and unloading the previous song...");
+        //console.log("Stopping and unloading the previous song...");
         try {
           await audioPlayerInstance.stop();
           await audioPlayerInstance.unload();
-          console.log("Previous song unloaded.");
+          //console.log("Previous song unloaded.");
         } catch (error) {
           console.error("Error unloading previous song:", error);
         }
@@ -33,7 +33,7 @@ export function useSongPlayback({ previewUrl, duration, initialProgress, externa
      */
     const loadAndPlayNewSong = async () => {
       try {
-        console.log("Loading song with previewUrl:", previewUrl);
+        //console.log("Loading song with previewUrl:", previewUrl);
 
         // Load and start playback with a status listener
         await audioPlayerInstance.loadAndPlay(previewUrl, (status) => {
@@ -45,7 +45,7 @@ export function useSongPlayback({ previewUrl, duration, initialProgress, externa
             }
 
             if (status.didJustFinish) {
-              console.log("Playback finished.");
+              //console.log("Playback finished.");
               dispatch(togglePlayPause());
             }
           }
@@ -54,14 +54,14 @@ export function useSongPlayback({ previewUrl, duration, initialProgress, externa
         // Set the initial playback position if provided
         if (initialProgress > 0) {
           const validatedInitialProgress = Math.min(initialProgress, duration || 0);
-          console.log("Setting initial playback position:", validatedInitialProgress);
+          //console.log("Setting initial playback position:", validatedInitialProgress);
           await audioPlayerInstance.setPosition(validatedInitialProgress);
         }
 
         dispatch(playSong(songData));
         currentPreviewUrl.current = previewUrl; // Mark this song as loaded
       } catch (error) {
-        console.error("Error loading and playing the song:", error);
+        //console.error("Error loading and playing the song:", error);
         Alert.alert("Error", "Unable to load the song.");
       }
     };
@@ -71,7 +71,7 @@ export function useSongPlayback({ previewUrl, duration, initialProgress, externa
      */
     const handlePlayback = async () => {
       if (currentPreviewUrl.current === previewUrl) {
-        console.log("Skipping reload for the same preview URL.");
+        //console.log("Skipping reload for the same preview URL.");
         return;
       }
 
@@ -92,9 +92,9 @@ export function useSongPlayback({ previewUrl, duration, initialProgress, externa
                 onPress: async () => {
                   try {
                     await Linking.openURL(externalUrl);
-                    console.log("Spotify link opened:", externalUrl);
+                    //console.log("Spotify link opened:", externalUrl);
                   } catch (error) {
-                    console.error("Error opening Spotify link:", error);
+                    //console.error("Error opening Spotify link:", error);
                     Alert.alert("Error", "Unable to open Spotify.");
                   } finally {
                     alertShown.current = false;

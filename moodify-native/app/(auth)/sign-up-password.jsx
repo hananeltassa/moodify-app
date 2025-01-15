@@ -29,7 +29,7 @@ export default function SignUpPassword() {
     setIsSubmitting(true);
 
     try {
-      console.log("Password submitted:", registrationData.password);
+      //console.log("Password submitted:", registrationData.password);
       router.push("/(auth)/sign-up-birthdate");
     } catch (error) {
       console.error("Error during submission:", error);

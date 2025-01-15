@@ -17,7 +17,7 @@ export default function Onboarding() {
     try {
       const user = await spotifyAuth(dispatch);
       if (user) {
-        console.log('User successfully logged in:', user);
+        //console.log('User successfully logged in:', user);
         router.replace('/home');
       } else {
         console.log('Spotify login was canceled.');

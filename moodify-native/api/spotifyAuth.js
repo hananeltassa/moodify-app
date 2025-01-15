@@ -51,11 +51,11 @@ export const spotifyAuth = async (dispatch) => {
 
       return user;
     } else {
-      console.log('Spotify login canceled:', result);
+      //console.log('Spotify login canceled:', result);
       return null;
     }
   } catch (error) {
-    console.error('Error during Spotify login:', error);
+    //console.error('Error during Spotify login:', error);
     throw error;
   }
 };
@@ -67,7 +67,7 @@ export const fetchSpotifyPlaylists = async (jwtToken) => {
     });
     return response.data.playlists;
   } catch (error) {
-    console.error("Error fetching Spotify playlists:", error);
+    //console.error("Error fetching Spotify playlists:", error);
     throw new Error("Failed to fetch Spotify playlists.");
   }
 };
@@ -80,11 +80,11 @@ export const fetchSpotifyPlaylistTracks = async (playlistId, jwtToken) => {
       },
     });
 
-    console.log(JSON.stringify(response.data, null, 2));
+    //console.log(JSON.stringify(response.data, null, 2));
 
     return response.data.tracks;
   } catch (error) {
-    console.error("Error fetching Spotify playlist tracks:", error);
+    //console.error("Error fetching Spotify playlist tracks:", error);
     throw error;
   }
 };
@@ -99,9 +99,9 @@ export const playSpotify = async (jwtToken , payload = {}) => {
         } 
       }
     );
-    console.log("Playback started successfully.");
+    //console.log("Playback started successfully.");
   } catch (error) {
-    console.error("Error starting playback:", error.response?.data || error.message);
+    //console.error("Error starting playback:", error.response?.data || error.message);
     throw error;
   }
 };
@@ -116,9 +116,9 @@ export const pauseSpotify = async (jwtToken) => {
         } 
       }
     );
-    console.log("Playback paused successfully.");
+    //console.log("Playback paused successfully.");
   } catch (error) {
-    console.error("Error pausing playback:", error.response?.data || error.message);
+    //console.error("Error pausing playback:", error.response?.data || error.message);
     throw error;
   }
 };
@@ -133,9 +133,9 @@ export const skipToNextSpotify = async (jwtToken) => {
         } 
       }
     );
-    console.log("Skipped to next track successfully.");
+    //console.log("Skipped to next track successfully.");
   } catch (error) {
-    console.error("Error skipping to next track:", error.response?.data || error.message);
+    //console.error("Error skipping to next track:", error.response?.data || error.message);
     throw error;
   }
 };
@@ -150,9 +150,9 @@ export const skipToPreviousSpotify = async (jwtToken) => {
         } 
       }
     );
-    console.log("Skipped to previous track successfully.");
+    //le.log("Skipped to previous track successfully.");
   } catch (error) {
-    console.error("Error skipping to previous track:", error.response?.data || error.message);
+    //console.error("Error skipping to previous track:", error.response?.data || error.message);
     throw error;
   }
 };
@@ -167,7 +167,7 @@ export const searchSpotifyTracks = async (query, jwtToken, type = "track") => {
     //console.log(`Search results for ${type}:`, response.data.results);
     return response.data.results[type === "track" ? "tracks" : "playlists"];
   } catch (error) {
-    console.error(`Error fetching Spotify ${type} results:`, error.response?.data || error.message);
+    //console.error(`Error fetching Spotify ${type} results:`, error.response?.data || error.message);
     throw new Error(`Failed to fetch ${type} search results.`);
   }
 };

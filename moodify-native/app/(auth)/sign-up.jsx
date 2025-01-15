@@ -26,7 +26,7 @@ export default function SignUp() {
     setSubmitting(true);
 
     try {
-      console.log("Email submitted:", processedEmail);
+      //console.log("Email submitted:", processedEmail);
       router.push("/(auth)/sign-up-password");
     } catch (error) {
       console.error("Error during submission:", error);

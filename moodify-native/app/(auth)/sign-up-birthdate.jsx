@@ -39,7 +39,7 @@ export default function SignInBirthday() {
     setIsSubmitting(true);
 
     try {
-      console.log("Birthday submitted:", registrationData.birthday);
+      //console.log("Birthday submitted:", registrationData.birthday);
       router.push("/(auth)/sign-up-gender");
     } catch (error) {
       Alert.alert("Error", "An error occurred. Please try again.");

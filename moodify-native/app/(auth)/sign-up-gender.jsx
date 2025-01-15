@@ -19,7 +19,7 @@ export default function SignUpGender() {
     setIsSubmitting(true);
 
     try {
-      console.log("Gender submitted:", registrationData.gender);
+      //console.log("Gender submitted:", registrationData.gender);
       router.push("/(auth)/sign-up-name");
     } catch (error) {
       Alert.alert("Error", "An error occurred. Please try again.");

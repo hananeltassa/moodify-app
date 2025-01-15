@@ -40,7 +40,7 @@ export const useSearch = () => {
         totalTracks: item.totalTracks,
       }));
     } catch (error) {
-      console.error("Error fetching Spotify search results:", error);
+      //console.error("Error fetching Spotify search results:", error);
       Alert.alert("Error", error.message || "Failed to fetch Spotify results.");
       return [];
     } finally {
@@ -64,7 +64,7 @@ export const useSearch = () => {
         audioUrl: item.audio,
       }));
     } catch (error) {
-      console.error("Error fetching Jamendo search results:", error);
+      //console.error("Error fetching Jamendo search results:", error);
       Alert.alert("Error", error.message || "Failed to fetch Jamendo results.");
       return [];
     } finally {
@@ -85,7 +85,7 @@ export const useSearch = () => {
 
       setResults(fetchedResults);
     } catch (error) {
-      console.error("Error during search:", error);
+      //console.error("Error during search:", error);
       setResults([]);
     }
   };

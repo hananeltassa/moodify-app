@@ -39,7 +39,7 @@ export default function SignIn() {
         })
       );
 
-      console.log("Dispatch successful, redirecting to home...");
+      //console.log("Dispatch successful, redirecting to home...");
       router.replace("/(tabs)/home"); // Navigate to home
     } catch (error) {
       Alert.alert("Login Failed", error.message || "An unexpected error occurred. Please try again.");

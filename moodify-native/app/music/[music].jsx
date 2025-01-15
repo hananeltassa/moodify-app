@@ -60,9 +60,9 @@ export default function SongPage() {
   });
   
   useEffect(() => {
-    console.log("Current playlistId:", playlistId);
-    console.log("Current track list:", playlistTracks);
-    console.log("Current track title:", songTitle);
+    // console.log("Current playlistId:", playlistId);
+    // console.log("Current track list:", playlistTracks);
+    // console.log("Current track title:", songTitle);
     updateIsLiked(songTitle);
   }, [playlistTracks, songTitle]);
 

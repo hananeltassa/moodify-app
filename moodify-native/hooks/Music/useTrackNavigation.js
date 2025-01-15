@@ -29,10 +29,7 @@ export const useTrackNavigation = ({
 
       if (newIndex >= 0 && newIndex < playlistTracks.length) {
         const track = playlistTracks[newIndex];
-        console.log(
-          `Navigating to ${direction > 0 ? "next" : "previous"} track:`,
-          track
-        );
+        //console.log(`Navigating to ${direction > 0 ? "next" : "previous"} track:`, track );
 
         const trackPreviewUrl = track.preview_url || null; // Safeguard against undefined
         const trackExternalUrl = track.externalUrl || null;

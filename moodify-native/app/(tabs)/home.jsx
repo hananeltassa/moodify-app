@@ -34,7 +34,7 @@ export default function Home() {
 
  
 
-  const moodQuery = moodToMusicQuery[mood] || 'neutral';
+  const moodQuery = moodToMusicQuery[mood] || 'the';
   const moodQuery1 = moodToMusicQuery[mood] || 'tunes';
 
   // console.log("moodToMusicQuery:", moodToMusicQuery[mood] );

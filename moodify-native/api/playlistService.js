@@ -11,10 +11,10 @@ export const createPlaylist = async (jwtToken, name, isDefault = false) => {
       }
     );
 
-    console.log("Created playlist:", JSON.stringify(response.data, null, 2));
+    //console.log("Created playlist:", JSON.stringify(response.data, null, 2));
     return response.data;
   } catch (error) {
-    console.error("Error creating playlist:", error);
+    //console.error("Error creating playlist:", error);
     throw error;
   }
 };
@@ -28,10 +28,10 @@ export const getUserPlaylists = async (jwtToken) => {
     return response.data;
   } catch (error) {
     if (error.response?.status === 404) {
-      console.warn("No playlists found. Returning an empty array.");
+      //console.warn("No playlists found. Returning an empty array.");
       return { playlists: [] };
     }
-    console.error("Error fetching playlists:", error);
+    //console.error("Error fetching playlists:", error);
     throw error;
   }
 };
@@ -48,10 +48,10 @@ export const addSongToPlaylist = async (jwtToken, playlistId, source, externalId
       }
     );
 
-    console.log("Added song to playlist:", JSON.stringify(response.data, null, 2));
+    //console.log("Added song to playlist:", JSON.stringify(response.data, null, 2));
     return response.data;
   } catch (error) {
-    console.error("Error adding song to playlist:", error);
+    //console.error("Error adding song to playlist:", error);
     throw error;
   }
 };
@@ -63,7 +63,7 @@ export const getPlaylistSongs = async (jwtToken, playlistId) => {
       headers: { Authorization: `Bearer ${jwtToken}` },
     });
 
-    console.log("Fetched songs in playlist:", JSON.stringify(response.data, null, 2));
+    //console.log("Fetched songs in playlist:", JSON.stringify(response.data, null, 2));
     return response.data;
   } catch (error) {
     if (error.response?.status === 401) {
@@ -83,7 +83,7 @@ export const deleteSongFromPlaylist = async (jwtToken, playlistId, songTitle) =>
       headers: { Authorization: `Bearer ${jwtToken}` },
     });
 
-    console.log("Deleted song from playlist:", JSON.stringify(response.data, null, 2));
+    //console.log("Deleted song from playlist:", JSON.stringify(response.data, null, 2));
     return response.data;
   } catch (error) {
     console.error("Error deleting song from playlist:", error);
