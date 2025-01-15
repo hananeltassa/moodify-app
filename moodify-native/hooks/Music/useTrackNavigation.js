@@ -34,6 +34,9 @@ export const useTrackNavigation = ({
           track
         );
 
+        const trackPreviewUrl = track.preview_url || null; // Safeguard against undefined
+        const trackExternalUrl = track.externalUrl || null;
+
         // Dispatch the play action
         dispatch(
           playSong({

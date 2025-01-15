@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Alert, Linking } from "react-native";
 import { useDispatch } from "react-redux";
 import { playSong, togglePlayPause, updateProgress } from "../../redux/slices/playbackSlice";
@@ -6,59 +6,30 @@ import audioPlayerInstance from "../../utils/audioUtils";
 
 export function useSongPlayback({ previewUrl, duration, initialProgress, externalUrl, songData }) {
   const dispatch = useDispatch();
-  const [progress, setProgress] = useState(initialProgress / duration);
-  const [currentPreview, setCurrentPreview] = useState(null);
-  
+  const [progress, setProgress] = useState(initialProgress / (duration || 1));
+  const isLoading = useRef(false); // Tracks whether a song is being loaded
+  const currentPreviewUrl = useRef(null); // Tracks the currently loaded song
+  const alertShown = useRef(false); // Prevents multiple alerts
 
-useEffect(() => {
-  console.log("useSongPlayback triggered");
-  console.log("Parameters:", { previewUrl, duration, initialProgress, externalUrl, songData });
+  useEffect(() => {
+    //console.log("useSongPlayback triggered with:", { previewUrl, duration, initialProgress, externalUrl,  songData,});
 
-  if (!previewUrl && !externalUrl) {
-    console.error("Error: Both previewUrl and externalUrl are missing.");
-    Alert.alert("Error", "No preview or external link available for this song.");
-    return;
-  }
+    const stopAndUnloadPrevious = async () => {
+      if (audioPlayerInstance.soundRef) {
+        console.log("Stopping and unloading the previous song...");
+        await audioPlayerInstance.stop();
+        await audioPlayerInstance.unload();
+        console.log("Previous song unloaded.");
+      }
+    };
 
-  if (currentPreview === previewUrl) {
-    return;
-  }
+    const loadAndPlayNewSong = async () => {
+      try {
+        console.log("Loading song with previewUrl:", previewUrl);
 
-  setCurrentPreview(previewUrl);
-
-  const loadSong = async () => {
-    console.log("loadSong triggered for:", songData?.songTitle);
-
-    if (!previewUrl) {
-      console.warn("Preview URL is missing. Redirecting to external URL.");
-      Alert.alert(
-        "No Preview Available",
-        "This song does not have a preview. Would you like to open it on Spotify?",
-        [
-          { text: "Cancel", style: "cancel" },
-          {
-            text: "Open Spotify",
-            onPress: async () => {
-              try {
-                await Linking.openURL(externalUrl);
-                console.log("Spotify link opened:", externalUrl);
-              } catch (error) {
-                console.error("Error opening Spotify link:", error);
-                Alert.alert("Error", "Unable to open Spotify.");
-              }
-            },
-          },
-        ]
-      );
-      return;
-    }
-
-    try {
-      if (audioPlayerInstance.currentUri !== previewUrl) {
-        console.log("Loading and playing preview URL:", previewUrl);
         await audioPlayerInstance.loadAndPlay(previewUrl, (status) => {
           if (status.isLoaded) {
-            console.log("Audio loaded successfully.");
+            
             setProgress(status.positionMillis / (duration || status.durationMillis));
             dispatch(updateProgress(status.positionMillis));
             if (status.didJustFinish) {
@@ -74,34 +45,83 @@ useEffect(() => {
         }
 
         dispatch(playSong(songData));
+        currentPreviewUrl.current = previewUrl; // Mark this song as loaded
+      } catch (error) {
+        console.error("Error loading and playing the song:", error);
+        Alert.alert("Error", "Unable to load the song.");
       }
-    } catch (error) {
-      console.error("Error loading song:", error);
-      Alert.alert("Error", "Unable to load the song.");
-    }
-  };
+    };
 
-  loadSong();
-
-  const interval = setInterval(async () => {
-    try {
-      const status = await audioPlayerInstance.soundRef?.getStatusAsync();
-      if (status?.isLoaded) {
-        const currentProgress = status.positionMillis / status.durationMillis;
-        setProgress(currentProgress);
-        dispatch(updateProgress(status.positionMillis));
+    const handlePlayback = async () => {
+      // Skip if the current song is already loaded
+      if (currentPreviewUrl.current === previewUrl) {
+        //console.log("Skipping reload for the same preview URL.");
+        return;
       }
-    } catch (error) {
-      console.error("Error updating playback progress:", error);
+
+      // Ensure we wait until the previous song is completely unloaded
+      isLoading.current = true;
+
+      await stopAndUnloadPrevious();
+
+      // Handle invalid preview URL
+      if (!previewUrl || previewUrl === "null") {
+        console.warn("Invalid preview URL detected. Skipping playback.");
+        if (!alertShown.current) {
+          alertShown.current = true;
+          Alert.alert(
+            "No Preview Available",
+            "This song does not have a preview. Would you like to open it on Spotify?",
+            [
+              { text: "Cancel", style: "cancel", onPress: () => (alertShown.current = false) },
+              {
+                text: "Open Spotify",
+                onPress: async () => {
+                  try {
+                    await Linking.openURL(externalUrl);
+                    console.log("Spotify link opened:", externalUrl);
+                  } catch (error) {
+                    console.error("Error opening Spotify link:", error);
+                    Alert.alert("Error", "Unable to open Spotify.");
+                  } finally {
+                    alertShown.current = false;
+                  }
+                },
+              },
+            ]
+          );
+        }
+        currentPreviewUrl.current = null; // Reset the current URL
+        isLoading.current = false; // Allow subsequent loads
+        return;
+      }
+
+      await loadAndPlayNewSong();
+      isLoading.current = false;
+    };
+
+    if (!isLoading.current) {
+      handlePlayback();
     }
-  }, 500);
 
-  return () => {
-    console.log("Clearing playback interval.");
-    clearInterval(interval);
-  };
-}, [dispatch, previewUrl, externalUrl, duration, initialProgress, songData, currentPreview]);
+    const interval = setInterval(async () => {
+      try {
+        const status = await audioPlayerInstance.soundRef?.getStatusAsync();
+        if (status?.isLoaded) {
+          const currentProgress = status.positionMillis / status.durationMillis;
+          setProgress(currentProgress);
+          dispatch(updateProgress(status.positionMillis));
+        }
+      } catch (error) {
+        console.error("Error updating playback progress:", error);
+      }
+    }, 500);
 
+    return () => {
+      //console.log("Clearing playback interval.");
+      clearInterval(interval);
+    };
+  }, [dispatch, previewUrl, externalUrl, duration, songData]);
 
   return { progress, setProgress };
 }

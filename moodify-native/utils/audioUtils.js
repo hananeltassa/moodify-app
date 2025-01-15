@@ -14,8 +14,10 @@ class AudioPlayer {
           await this.play();
           return;
         }
-        console.log("Stopping and unloading previous sound");
-        await this.unload(); // Unload the previous track
+        console.log("Stopping the current sound");
+        await this.stop();
+        console.log("Unloading the previous sound");
+        await this.unload();
       }
 
       const { sound } = await Audio.Sound.createAsync(
@@ -61,6 +63,20 @@ class AudioPlayer {
     }
   }
 
+  async stop() {
+    if (!this.soundRef) {
+      console.warn("Attempted to stop but SoundRef is not initialized.");
+      return;
+    }
+
+    try {
+      console.log("Stopping playback");
+      await this.soundRef.stopAsync();
+    } catch (error) {
+      console.error("Error stopping playback:", error);
+    }
+  }
+
   async setPosition(positionMillis) {
     if (!this.soundRef) {
       console.warn("Attempted to set position but SoundRef is not initialized.");
@@ -71,6 +87,20 @@ class AudioPlayer {
       await this.soundRef.setPositionAsync(positionMillis);
     } catch (error) {
       console.error("Error setting position:", error);
+    }
+  }
+
+  async resetProgress() {
+    if (!this.soundRef) {
+      console.warn("Attempted to reset progress but SoundRef is not initialized.");
+      return;
+    }
+
+    try {
+      console.log("Resetting playback progress");
+      await this.soundRef.setPositionAsync(0);
+    } catch (error) {
+      console.error("Error resetting progress:", error);
     }
   }
 

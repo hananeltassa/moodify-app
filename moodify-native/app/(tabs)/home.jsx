@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { SafeAreaView, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator,} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -31,10 +31,16 @@ export default function Home() {
     love: "romantic love songs",
   };
 
+
  
 
   const moodQuery = moodToMusicQuery[mood] || 'neutral';
   const moodQuery1 = moodToMusicQuery[mood] || 'tunes';
+
+  // console.log("moodToMusicQuery:", moodToMusicQuery[mood] );
+  // console.log("Mood:", mood);
+  // console.log("Mood Query for Personalized Recommendations:", moodQuery);
+  // console.log("Mood Query for Music Recommendations:", moodQuery1);
   
   const { musicData, loading } = useMusicRecommendations(moodQuery1, isSpotifyUser);
   const { personalizedData, personalizedLoading } = usePersonalizedRecommendations(moodQuery);
