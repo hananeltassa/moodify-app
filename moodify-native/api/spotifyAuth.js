@@ -6,7 +6,7 @@ import { setUser } from "../redux/slices/userSlice";
 
 export const spotifyAuth = async (dispatch) => {
   try {
-    const redirectUri = AuthSession.makeRedirectUri({ useProxy: true });p
+    const redirectUri = AuthSession.makeRedirectUri({ useProxy: true });
 
     const discovery = {
       authorizationEndpoint: SPOTIFY_AUTH_ENDPOINT,
