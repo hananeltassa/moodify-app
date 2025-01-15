@@ -12,26 +12,38 @@ export function useSongPlayback({ previewUrl, duration, initialProgress, externa
   const alertShown = useRef(false); // Prevents multiple alerts
 
   useEffect(() => {
-    //console.log("useSongPlayback triggered with:", { previewUrl, duration, initialProgress, externalUrl,  songData,});
-
+    /**
+     * Stops and unloads any previously playing audio.
+     */
     const stopAndUnloadPrevious = async () => {
       if (audioPlayerInstance.soundRef) {
         console.log("Stopping and unloading the previous song...");
-        await audioPlayerInstance.stop();
-        await audioPlayerInstance.unload();
-        console.log("Previous song unloaded.");
+        try {
+          await audioPlayerInstance.stop();
+          await audioPlayerInstance.unload();
+          console.log("Previous song unloaded.");
+        } catch (error) {
+          console.error("Error unloading previous song:", error);
+        }
       }
     };
 
+    /**
+     * Loads and plays a new song, setting the initial position if provided.
+     */
     const loadAndPlayNewSong = async () => {
       try {
         console.log("Loading song with previewUrl:", previewUrl);
 
+        // Load and start playback with a status listener
         await audioPlayerInstance.loadAndPlay(previewUrl, (status) => {
           if (status.isLoaded) {
-            
-            setProgress(status.positionMillis / (duration || status.durationMillis));
-            dispatch(updateProgress(status.positionMillis));
+            const currentProgress = status.positionMillis / (duration || status.durationMillis || 1);
+            if (!isNaN(currentProgress) && currentProgress >= 0 && currentProgress <= 1) {
+              setProgress(currentProgress);
+              dispatch(updateProgress(status.positionMillis));
+            }
+
             if (status.didJustFinish) {
               console.log("Playback finished.");
               dispatch(togglePlayPause());
@@ -39,9 +51,11 @@ export function useSongPlayback({ previewUrl, duration, initialProgress, externa
           }
         });
 
+        // Set the initial playback position if provided
         if (initialProgress > 0) {
-          console.log("Setting initial playback position:", initialProgress);
-          await audioPlayerInstance.setPosition(initialProgress);
+          const validatedInitialProgress = Math.min(initialProgress, duration || 0);
+          console.log("Setting initial playback position:", validatedInitialProgress);
+          await audioPlayerInstance.setPosition(validatedInitialProgress);
         }
 
         dispatch(playSong(songData));
@@ -52,21 +66,20 @@ export function useSongPlayback({ previewUrl, duration, initialProgress, externa
       }
     };
 
+    /**
+     * Handles playback logic, ensuring valid inputs and avoiding redundant loading.
+     */
     const handlePlayback = async () => {
-      // Skip if the current song is already loaded
       if (currentPreviewUrl.current === previewUrl) {
-        //console.log("Skipping reload for the same preview URL.");
+        console.log("Skipping reload for the same preview URL.");
         return;
       }
 
-      // Ensure we wait until the previous song is completely unloaded
       isLoading.current = true;
 
       await stopAndUnloadPrevious();
 
-      // Handle invalid preview URL
       if (!previewUrl || previewUrl === "null") {
-        //console.warn("Invalid preview URL detected. Skipping playback.");
         if (!alertShown.current) {
           alertShown.current = true;
           Alert.alert(
@@ -108,9 +121,14 @@ export function useSongPlayback({ previewUrl, duration, initialProgress, externa
       try {
         const status = await audioPlayerInstance.soundRef?.getStatusAsync();
         if (status?.isLoaded) {
-          const currentProgress = status.positionMillis / status.durationMillis;
-          setProgress(currentProgress);
-          dispatch(updateProgress(status.positionMillis));
+          const positionMillis = status.positionMillis || 0;
+          const durationMillis = status.durationMillis || 1;
+          const currentProgress = positionMillis / durationMillis;
+
+          if (!isNaN(currentProgress) && currentProgress >= 0 && currentProgress <= 1) {
+            setProgress(currentProgress);
+            dispatch(updateProgress(positionMillis));
+          }
         }
       } catch (error) {
         console.error("Error updating playback progress:", error);
@@ -118,10 +136,9 @@ export function useSongPlayback({ previewUrl, duration, initialProgress, externa
     }, 500);
 
     return () => {
-      //console.log("Clearing playback interval.");
       clearInterval(interval);
     };
-  }, [dispatch, previewUrl, externalUrl, duration, songData]);
+  }, [dispatch, previewUrl, externalUrl, duration, songData, initialProgress]);
 
   return { progress, setProgress };
 }
