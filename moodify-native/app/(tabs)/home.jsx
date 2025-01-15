@@ -104,20 +104,20 @@ export default function Home() {
             <View className="flex-row items-center justify-center" style={{ gap: 6 }}>
               <TouchableOpacity
                 className="bg-white p-3 items-center justify-center rounded-full"
-                onPress={() => router.push("/(mood-detection)/voice-recognition")}
-              >
-                <Image
-                  source={icons.voice}
-                  style={{ width: 24, height: 24, tintColor: "#FF6100" }}
-                />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                className="bg-white p-3 items-center justify-center rounded-full"
                 onPress={() => router.push("/(mood-detection)/text-detection")}
               >
                 <Image
                   source={icons.pen}
+                  style={{ width: 24, height: 24, tintColor: "#FF6100" }}
+                />
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                className="bg-white p-3 items-center justify-center rounded-full"
+                onPress={() => router.push("/(mood-detection)/voice-recognition")}
+              >
+                <Image
+                  source={icons.voice}
                   style={{ width: 24, height: 24, tintColor: "#FF6100" }}
                 />
               </TouchableOpacity>

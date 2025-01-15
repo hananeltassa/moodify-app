@@ -66,7 +66,7 @@ export function useSongPlayback({ previewUrl, duration, initialProgress, externa
 
       // Handle invalid preview URL
       if (!previewUrl || previewUrl === "null") {
-        console.warn("Invalid preview URL detected. Skipping playback.");
+        //console.warn("Invalid preview URL detected. Skipping playback.");
         if (!alertShown.current) {
           alertShown.current = true;
           Alert.alert(
