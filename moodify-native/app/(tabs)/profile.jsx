@@ -17,6 +17,7 @@ import { useRouter } from "expo-router";
 import { updateUserProfile } from "@/api/user";
 import Icon from "react-native-vector-icons/Feather";
 import images from "@/constants/images";
+import audioPlayerInstance from "@/utils/audioUtils";
 
 export default function ProfileScreen() {
   const [loading, setLoading] = useState(false);
@@ -40,6 +41,10 @@ export default function ProfileScreen() {
 
   const handleLogout = async () => {
     try {
+      if (audioPlayerInstance.soundRef) {
+        console.log("Stopping audio playback on logout...");
+        await audioPlayerInstance.stop();
+      }
       await deleteToken("jwtToken");
 
       dispatch(clearUser());
