@@ -31,14 +31,15 @@ export default function Home() {
     love: "romantic love songs",
   };
 
+  const moodValue = mood?.mood;
 
- 
+  // Get music queries based on the mood value
+  const moodQuery = moodToMusicQuery[moodValue] || "the";
+  const moodQuery1 = moodToMusicQuery[moodValue] || "top tracks 2025";
 
-  const moodQuery = moodToMusicQuery[mood] || 'the';
-  const moodQuery1 = moodToMusicQuery[mood] || 'tunes';
-
-  // console.log("moodToMusicQuery:", moodToMusicQuery[mood] );
-  // console.log("Mood:", mood);
+  // Debugging Logs
+  console.log("Mood to Music Query:", moodToMusicQuery[moodValue]);
+  console.log("Mood:", mood);
   // console.log("Mood Query for Personalized Recommendations:", moodQuery);
   // console.log("Mood Query for Music Recommendations:", moodQuery1);
   
@@ -108,7 +109,7 @@ export default function Home() {
               >
                 <Image
                   source={icons.pen}
-                  style={{ width: 24, height: 24, tintColor: "#FF6100" }}
+                  style={{ width: 23, height: 23, tintColor: "#FF6100" }}
                 />
               </TouchableOpacity>
               

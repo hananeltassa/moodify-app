@@ -79,7 +79,7 @@ class AudioPlayer {
 
   async setPosition(positionMillis) {
     if (!this.soundRef) {
-      console.warn("Attempted to set position but SoundRef is not initialized.");
+      //console.warn("Attempted to set position but SoundRef is not initialized.");
       return;
     }
 

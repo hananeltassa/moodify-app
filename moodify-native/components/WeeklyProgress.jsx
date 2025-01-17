@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Text, View, ActivityIndicator } from "react-native";
-import { fetchWeeklyProgress } from "@/api/user"; // Import the updated fetch function
+import { fetchWeeklyProgress } from "@/api/user";
 
 export default function WeeklyProgress() {
   const [weeklyData, setWeeklyData] = useState([]);
@@ -12,7 +12,7 @@ export default function WeeklyProgress() {
     sad: "😔",
     neutral: "😐",
     angry: "😡",
-    love: "❤️",
+    love: "🥰",
     fear: "😨",
     surprise: "😲",
   };

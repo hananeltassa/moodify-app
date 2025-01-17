@@ -49,7 +49,7 @@ export const useRecording = () => {
       setRecording(newRecording);
       setAudioFile(null); // Clear previous audio file
       setIsRecording(true);
-      console.log("Recording started");
+      //console.log("Recording started");
     } catch (error) {
       console.error("Error starting recording:", error);
     }
@@ -66,7 +66,7 @@ export const useRecording = () => {
           setAudioFile(uri); // Save the .wav file URI
           return uri;
         } else {
-          console.warn("No URI returned from recording.");
+          //console.warn("No URI returned from recording.");
           setAudioFile(null); 
         }
       } else {
@@ -83,7 +83,7 @@ export const useRecording = () => {
 
   const uploadAudioFile = async (fileUri) => {
     if (!fileUri) {
-      console.error("No audio file to upload");
+      //console.error("No audio file to upload");
       return null;
     }
 
@@ -105,10 +105,10 @@ export const useRecording = () => {
         },
       });
 
-      console.log("Audio uploaded successfully:", response.data);
+      //console.log("Audio uploaded successfully:", response.data);
       return response.data; // Return the response data
     } catch (error) {
-      console.error("Error uploading audio:", error);
+      //console.error("Error uploading audio:", error);
       return null; // Return null if an error occurs
     }
   };
