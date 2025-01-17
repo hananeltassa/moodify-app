@@ -7,9 +7,9 @@ import audioPlayerInstance from "../../utils/audioUtils";
 export function useSongPlayback({ previewUrl, duration, initialProgress, externalUrl, songData }) {
   const dispatch = useDispatch();
   const [progress, setProgress] = useState(initialProgress / (duration || 1));
-  const isLoading = useRef(false); // Tracks whether a song is being loaded
-  const currentPreviewUrl = useRef(null); // Tracks the currently loaded song
-  const alertShown = useRef(false); // Prevents multiple alerts
+  const isLoading = useRef(false);
+  const currentPreviewUrl = useRef(null);
+  const alertShown = useRef(false);
 
   useEffect(() => {
     /**
@@ -17,11 +17,9 @@ export function useSongPlayback({ previewUrl, duration, initialProgress, externa
      */
     const stopAndUnloadPrevious = async () => {
       if (audioPlayerInstance.soundRef) {
-        //console.log("Stopping and unloading the previous song...");
         try {
           await audioPlayerInstance.stop();
           await audioPlayerInstance.unload();
-          //console.log("Previous song unloaded.");
         } catch (error) {
           console.error("Error unloading previous song:", error);
         }
@@ -33,9 +31,6 @@ export function useSongPlayback({ previewUrl, duration, initialProgress, externa
      */
     const loadAndPlayNewSong = async () => {
       try {
-        //console.log("Loading song with previewUrl:", previewUrl);
-
-        // Load and start playback with a status listener
         await audioPlayerInstance.loadAndPlay(previewUrl, (status) => {
           if (status.isLoaded) {
             const currentProgress = status.positionMillis / (duration || status.durationMillis || 1);
@@ -45,13 +40,11 @@ export function useSongPlayback({ previewUrl, duration, initialProgress, externa
             }
 
             if (status.didJustFinish) {
-              //console.log("Playback finished.");
               dispatch(togglePlayPause());
             }
           }
         });
 
-        // Set the initial playback position if provided
         if (initialProgress > 0) {
           const validatedInitialProgress = Math.min(initialProgress, duration || 0);
           //console.log("Setting initial playback position:", validatedInitialProgress);
@@ -59,7 +52,7 @@ export function useSongPlayback({ previewUrl, duration, initialProgress, externa
         }
 
         dispatch(playSong(songData));
-        currentPreviewUrl.current = previewUrl; // Mark this song as loaded
+        currentPreviewUrl.current = previewUrl;
       } catch (error) {
         //console.error("Error loading and playing the song:", error);
         Alert.alert("Error", "Unable to load the song.");
