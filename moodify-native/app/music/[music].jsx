@@ -10,7 +10,6 @@ import { addSongToPlaylist, deleteSongFromPlaylist } from "@/api/playlistService
 import audioPlayerInstance from "@/utils/audioUtils";
 import { formatDuration } from "@/utils/timeUtils";
 import { getToken } from "@/utils/secureStore";
-import { useFavoritePlaylist } from "@/hooks/Music/useFavoritePlaylist";
 import { useTrackNavigation } from "@/hooks/Music/useTrackNavigation";
 import { useSongPlayback } from "@/hooks/Music/useSongPlayback";
 
@@ -19,7 +18,6 @@ export default function SongPage() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { isPlaying, currentSong } = useSelector((state) => state.playback);
-  //const favoritePlaylistId = useFavoritePlaylist();
   const favoritePlaylistId = useSelector((state) =>
     state.playlists.items.find((playlist) => playlist.is_default)?.id
   );
@@ -81,6 +79,15 @@ export default function SongPage() {
       dispatch(togglePlayPause());
     } catch (error) {
       console.error("Playback toggle error:", error);
+  
+      if (error?.message?.includes("audio session not activated")) {
+        Alert.alert(
+          "Audio Session Error",
+          "The audio session could not be activated. Please ensure no other app is using the audio session and try again."
+        );
+      } else {
+        Alert.alert("Playback Error", "An error occurred while toggling playback. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
