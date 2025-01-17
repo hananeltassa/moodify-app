@@ -15,9 +15,8 @@ export default function Onboarding() {
 
   const handleSpotifyLogin = async () => {
     try {
-      const user = await spotifyAuth(dispatch);
+      const user = await spotifyAuth(dispatch, setIsLoading);
       if (user) {
-        //console.log('User successfully logged in:', user);
         router.replace('/home');
       } else {
         console.log('Spotify login was canceled.');
@@ -25,8 +24,6 @@ export default function Onboarding() {
     } catch (error) {
       console.error('Error during Spotify login:', error);
       Alert.alert('Login Failed', 'Something went wrong during Spotify login. Please try again.');
-    } finally {
-      setIsLoading(false);
     }
   };
   

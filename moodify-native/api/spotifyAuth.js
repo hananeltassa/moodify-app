@@ -4,7 +4,7 @@ import { saveToken } from "../utils/secureStore";
 import { SPOTIFY_CLIENT_ID, SPOTIFY_AUTH_ENDPOINT, SPOTIFY_TOKEN_ENDPOINT, BACKEND_BASE_URL } from "@env";
 import { setUser } from "../redux/slices/userSlice";
 
-export const spotifyAuth = async (dispatch) => {
+export const spotifyAuth = async (dispatch, setLoading) => {
   try {
     const redirectUri = AuthSession.makeRedirectUri({ useProxy: true });
 
@@ -35,6 +35,8 @@ export const spotifyAuth = async (dispatch) => {
       const { code } = result.params;
       const codeVerifier = request.codeVerifier;
 
+      if (setLoading) setLoading(true);
+
       const backendResponse = await axios.post(`${BACKEND_BASE_URL}/api/users/spotify/callback`, {
         code,
         redirectUri,
@@ -43,22 +45,23 @@ export const spotifyAuth = async (dispatch) => {
 
       const { user, token } = backendResponse.data;
 
-      // Save token to secure storage
       await saveToken('jwtToken', token);
 
-      // Dispatch user data to Redux
       dispatch(setUser(user));
 
       return user;
     } else {
-      //console.log('Spotify login canceled:', result);
+      console.log('Spotify login canceled:', result);
       return null;
     }
   } catch (error) {
-    //console.error('Error during Spotify login:', error);
+    console.error('Error during Spotify login:', error);
     throw error;
+  } finally {
+    if (setLoading) setLoading(false);
   }
 };
+
 
 export const fetchSpotifyPlaylists = async (jwtToken) => {
   try {
