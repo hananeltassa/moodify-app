@@ -33,13 +33,12 @@ export default function Home() {
 
   const moodValue = mood?.mood;
 
-  // Get music queries based on the mood value
   const moodQuery = moodToMusicQuery[moodValue] || "the";
   const moodQuery1 = moodToMusicQuery[moodValue] || "top tracks 2025";
 
   // Debugging Logs
-  console.log("Mood to Music Query:", moodToMusicQuery[moodValue]);
-  console.log("Mood:", mood);
+  // console.log("Mood to Music Query:", moodToMusicQuery[moodValue]);
+  // console.log("Mood:", mood);
   // console.log("Mood Query for Personalized Recommendations:", moodQuery);
   // console.log("Mood Query for Music Recommendations:", moodQuery1);
   
