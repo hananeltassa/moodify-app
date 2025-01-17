@@ -34,27 +34,33 @@ export const useRecording = () => {
     try {
       const { status } = await Audio.requestPermissionsAsync();
       if (status !== "granted") {
-        alert("Permission to access microphone is required.");
+        alert("Microphone access is required to use this feature. Please enable microphone permissions in your device settings.");
         return;
       }
-
+  
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: true,
         playsInSilentModeIOS: true,
       });
-
+  
       const newRecording = new Audio.Recording();
       await newRecording.prepareToRecordAsync(recordingOptions);
       await newRecording.startAsync();
       setRecording(newRecording);
-      setAudioFile(null); // Clear previous audio file
+      setAudioFile(null);
       setIsRecording(true);
-      //console.log("Recording started");
+      console.log("Recording started");
     } catch (error) {
-      console.error("Error starting recording:", error);
+      if (error?.message?.includes("Session activation failed")) {
+        alert(
+          "Unable to start recording. The microphone is currently in use by another application. Please close any other apps using the microphone and try again."
+        );
+      } else {
+        alert("An unexpected error occurred while starting the recording. Please restart the app and try again. If the issue persists, contact support.");
+      }
     }
-  };
-
+  };  
+  
   const stopRecording = async () => {
     try {
       if (recording) {
