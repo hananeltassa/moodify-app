@@ -63,6 +63,8 @@
 
 Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, to store and manage all application data efficiently. Below is the structure of the main tables in the database:
 
+Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, to store and manage all application data efficiently. Below is the updated structure of the main tables in the database:
+
 - **Users Table**:
   ```sql
   CREATE TABLE Users (
@@ -75,6 +77,9 @@ Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, t
       refresh_token TEXT,
       profile_picture TEXT,
       role ENUM('user', 'admin') NOT NULL,
+      is_banned BOOLEAN DEFAULT FALSE,
+      gender ENUM('male', 'female', 'other'),
+      birthday DATE,
       created_at TIMESTAMP DEFAULT now(),
       updated_at TIMESTAMP DEFAULT now()
   );
@@ -83,26 +88,27 @@ Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, t
 - **SpotifyUserData Table**:
   ```sql
   CREATE TABLE SpotifyUserData (
-      id SERIAL PRIMARY KEY,
-      user_id INT REFERENCES Users(id),
-      liked_songs JSONB,
-      top_artists JSONB,
-      playlists JSONB,
-      created_at TIMESTAMP DEFAULT now(),
-      updated_at TIMESTAMP DEFAULT now()
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES Users(id),
+    liked_songs JSONB, -- Stores a list of liked songs
+    top_artists JSONB, -- Stores a list of top artists
+    playlists JSONB, -- Stores Spotify playlists
+    created_at TIMESTAMP DEFAULT now(),
+    updated_at TIMESTAMP DEFAULT now()
   );
   ```
 
 - **SpotifyGlobalData Table**:
   ```sql
   CREATE TABLE SpotifyGlobalData (
-      id SERIAL PRIMARY KEY,
-      type ENUM('artist', 'track', 'album') NOT NULL,
-      spotify_id VARCHAR(255) UNIQUE NOT NULL,
-      name VARCHAR(255) NOT NULL,
-      metadata JSONB NOT NULL,
-      created_at TIMESTAMP DEFAULT now(),
-      updated_at TIMESTAMP DEFAULT now()
+    id SERIAL PRIMARY KEY,
+    type ENUM('artist', 'track', 'album') NOT NULL,
+    spotify_id VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    metadata JSONB NOT NULL, -- Stores additional information (e.g., genre, release date)
+    popularity INT, -- Popularity score
+    created_at TIMESTAMP DEFAULT now(),
+    updated_at TIMESTAMP DEFAULT now()
   );
   ```
 
@@ -111,48 +117,54 @@ Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, t
   CREATE TABLE MoodDetectionInputs (
       id SERIAL PRIMARY KEY,
       user_id INT REFERENCES Users(id),
-      input_type VARCHAR(50) NOT NULL,
+      input_type VARCHAR(50) NOT NULL, -- e.g., voice, text, facial expressions
       input_data TEXT,
       detected_mood VARCHAR(50) NOT NULL,
-      timestamp TIMESTAMP DEFAULT now()
+      confidence DECIMAL(5,2), -- Confidence level in percentage
+      created_at TIMESTAMP DEFAULT now(),
+      updated_at TIMESTAMP DEFAULT now()
   );
   ```
 
 - **Challenges Table**:
   ```sql
-  CREATE TABLE Challenges (
+    CREATE TABLE Challenges (
       id SERIAL PRIMARY KEY,
       user_id INT REFERENCES Users(id),
       text TEXT NOT NULL,
-      type VARCHAR(50) NOT NULL,
+      type VARCHAR(50) NOT NULL, -- Challenge type
       status ENUM('pending', 'completed', 'rejected') NOT NULL,
+      time_of_day TIME,
+      is_daily BOOLEAN DEFAULT FALSE,
       completed_at TIMESTAMP,
-      created_at TIMESTAMP DEFAULT now()
+      created_at TIMESTAMP DEFAULT now(),
+      updated_at TIMESTAMP DEFAULT now()
   );
   ```
-
-- **AIMusicSuggestions Table**:
+- **Playlists Table**:
   ```sql
-  CREATE TABLE AIMusicSuggestions (
+  CREATE TABLE Playlists (
       id SERIAL PRIMARY KEY,
       user_id INT REFERENCES Users(id),
-      mood VARCHAR(50) NOT NULL,
-      suggestion_type VARCHAR(50) NOT NULL,
-      suggestion_details JSONB NOT NULL,
-      environment_factors JSONB,
-      created_at TIMESTAMP DEFAULT now()
+      name VARCHAR(255) NOT NULL,
+      is_default BOOLEAN DEFAULT FALSE,
+      created_at TIMESTAMP DEFAULT now(),
+      updated_at TIMESTAMP DEFAULT now()
+  );
+  ```
+- **PlaylistSongs Table**:
+  ```sql
+  CREATE TABLE PlaylistSongs (
+      id SERIAL PRIMARY KEY,
+      playlist_id INT REFERENCES Playlists(id),
+      source VARCHAR(50), -- e.g., local, Spotify
+      external_id VARCHAR(255), -- External song identifier
+      metadata JSONB, -- Stores song details (e.g., title, artist, album, duration)
+      created_at TIMESTAMP DEFAULT now(),
+      updated_at TIMESTAMP DEFAULT now()
   );
   ```
 
-- **AIChallenges Table**:
-  ```sql
-  CREATE TABLE AIChallenges (
-      id SERIAL PRIMARY KEY,
-      challenge_id INT REFERENCES Challenges(id),
-      environment JSONB NOT NULL,
-      created_at TIMESTAMP DEFAULT now()
-  );
-  ```
 
 ### ER Diagram
 
@@ -168,9 +180,9 @@ Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, t
 ### User Screens (Mobile)
 | Login screen  | Register screen | Landing screen | Loading screen |
 | ---| ---| ---| ---|
-| ![Landing](https://placehold.co/900x1600) | ![fsdaf](https://placehold.co/900x1600) | ![fsdaf](https://placehold.co/900x1600) | ![fsdaf](https://placehold.co/900x1600) |
-| Home screen  | Menu Screen | Order Screen | Checkout Screen |
-| ![Landing](https://placehold.co/900x1600) | ![fsdaf](https://placehold.co/900x1600) | ![fsdaf](https://placehold.co/900x1600) | ![fsdaf](https://placehold.co/900x1600) |
+| <img src="./readme/demo/login.jpg"/> | ![fsdaf](https://placehold.co/900x1600) | <img src="./readme/demo/onboarding.jpg"/> | <img src="./readme/demo/loading.gif"/> |
+| Home screen  | Menu Screen | Voice Detect Mood Screen | Checkout Screen |
+| <img src="./readme/demo/home.jpg"/> | ![fsdaf](https://placehold.co/900x1600) | <img src="./readme/demo/audio.gif"/> | ![fsdaf](https://placehold.co/900x1600) |
 
 ### Admin Screens (Web)
 | Login screen  | Register screen |  Landing screen |
