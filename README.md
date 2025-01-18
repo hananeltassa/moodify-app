@@ -52,7 +52,7 @@
 ### Mockups
 | Mood Tracking Screen | Playlist Screen | AI Coach Interaction Screen |
 | ---| ---| ---|
-| ![Landing](./readme/demo/1440x1024.png) | ![fsdaf](./readme/demo/1440x1024.png) | ![fsdaf](./readme/demo/1440x1024.png) |
+| <img src="./readme/demo/text-detect.gif"/> | ![fsdaf](./readme/demo/1440x1024.png) | ![fsdaf](./readme/demo/1440x1024.png) |
 
 <br><br>
 
@@ -60,8 +60,6 @@
 <img src="./readme/title5.svg"/>
 
 ###  Architecting Data Excellence: Innovative Database Design Strategies:
-
-Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, to store and manage all application data efficiently. Below is the structure of the main tables in the database:
 
 Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, to store and manage all application data efficiently. Below is the updated structure of the main tables in the database:
 
@@ -178,18 +176,16 @@ Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, t
 
 
 ### User Screens (Mobile)
-| Login screen  | Register screen | Landing screen | Loading screen |
+| Login screen  | Home screen | Landing screen | Loading screen |
 | ---| ---| ---| ---|
-| <img src="./readme/demo/login.jpg"/> | ![fsdaf](https://placehold.co/900x1600) | <img src="./readme/demo/onboarding.jpg"/> | <img src="./readme/demo/loading.gif"/> |
-| Home screen  | Menu Screen | Voice Detect Mood Screen | Checkout Screen |
-| <img src="./readme/demo/home.jpg"/> | ![fsdaf](https://placehold.co/900x1600) | <img src="./readme/demo/audio.gif"/> | ![fsdaf](https://placehold.co/900x1600) |
+| <img src="./readme/demo/login.jpg"/> | <img src="./readme/demo/home.jpg"/> | <img src="./readme/demo/onboarding.jpg"/> | <img src="./readme/demo/loading.gif"/> |
+| Challenges screen  | Voice Detect Mood Screen | Search Screen | Checkout Screen |
+|  <img src="./readme/demo/challenges.gif"/> | <img src="./readme/demo/audio.gif"/> | <img src="./readme/demo/search.gif"/> | ![fsdaf](https://placehold.co/900x1600) |
 
 ### Admin Screens (Web)
-| Login screen  | Register screen |  Landing screen |
+| Login screen  | Dashboard screen |  Users screen |
 | ---| ---| ---|
-| ![Landing](./readme/demo/1440x1024.png) | ![fsdaf](./readme/demo/1440x1024.png) | ![fsdaf](./readme/demo/1440x1024.png) |
-| Home screen  | Menu Screen | Order Screen |
-| ![Landing](./readme/demo/1440x1024.png) | ![fsdaf](./readme/demo/1440x1024.png) | ![fsdaf](./readme/demo/1440x1024.png) |
+| <img src="./readme/demo/admin_login.png"/> | <img src="./readme/demo/admin_dashboard.png"/> | <img src="./readme/demo/admin_users.jpg"/> |
 
 <br><br>
 
