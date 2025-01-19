@@ -50,9 +50,9 @@
 
 
 ### Mockups
-| Mood Tracking Screen | Playlist Screen | AI Coach Interaction Screen |
+| Mood Tracking Screen | Playlist Screen | Muisc Screen |
 | ---| ---| ---|
-| <img src="./readme/demo/text-detect.gif"/> | ![fsdaf](./readme/demo/1440x1024.png) | ![fsdaf](./readme/demo/1440x1024.png) |
+| <img src="./readme/demo/text-detect.gif" width="200" height="433"/> | <img src="./readme/demo/playlist.jpg" width="200" height="433"/> | <img src="./readme/demo/music.jpg" width="200" height="433"/> |
 
 <br><br>
 
@@ -177,10 +177,11 @@ Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, t
 
 ### User Screens (Mobile)
 | Login screen  | Home screen | Landing screen | Loading screen |
-| ---| ---| ---| ---|
-| <img src="./readme/demo/login.jpg"/> | <img src="./readme/demo/home.jpg"/> | <img src="./readme/demo/onboarding.jpg"/> | <img src="./readme/demo/loading.gif"/> |
-| Challenges screen  | Voice Detect Mood Screen | Search Screen | Checkout Screen |
-|  <img src="./readme/demo/challenges.gif"/> | <img src="./readme/demo/audio.gif"/> | <img src="./readme/demo/search.gif"/> | ![fsdaf](https://placehold.co/900x1600) |
+| ---| ---| ---| --- |
+| <img src="./readme/demo/login.jpg" width="200" height="433" /> | <img src="./readme/demo/home.jpg" width="200" height="433" /> | <img src="./readme/demo/onboarding.jpg" width="200" height="433" /> | <img src="./readme/demo/loading.gif" width="200" height="433" /> |
+| Challenges screen  | Voice Detect Mood Screen | Video Detect Mood Screen | Search Screen | 
+| <img src="./readme/demo/challenges.gif" width="200" height="433" /> | <img src="./readme/demo/audio.gif" width="200" height="433" /> | <img src="./readme/demo/video.gif" width="200" height="433" /> | <img src="./readme/demo/search.gif" width="200" height="433" /> |
+
 
 ### Admin Screens (Web)
 | Login screen  | Dashboard screen |  Users screen |
