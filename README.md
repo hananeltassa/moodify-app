@@ -50,9 +50,11 @@
 
 
 ### Mockups
-| Mood Tracking Screen | Playlist Screen | Muisc Screen |
-| ---| ---| ---|
-| <img src="./readme/demo/text-detect.gif" width="200" height="433"/> | <img src="./readme/demo/playlist.jpg" width="200" height="433"/> | <img src="./readme/demo/music.jpg" width="200" height="433"/> |
+| Mood Tracking Screen | Home Screen |
+| ---| ---|
+| <img src="./readme/demo/text-detect.gif" width="200" height="433"/> | <img src="./readme/demo/home.jpg" width="200" height="433"/> |
+|Playlist Screen |  Muisc Screen |
+| <img src="./readme/demo/playlist.jpg" width="200" height="433"/> | <img src="./readme/demo/music.jpg" width="200" height="433"/> |
 
 <br><br>
 
@@ -176,17 +178,22 @@ Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, t
 
 
 ### User Screens (Mobile)
-| Login screen  | Home screen | Landing screen | Loading screen |
-| ---| ---| ---| --- |
-| <img src="./readme/demo/login.jpg" width="200" height="433" /> | <img src="./readme/demo/home.jpg" width="200" height="433" /> | <img src="./readme/demo/onboarding.jpg" width="200" height="433" /> | <img src="./readme/demo/loading.gif" width="200" height="433" /> |
-| Challenges screen  | Voice Detect Mood Screen | Video Detect Mood Screen | Search Screen | 
-| <img src="./readme/demo/challenges.gif" width="200" height="433" /> | <img src="./readme/demo/audio.gif" width="200" height="433" /> | <img src="./readme/demo/video.gif" width="200" height="433" /> | <img src="./readme/demo/search.gif" width="200" height="433" /> |
-
+| Login screen  | Home screen |
+| ---| ---|
+| <img src="./readme/demo/login.jpg" width="200" height="433" /> | <img src="./readme/demo/home.jpg" width="200" height="433" /> |
+| Landing screen | Loading screen |
+| <img src="./readme/demo/onboarding.jpg" width="200" height="433" /> | <img src="./readme/demo/loading.gif" width="200" height="433" /> |
+| Challenges screen  | Voice Detect Mood Screen |
+| <img src="./readme/demo/challenges.gif" width="200" height="433" /> | <img src="./readme/demo/audio.gif" width="200" height="433" /> |
+| Video Detect Mood Screen | Search Screen | 
+| <img src="./readme/demo/video.gif" width="200" height="433" /> | <img src="./readme/demo/search.gif" width="200" height="433" /> |
 
 ### Admin Screens (Web)
-| Login screen  | Dashboard screen |  Users screen |
-| ---| ---| ---|
-| <img src="./readme/demo/admin_login.png"/> | <img src="./readme/demo/admin_dashboard.png"/> | <img src="./readme/demo/admin_users.jpg"/> |
+| Login screen  | Dashboard screen |
+| ---| ---|
+| <img src="./readme/demo/admin_login.png"/> | <img src="./readme/demo/admin_dashboard.png"/> |
+| Dashboard screen |  Users screen |
+| <img src="./readme/demo/admin_dashboard2.png"/> | <img src="./readme/demo/admin_users.jpg"/> |
 
 <br><br>
 
