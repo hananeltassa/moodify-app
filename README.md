@@ -11,10 +11,20 @@
 > By leveraging AI-driven mood analysis, Moodify creates tailored playlists, offers actionable insights, and provides emotional support through an interactive AI coach. The app aims to empower users to improve their mental well-being with seamless music integration.
 
 ### User Stories
-- As a user, I want to log my mood, so the app can provide personalized music recommendations.
+**Normal User**
+- As a user, I want to log my mood using text, voice, or facial expressions, so the app can provide personalized music recommendations.
 - As a user, I want to access activity-based playlists, so I can find music that matches my current tasks or workouts.
-- As a user, I want to interact with an AI coach, so I can receive tips and challenges to enhance my emotional well-being.
 - As a user, I want the app to track my mood patterns over time, so I can understand and improve my mental health.
+
+**AI Coach User**
+- As a coach, I want to analyze mood data trends, so I can recommend activities and playlists to improve the user's well-being.
+- As a coach, I want to offer mood-enhancing challenges, so users can engage in activities that boost their emotional health.
+- As a coach, I want to curate personalized music playlists based on user data and environmental factors (e.g., time of day, weather), so users have relevant music options.
+
+**Admin User**
+- As an admin, I want to manage and analyze user data, so I can understand app usage trends and ensure data-driven improvements.
+- As an admin, I want to monitor and refine AI-generated challenges and recommendations, so they align with the app’s objectives.
+- As an admin, I want to access analytical dashboards, so I can track user engagement and emotional health patterns across the platform.
 
 <br><br>
 <!-- Tech stack -->
@@ -25,7 +35,7 @@
 - This project uses [React](https://reactjs.org/) and [React Native](https://reactnative.dev/) for the frontend. React is used for the web admin dashboard, while React Native powers the mobile application for a seamless experience on both iOS and Android.
 - For backend services, the app uses [Node.js](https://nodejs.org/) with [Express.js](https://expressjs.com/). Node.js provides a scalable runtime environment, and Express.js is used to handle APIs and backend logic efficiently.
 - For persistent storage (database), the app uses [PostgreSQL](https://www.postgresql.org/). PostgreSQL is a relational database that stores user data, mood logs, playlists, and activity records.
-- For authentication, the app integrates [Firebase Authentication](https://firebase.google.com/docs/auth), enabling secure login with Google and other methods.
+- The app also integrates [Django](https://www.djangoproject.com/) for implementing the mood detection models, leveraging its robust framework for handling AI/ML model interactions and API endpoints.
 - The app follows modern design principles and uses a clean and intuitive user interface for an optimal user experience.
 - The app uses the font ["Avenir Next LT Pro"](https://fontsgeek.com/fonts/avenir-next-lt-pro-regular) as its primary font, ensuring a clean and modern design for an intuitive user experience.
 
@@ -40,9 +50,11 @@
 
 
 ### Mockups
-| Mood Tracking Screen | Playlist Screen | AI Coach Interaction Screen |
-| ---| ---| ---|
-| ![Landing](./readme/demo/1440x1024.png) | ![fsdaf](./readme/demo/1440x1024.png) | ![fsdaf](./readme/demo/1440x1024.png) |
+| Mood Tracking Screen | Home Screen |
+| ---| ---|
+| <img src="./readme/demo/text-detect.gif" width="200" height="433"/> | <img src="./readme/demo/home.jpg" width="200" height="433"/> |
+|Playlist Screen |  Muisc Screen |
+| <img src="./readme/demo/playlist.jpg" width="200" height="433"/> | <img src="./readme/demo/music.jpg" width="200" height="433"/> |
 
 <br><br>
 
@@ -51,7 +63,7 @@
 
 ###  Architecting Data Excellence: Innovative Database Design Strategies:
 
-Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, to store and manage all application data efficiently. Below is the structure of the main tables in the database:
+Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, to store and manage all application data efficiently. Below is the updated structure of the main tables in the database:
 
 - **Users Table**:
   ```sql
@@ -65,6 +77,9 @@ Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, t
       refresh_token TEXT,
       profile_picture TEXT,
       role ENUM('user', 'admin') NOT NULL,
+      is_banned BOOLEAN DEFAULT FALSE,
+      gender ENUM('male', 'female', 'other'),
+      birthday DATE,
       created_at TIMESTAMP DEFAULT now(),
       updated_at TIMESTAMP DEFAULT now()
   );
@@ -73,26 +88,27 @@ Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, t
 - **SpotifyUserData Table**:
   ```sql
   CREATE TABLE SpotifyUserData (
-      id SERIAL PRIMARY KEY,
-      user_id INT REFERENCES Users(id),
-      liked_songs JSONB,
-      top_artists JSONB,
-      playlists JSONB,
-      created_at TIMESTAMP DEFAULT now(),
-      updated_at TIMESTAMP DEFAULT now()
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES Users(id),
+    liked_songs JSONB, -- Stores a list of liked songs
+    top_artists JSONB, -- Stores a list of top artists
+    playlists JSONB, -- Stores Spotify playlists
+    created_at TIMESTAMP DEFAULT now(),
+    updated_at TIMESTAMP DEFAULT now()
   );
   ```
 
 - **SpotifyGlobalData Table**:
   ```sql
   CREATE TABLE SpotifyGlobalData (
-      id SERIAL PRIMARY KEY,
-      type ENUM('artist', 'track', 'album') NOT NULL,
-      spotify_id VARCHAR(255) UNIQUE NOT NULL,
-      name VARCHAR(255) NOT NULL,
-      metadata JSONB NOT NULL,
-      created_at TIMESTAMP DEFAULT now(),
-      updated_at TIMESTAMP DEFAULT now()
+    id SERIAL PRIMARY KEY,
+    type ENUM('artist', 'track', 'album') NOT NULL,
+    spotify_id VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    metadata JSONB NOT NULL, -- Stores additional information (e.g., genre, release date)
+    popularity INT, -- Popularity score
+    created_at TIMESTAMP DEFAULT now(),
+    updated_at TIMESTAMP DEFAULT now()
   );
   ```
 
@@ -101,48 +117,54 @@ Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, t
   CREATE TABLE MoodDetectionInputs (
       id SERIAL PRIMARY KEY,
       user_id INT REFERENCES Users(id),
-      input_type VARCHAR(50) NOT NULL,
+      input_type VARCHAR(50) NOT NULL, -- e.g., voice, text, facial expressions
       input_data TEXT,
       detected_mood VARCHAR(50) NOT NULL,
-      timestamp TIMESTAMP DEFAULT now()
+      confidence DECIMAL(5,2), -- Confidence level in percentage
+      created_at TIMESTAMP DEFAULT now(),
+      updated_at TIMESTAMP DEFAULT now()
   );
   ```
 
 - **Challenges Table**:
   ```sql
-  CREATE TABLE Challenges (
+    CREATE TABLE Challenges (
       id SERIAL PRIMARY KEY,
       user_id INT REFERENCES Users(id),
       text TEXT NOT NULL,
-      type VARCHAR(50) NOT NULL,
+      type VARCHAR(50) NOT NULL, -- Challenge type
       status ENUM('pending', 'completed', 'rejected') NOT NULL,
+      time_of_day TIME,
+      is_daily BOOLEAN DEFAULT FALSE,
       completed_at TIMESTAMP,
-      created_at TIMESTAMP DEFAULT now()
+      created_at TIMESTAMP DEFAULT now(),
+      updated_at TIMESTAMP DEFAULT now()
   );
   ```
-
-- **AIMusicSuggestions Table**:
+- **Playlists Table**:
   ```sql
-  CREATE TABLE AIMusicSuggestions (
+  CREATE TABLE Playlists (
       id SERIAL PRIMARY KEY,
       user_id INT REFERENCES Users(id),
-      mood VARCHAR(50) NOT NULL,
-      suggestion_type VARCHAR(50) NOT NULL,
-      suggestion_details JSONB NOT NULL,
-      environment_factors JSONB,
-      created_at TIMESTAMP DEFAULT now()
+      name VARCHAR(255) NOT NULL,
+      is_default BOOLEAN DEFAULT FALSE,
+      created_at TIMESTAMP DEFAULT now(),
+      updated_at TIMESTAMP DEFAULT now()
+  );
+  ```
+- **PlaylistSongs Table**:
+  ```sql
+  CREATE TABLE PlaylistSongs (
+      id SERIAL PRIMARY KEY,
+      playlist_id INT REFERENCES Playlists(id),
+      source VARCHAR(50), -- e.g., local, Spotify
+      external_id VARCHAR(255), -- External song identifier
+      metadata JSONB, -- Stores song details (e.g., title, artist, album, duration)
+      created_at TIMESTAMP DEFAULT now(),
+      updated_at TIMESTAMP DEFAULT now()
   );
   ```
 
-- **AIChallenges Table**:
-  ```sql
-  CREATE TABLE AIChallenges (
-      id SERIAL PRIMARY KEY,
-      challenge_id INT REFERENCES Challenges(id),
-      environment JSONB NOT NULL,
-      created_at TIMESTAMP DEFAULT now()
-  );
-  ```
 
 ### ER Diagram
 
@@ -156,18 +178,22 @@ Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, t
 
 
 ### User Screens (Mobile)
-| Login screen  | Register screen | Landing screen | Loading screen |
-| ---| ---| ---| ---|
-| ![Landing](https://placehold.co/900x1600) | ![fsdaf](https://placehold.co/900x1600) | ![fsdaf](https://placehold.co/900x1600) | ![fsdaf](https://placehold.co/900x1600) |
-| Home screen  | Menu Screen | Order Screen | Checkout Screen |
-| ![Landing](https://placehold.co/900x1600) | ![fsdaf](https://placehold.co/900x1600) | ![fsdaf](https://placehold.co/900x1600) | ![fsdaf](https://placehold.co/900x1600) |
+| Login screen  | Home screen |
+| ---| ---|
+| <img src="./readme/demo/login.jpg" width="200" height="433" /> | <img src="./readme/demo/home.jpg" width="200" height="433" /> |
+| Landing screen | Loading screen |
+| <img src="./readme/demo/onboarding.jpg" width="200" height="433" /> | <img src="./readme/demo/loading.gif" width="200" height="433" /> |
+| Challenges screen  | Voice Detect Mood Screen |
+| <img src="./readme/demo/challenges.gif" width="200" height="433" /> | <img src="./readme/demo/audio.gif" width="200" height="433" /> |
+| Video Detect Mood Screen | Search Screen | 
+| <img src="./readme/demo/video.gif" width="200" height="433" /> | <img src="./readme/demo/search.gif" width="200" height="433" /> |
 
 ### Admin Screens (Web)
-| Login screen  | Register screen |  Landing screen |
-| ---| ---| ---|
-| ![Landing](./readme/demo/1440x1024.png) | ![fsdaf](./readme/demo/1440x1024.png) | ![fsdaf](./readme/demo/1440x1024.png) |
-| Home screen  | Menu Screen | Order Screen |
-| ![Landing](./readme/demo/1440x1024.png) | ![fsdaf](./readme/demo/1440x1024.png) | ![fsdaf](./readme/demo/1440x1024.png) |
+| Login screen  | Dashboard screen |
+| ---| ---|
+| <img src="./readme/demo/admin_login.png"/> | <img src="./readme/demo/admin_dashboard.png"/> |
+| Dashboard screen |  Users screen |
+| <img src="./readme/demo/admin_dashboard2.png"/> | <img src="./readme/demo/admin_users.jpg"/> |
 
 <br><br>
 
