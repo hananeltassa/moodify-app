@@ -219,7 +219,7 @@ This project utilizes **advanced prompt engineering techniques** to interact sea
 #### Example Prompt
 Below is an example of the structured prompt used in the application:
 
-<img src="./readme/prompt_example.png"/>
+<img src="./readme/demo/prompt_example.png"/>
 
 This prompt dynamically incorporates real-time user data, guiding GPT-4 to generate responses like:
 - **Title**: "Mindfulness Breakfast"
@@ -252,8 +252,8 @@ Comprehensive API documentation is available through **Postman** for easy integr
 | Login Api| getTrendyMusic Api |
 | ---| ---|
 | <img src="./readme/demo/loginApi.png"/> | <img src="./readme/demo/getTrendyTracksApi.png"/> |
-| Dashboard screen |  Users screen |
-| <img src="./readme/demo/challengeApi.png"/> | <img src="./readme/demo/spoifySearchApi.jpg"/> |
+| Challenges Api | Spotify Search Api |
+| <img src="./readme/demo/challengeApi.png"/> | <img src="./readme/demo/spoifySearchApi.png"/> |
 
 <!-- Unit Testing 
 <img src="./readme/title9.svg"/>
