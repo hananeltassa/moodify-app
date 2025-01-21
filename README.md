@@ -56,7 +56,7 @@
 ### Mockups
 | Home Screen | Mood Tracking Screen | Playlist Screen |
 | ---| ---| ---|
-| <img src="./readme/demo/Home.png" width="310" height="660" /> | <img src="./readme/demo/Mood-detection-img.png" width="310" height="660"/> | <img src="./readme/demo/Playlist-figma.png" width="310" height="660"/>
+| <img src="./readme/demo/Home.png" width="250" height="533" /> | <img src="./readme/demo/Mood-detection-img.png" width="250" height="533"/> | <img src="./readme/demo/Playlist-figma.png" width="250" height="533"/>
 
 <br><br>
 
@@ -182,11 +182,12 @@ Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, t
 ### User Screens (Mobile)
 | Login screen  | Home screen | Loading screen |
 | ---| ---| ---|
-| <img src="./readme/demo/login.jpg" width="310" height="660" /> | <img src="./readme/demo/home.jpg" width="310" height="660" /> | <img src="./readme/demo/loading.gif" width="310" height="660" /> |
+| <img src="./readme/demo/login.jpg" width="250" height="533" /> | <img src="./readme/demo/home.jpg" width="250" height="533" /> | <img src="./readme/demo/loading.gif" width="250" height="533" /> |
 | Video Detect Mood Screen | Voice Detect Mood Screen | Text Detect Mood Screen |
-| <img src="./readme/demo/video.gif" width="310" height="660" />  | <img src="./readme/demo/audio.gif" width="310" height="660"/> | <img src="./readme/demo/text-detect.gif" width="310" height="660"/> |
+| <img src="./readme/demo/video.gif" width="250" height="533" /> | <img src="./readme/demo/audio.gif" width="250" height="533" /> | <img src="./readme/demo/text-detect.gif" width="250" height="533" /> |
 | Challenges screen | Search Screen | 
-| <img src="./readme/demo/challenges.gif" width="310" height="660" /> | <img src="./readme/demo/search.gif"  width="310" height="660" /> |
+| <img src="./readme/demo/challenges.gif" width="250" height="533" /> | <img src="./readme/demo/search.gif" width="250" height="533" /> |
+
 
 
 ### Admin Screens (Web)
