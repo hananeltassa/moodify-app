@@ -56,7 +56,7 @@
 ### Mockups
 | Home Screen | Mood Tracking Screen | Playlist Screen |
 | ---| ---| ---|
-| <img src="./readme/demo/Home.png" width="310" height="660" /> | <img src="./readme/Mood-detection-img.png" width="310" height="660"/> | <img src="./readme/demo/Playlist.png" width="310" height="660"/>
+| <img src="./readme/demo/Home.png" width="310" height="660" /> | <img src="./readme/demo/Mood-detection-img.png" width="310" height="660"/> | <img src="./readme/demo/Playlist-figma.png" width="310" height="660"/>
 
 <br><br>
 
@@ -170,7 +170,7 @@ Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, t
 
 ### ER Diagram
 
-<img src="./readme/diagram.png"/>
+<img src="./readme/demo/diagram.png"/>
 
 <br><br>
 
