@@ -30,12 +30,16 @@
 <!-- Tech stack -->
 <img src="./readme/title3.svg"/>
 
-###  Moodify is built using the following technologies:
+### Moodify is built using the following technologies:
 
 - This project uses [React](https://reactjs.org/) and [React Native](https://reactnative.dev/) for the frontend. React is used for the web admin dashboard, while React Native powers the mobile application for a seamless experience on both iOS and Android.
+- For mobile app development, the app leverages [Expo](https://expo.dev/). Expo streamlines the development process with its set of tools and services for building, deploying, and testing React Native applications.
 - For backend services, the app uses [Node.js](https://nodejs.org/) with [Express.js](https://expressjs.com/). Node.js provides a scalable runtime environment, and Express.js is used to handle APIs and backend logic efficiently.
 - For persistent storage (database), the app uses [PostgreSQL](https://www.postgresql.org/). PostgreSQL is a relational database that stores user data, mood logs, playlists, and activity records.
+- The app integrates [Spotify API](https://developer.spotify.com/) and [Jamendo API](https://devportal.jamendo.com/) to fetch music tracks, playlists, and trending songs, enriching the user experience with curated music content.
 - The app also integrates [Django](https://www.djangoproject.com/) for implementing the mood detection models, leveraging its robust framework for handling AI/ML model interactions and API endpoints.
+- For deploying backend services and handling infrastructure, the app uses [AWS](https://aws.amazon.com/), leveraging services such as EC2 for servers.
+- For authentication and secure user sessions, the app integrates [JWT](https://jwt.io/) (JSON Web Tokens), ensuring safe and efficient login processes across platforms.
 - The app follows modern design principles and uses a clean and intuitive user interface for an optimal user experience.
 - The app uses the font ["Avenir Next LT Pro"](https://fontsgeek.com/fonts/avenir-next-lt-pro-regular) as its primary font, ensuring a clean and modern design for an intuitive user experience.
 
@@ -50,11 +54,9 @@
 
 
 ### Mockups
-| Mood Tracking Screen | Home Screen |
-| ---| ---|
-| <img src="./readme/demo/text-detect.gif" width="200" height="433"/> | <img src="./readme/demo/home.jpg" width="200" height="433"/> |
-|Playlist Screen |  Muisc Screen |
-| <img src="./readme/demo/playlist.jpg" width="200" height="433"/> | <img src="./readme/demo/music.jpg" width="200" height="433"/> |
+| Home Screen | Mood Tracking Screen | Playlist Screen |
+| ---| ---| ---|
+| <img src="./readme/demo/Home.png" width="310" height="660" /> | <img src="./readme/Mood-detection-img.png" width="310" height="660"/> | <img src="./readme/demo/Playlist.png" width="310" height="660"/>
 
 <br><br>
 
@@ -178,15 +180,14 @@ Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, t
 
 
 ### User Screens (Mobile)
-| Login screen  | Home screen |
-| ---| ---|
-| <img src="./readme/demo/login.jpg" width="200" height="433" /> | <img src="./readme/demo/home.jpg" width="200" height="433" /> |
-| Landing screen | Loading screen |
-| <img src="./readme/demo/onboarding.jpg" width="200" height="433" /> | <img src="./readme/demo/loading.gif" width="200" height="433" /> |
-| Challenges screen  | Voice Detect Mood Screen |
-| <img src="./readme/demo/challenges.gif" width="200" height="433" /> | <img src="./readme/demo/audio.gif" width="200" height="433" /> |
-| Video Detect Mood Screen | Search Screen | 
-| <img src="./readme/demo/video.gif" width="200" height="433" /> | <img src="./readme/demo/search.gif" width="200" height="433" /> |
+| Login screen  | Home screen | Loading screen |
+| ---| ---| ---|
+| <img src="./readme/demo/login.jpg" width="310" height="660" /> | <img src="./readme/demo/home.jpg" width="310" height="660" /> | <img src="./readme/demo/loading.gif" width="310" height="660" /> |
+| Video Detect Mood Screen | Voice Detect Mood Screen | Text Detect Mood Screen |
+| <img src="./readme/demo/video.gif" width="310" height="660" />  | <img src="./readme/demo/audio.gif" width="310" height="660"/> | <img src="./readme/demo/text-detect.gif" width="310" height="660"/> |
+| Challenges screen | Search Screen | 
+| <img src="./readme/demo/challenges.gif" width="310" height="660" /> | <img src="./readme/demo/search.gif"  width="310" height="660" /> |
+
 
 ### Admin Screens (Web)
 | Login screen  | Dashboard screen |
@@ -201,22 +202,60 @@ Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, t
 <!-- Prompt Engineering -->
 <img src="./readme/title7.svg"/>
 
-###  Mastering AI Interaction: Unveiling the Power of Prompt Engineering:
+### Mastering AI Interaction: Unveiling the Power of Prompt Engineering
 
-- This project uses advanced prompt engineering techniques to optimize the interaction with natural language processing models. By skillfully crafting input instructions, we tailor the behavior of the models to achieve precise and efficient language understanding and generation for various tasks and preferences.
+This project utilizes **advanced prompt engineering techniques** to interact seamlessly with **OpenAI's GPT-4**, delivering highly personalized and context-aware challenges for users. By leveraging user-specific inputs like mood, time of day, and previously generated challenges, the system ensures unique and relevant outputs every time.
+
+#### How Prompt Engineering Works
+1. **Dynamic Inputs**:
+   - The prompt is dynamically generated using user-specific variables such as `mood`, `time_of_day`, and a list of `existingChallengeTexts`. These inputs provide the context needed for GPT-4 to craft highly tailored responses.
+
+2. **Avoiding Duplicates**:
+   - The system ensures no duplication of challenges by explicitly including previously generated challenges in the prompt. This enhances user experience by keeping content fresh and engaging.
+
+3. **Structured Outputs**:
+   - The prompt instructs GPT-4 to format the response in a predefined JSON structure. This ensures consistency and makes it easy for the backend to parse and process the response.
+
+#### Example Prompt
+Below is an example of the structured prompt used in the application:
+
+<img src="./readme/prompt_example.png"/>
+
+This prompt dynamically incorporates real-time user data, guiding GPT-4 to generate responses like:
+- **Title**: "Mindfulness Breakfast"
+- **Description**: "Enjoy your breakfast mindfully, savor every bite and every taste."
+- **Hashtags**: `#MindfulEating`, `#HappinessIsNow`, `#TasteTheMoment`
+
+#### Benefits of Prompt Engineering
+- **Enhanced Personalization**: Every challenge is crafted to align with the user’s current mood and context.
+- **High Accuracy**: The structured format ensures outputs meet specific requirements, minimizing the need for manual intervention.
+- **Dynamic Scalability**: Prompts adapt to varying inputs, allowing the system to handle diverse use cases efficiently.
+
+This combination of dynamic prompts, validation processes, and structured outputs showcases the power of prompt engineering in delivering a seamless AI interaction experience.
 
 <br><br>
 
 <!-- AWS Deployment -->
 <img src="./readme/title8.svg"/>
 
-###  Efficient AI Deployment: Unleashing the Potential with AWS Integration:
+### Efficient AI Deployment: Unleashing the Potential with AWS Integration
 
-- This project leverages AWS deployment strategies to seamlessly integrate and deploy natural language processing models. With a focus on scalability, reliability, and performance, we ensure that AI applications powered by these models deliver robust and responsive solutions for diverse use cases.
+This project leverages AWS for seamless deployment of our AI-powered application, ensuring **scalability**, **reliability**, and **performance**. The backend server operates on an **AWS EC2 instance**, providing robust infrastructure for handling application requests and data processing.
 
-<br><br>
+#### API Documentation
+Comprehensive API documentation is available through **Postman** for easy integration and testing.
 
-<!-- Unit Testing -->
+
+#### API Documentation
+Comprehensive API documentation is available through **Postman** for easy integration and testing.
+
+| Login Api| getTrendyMusic Api |
+| ---| ---|
+| <img src="./readme/demo/loginApi.png"/> | <img src="./readme/demo/getTrendyTracksApi.png"/> |
+| Dashboard screen |  Users screen |
+| <img src="./readme/demo/challengeApi.png"/> | <img src="./readme/demo/spoifySearchApi.jpg"/> |
+
+<!-- Unit Testing 
 <img src="./readme/title9.svg"/>
 
 ###  Precision in Development: Harnessing the Power of Unit Testing:
@@ -224,7 +263,7 @@ Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, t
 - This project employs rigorous unit testing methodologies to ensure the reliability and accuracy of code components. By systematically evaluating individual units of the software, we guarantee a robust foundation, identifying and addressing potential issues early in the development process.
 
 <br><br>
-
+-->
 
 <!-- How to run -->
 <img src="./readme/title10.svg"/>
@@ -236,34 +275,82 @@ Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, t
 This is an example of how to list things you need to use the software and how to install them.
 * npm
   ```sh
-  npm install npm@latest -g
+  npm install
   ```
 
 ### Installation
 
 _Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
 
-1. Get a free API Key at [example](https://example.com)
+1. Get a free API Key at [OpenAI](https://platform.openai.com/signup/).
 2. Clone the repo
    ```sh
-   git clone [github](https://github.com/hananeltassa/Moodify) 
+   git clone https://github.com/hananeltassa/Moodify-server.git
    ```
-3. Install NPM packages
+3. cd to /Moodify-server
+4. Install NPM packages
    ```sh
    npm install
    ```
-4. Set up PostgreSQL:
-   - Create a database in PostgreSQL.
-   - Add connection details (e.g., `DB_NAME`, `DB_USER`, `DB_PASSWORD`) to `.env` file.
+5. Set up PostgreSQL:
+   ### Set up PostgreSQL
 
-5. Run migrations to set up the database schema:
+a. **Install PostgreSQL**:
+   - On **Windows**: Download and install PostgreSQL from [postgresql.org](https://www.postgresql.org/download/). During installation, set a username and password for the default PostgreSQL user (e.g., `postgres`).
+   - On **macOS**: Use Homebrew to install PostgreSQL:
+     ```sh
+     brew install postgresql
+     ```
+   - On **Linux**: Use your package manager (e.g., `apt` for Ubuntu):
+     ```sh
+     sudo apt update
+     sudo apt install postgresql postgresql-contrib
+     ```
+
+b. **Start PostgreSQL Service**:
+   - On **Windows**: Start the PostgreSQL service using the Services Manager.
+   - On **macOS/Linux**: Start the PostgreSQL server:
+     ```sh
+     brew services start postgresql # macOS
+     sudo service postgresql start # Linux
+     ```
+
+c. **Create a Database**:
+   - Log in to the PostgreSQL shell as the default user:
+     ```sh
+     psql -U postgres
+     ```
+   - Create a new database:
+     ```sql
+     CREATE DATABASE moodify;
+     ```
+
+d. **Add Connection Details to `.env` File**:
+   - Create a `.env` file in the root directory of the project if it doesn't exist.
+   - Add the following variables, replacing placeholder values with your actual configuration:
+     ```env
+     DB_HOST=localhost
+     DB_PORT=5432
+     DB_NAME=moodify
+     DB_USER=postgres
+     DB_PASSWORD=your_password_here
+     ```
+
+7. Run migrations to set up the database schema:
    ```sh
    npm run migrations
    ```
 
-6. Enter your API in `config.js`
+8. Enter your API in `config.js`
    ```js
    const API_KEY = 'ENTER YOUR API';
    ```
+
+9. Start the Application
+```sh
+  npm start
+```
+  Access the application at [`http://localhost:3000`](http://localhost:3000) (or the port configured in your app).
+
 
 Now, you should be able to run Moodify locally and explore its features.
