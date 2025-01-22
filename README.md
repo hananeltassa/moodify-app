@@ -56,7 +56,7 @@
 ### Mockups
 | Home Screen | Mood Tracking Screen | Playlist Screen |
 | ---| ---| ---|
-| <img src="./readme/demo/Home.png" width="250" height="533" /> | <img src="./readme/demo/Mood-detection-img.png" width="250" height="533"/> | <img src="./readme/demo/Playlist-figma.png" width="250" height="533"/>
+| <img src="./readme/demo/Home.png" width="250" height="533" /> | <img src="./readme/demo/Mood-detection-img.png" width="250" height="533"/> | <img src="./readme/demo/Playlist.png" width="250" height="533"/>
 
 <br><br>
 
