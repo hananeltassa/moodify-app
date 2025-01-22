@@ -56,7 +56,7 @@
 ### Mockups
 | Home Screen | Mood Tracking Screen | Playlist Screen |
 | ---| ---| ---|
-| <img src="./readme/demo/Home.png" width="310" height="660" /> | <img src="./readme/demo/Mood-detection-img.png" width="310" height="660"/> | <img src="./readme/demo/Playlist-figma.png" width="310" height="660"/>
+| <img src="./readme/demo/Home.png" width="250" height="533" /> | <img src="./readme/demo/Mood-detection-img.png" width="250" height="533"/> | <img src="./readme/demo/Playlist-figma.png" width="250" height="533"/>
 
 <br><br>
 
@@ -182,11 +182,12 @@ Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, t
 ### User Screens (Mobile)
 | Login screen  | Home screen | Loading screen |
 | ---| ---| ---|
-| <img src="./readme/demo/login.jpg" width="310" height="660" /> | <img src="./readme/demo/home.jpg" width="310" height="660" /> | <img src="./readme/demo/loading.gif" width="310" height="660" /> |
+| <img src="./readme/demo/login.jpg" width="250" height="533" /> | <img src="./readme/demo/home.jpg" width="250" height="533" /> | <img src="./readme/demo/loading.gif" width="250" height="533" /> |
 | Video Detect Mood Screen | Voice Detect Mood Screen | Text Detect Mood Screen |
-| <img src="./readme/demo/video.gif" width="310" height="660" />  | <img src="./readme/demo/audio.gif" width="310" height="660"/> | <img src="./readme/demo/text-detect.gif" width="310" height="660"/> |
+| <img src="./readme/demo/video.gif" width="250" height="533" /> | <img src="./readme/demo/audio.gif" width="250" height="533" /> | <img src="./readme/demo/text-detect.gif" width="250" height="533" /> |
 | Challenges screen | Search Screen | 
-| <img src="./readme/demo/challenges.gif" width="310" height="660" /> | <img src="./readme/demo/search.gif"  width="310" height="660" /> |
+| <img src="./readme/demo/challenges.gif" width="250" height="533" /> | <img src="./readme/demo/search.gif" width="250" height="533" /> |
+
 
 
 ### Admin Screens (Web)
@@ -219,7 +220,7 @@ This project utilizes **advanced prompt engineering techniques** to interact sea
 #### Example Prompt
 Below is an example of the structured prompt used in the application:
 
-<img src="./readme/prompt_example.png"/>
+<img src="./readme/demo/prompt_example.png"/>
 
 This prompt dynamically incorporates real-time user data, guiding GPT-4 to generate responses like:
 - **Title**: "Mindfulness Breakfast"
@@ -252,8 +253,8 @@ Comprehensive API documentation is available through **Postman** for easy integr
 | Login Api| getTrendyMusic Api |
 | ---| ---|
 | <img src="./readme/demo/loginApi.png"/> | <img src="./readme/demo/getTrendyTracksApi.png"/> |
-| Dashboard screen |  Users screen |
-| <img src="./readme/demo/challengeApi.png"/> | <img src="./readme/demo/spoifySearchApi.jpg"/> |
+| Challenges Api | Spotify Search Api |
+| <img src="./readme/demo/challengeApi.png"/> | <img src="./readme/demo/spoifySearchApi.png"/> |
 
 <!-- Unit Testing 
 <img src="./readme/title9.svg"/>
