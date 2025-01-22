@@ -203,7 +203,7 @@ Moodify uses [PostgreSQL](https://www.postgresql.org/), a relational database, t
 <!-- Prompt Engineering -->
 <img src="./readme/title7.svg"/>
 
-### Mastering AI Interaction: Unveiling the Power of Prompt Engineering
+### Discover the Key to Effective Communication Through Prompt Engineering
 
 This project utilizes **advanced prompt engineering techniques** to interact seamlessly with **OpenAI's GPT-4**, delivering highly personalized and context-aware challenges for users. By leveraging user-specific inputs like mood, time of day, and previously generated challenges, the system ensures unique and relevant outputs every time.
 
@@ -239,7 +239,7 @@ This combination of dynamic prompts, validation processes, and structured output
 <!-- AWS Deployment -->
 <img src="./readme/title8.svg"/>
 
-### Efficient AI Deployment: Unleashing the Potential with AWS Integration
+### Deploying AI Solutions with the Power of AWS Integration
 
 This project leverages AWS for seamless deployment of our AI-powered application, ensuring **scalability**, **reliability**, and **performance**. The backend server operates on an **AWS EC2 instance**, providing robust infrastructure for handling application requests and data processing.
 
