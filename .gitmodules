@@ -1,9 +1,0 @@
-[submodule "nodejs-server"]
-	path = nodejs-server
-	url = https://github.com/hananeltassa/moodify-server.git
-[submodule "react-admin"]
-	path = react-admin
-	url = https://github.com/hananeltassa/moodify-website.git
-[submodule "django-server"]
-	path = django-server
-	url = https://github.com/hananeltassa/Moodify-django.git
